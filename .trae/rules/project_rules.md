@@ -23,7 +23,7 @@ TypeScript Usage
 
 Syntax and Formatting
 
-- Use the "function" keyword for pure functions.
+- Use arrow function syntax (const Component = () => {}) for components and functions.
 - Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
 - Use declarative JSX.
 
