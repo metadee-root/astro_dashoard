@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -37,7 +38,10 @@ export default function RootLayout({
       className={`${montserrat.variable} ${geistMono.variable} ${cinzel.variable} antialiased`}
     >
       <body>
-        <main>{children}</main>
+        <main>
+          {children}
+          <Toaster richColors theme="light" className={montserrat.className} />
+        </main>
       </body>
     </html>
   );
