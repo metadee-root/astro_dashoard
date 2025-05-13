@@ -5,7 +5,7 @@ import React from "react";
 export const DashboardHeader = () => {
   const [isOnline, setIsOnline] = React.useState(false);
   return (
-    <div className="flex flex-col md:flex-row md:justify-between">
+    <div className="flex flex-col gap-4 md:flex-row md:justify-between">
       <div className="space-y-1">
         <h2 className="text-xl md:text-[22px] font-semibold">
           Namaste, Acharya Ramesh Sharma
@@ -16,7 +16,7 @@ export const DashboardHeader = () => {
       </div>
 
       <div
-        className="group flex items-center gap-2 px-4 py-2 border rounded-xl"
+        className="group flex w-fit items-center gap-2 px-4 py-2 border rounded-xl"
         data-state={isOnline ? "checked" : "unchecked"}
       >
         <span

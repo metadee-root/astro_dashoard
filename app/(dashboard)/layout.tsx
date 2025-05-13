@@ -9,7 +9,7 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <div>
       <Navbar />
-      {children}
+      <div className="w-full max-w-7xl mx-auto p-4 sm:p-6">{children}</div>
     </div>
   );
 };

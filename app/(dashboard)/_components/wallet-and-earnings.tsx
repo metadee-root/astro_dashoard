@@ -10,6 +10,8 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BanknoteArrowDown, Wallet2 } from "lucide-react";
 import React from "react";
+import { BankAccountDetailsForm } from "./bank-account-details-form";
+import { Transactions } from "./transactions";
 
 export const WalletAndEarnings = () => {
   return (
@@ -37,8 +39,8 @@ export const WalletAndEarnings = () => {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <TabsContent value="wallet">
-            <div className="p-4 bg-accent flex gap-4 rounded-md">
+          <TabsContent value="wallet" className="space-y-6">
+            <div className="p-4 bg-accent flex flex-col md:flex-row gap-4 rounded-md">
               <div className="flex items-center justify-center bg-neutral-200 rounded-full size-20">
                 <Wallet2 className="size-8" strokeWidth={1.5} />
               </div>
@@ -57,8 +59,11 @@ export const WalletAndEarnings = () => {
                 </Button>
               </div>
             </div>
+            <BankAccountDetailsForm />
           </TabsContent>
-          <TabsContent value="transactions"></TabsContent>
+          <TabsContent value="transactions">
+            <Transactions />
+          </TabsContent>
         </CardContent>
       </Tabs>
     </Card>
