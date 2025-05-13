@@ -19,6 +19,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { api } from "@/lib/api";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const signInSchema = z.object({
   email: z
@@ -37,6 +41,7 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 export const SignInForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -47,16 +52,17 @@ export const SignInForm = () => {
     },
   });
 
-  const onSubmit = async (data: SignInFormValues) => {
+  const onSubmit = async (values: SignInFormValues) => {
     setIsLoading(true);
-    try {
-      // TODO: Implement sign in logic
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+
+    const data = await signIn("credentials", { ...values, redirect: false });
+
+    if (data?.error) {
+      toast.error(data.error);
+      return;
     }
+
+    router.push("/");
   };
 
   return (

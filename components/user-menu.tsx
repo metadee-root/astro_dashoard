@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   DropdownMenu,
@@ -9,32 +10,49 @@ import {
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { LogOutIcon } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import { Skeleton } from "./ui/skeleton";
 
 export const UserMenu = () => {
-  const user = {
-    name: "Acharya Ramesh Sharma",
-    email: "acharyaramesh@gmail.com",
-    avatar: "https://i.pravatar.cc/150?img=10",
+  const { data: session, status } = useSession();
+
+  const getInitials = (name: string): string => {
+    if (!name) return "";
+
+    const names = name.split(" ");
+    let initials = names[0].substring(0, 1).toUpperCase();
+
+    if (names.length > 1) {
+      initials += names[names.length - 1].substring(0, 1).toUpperCase();
+    }
+
+    return initials;
   };
+
+  if (status === "loading" || !session?.user) {
+    return <Skeleton className="size-10 rounded-full" />;
+  }
+
+  const user = session.user;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="size-10">
-          <AvatarImage src={user.avatar} alt={user.name} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={user.image!} alt={user.name!} />
+          <AvatarFallback>{getInitials(user.name!)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-52 rounded-lg"
+        className="w-56 rounded-lg"
         align="end"
         sideOffset={4}
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="size-10">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={user.image!} alt={user.name!} />
+              <AvatarFallback>{getInitials(user.name!)}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.name}</span>
@@ -46,7 +64,7 @@ export const UserMenu = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signOut()}>
           <LogOutIcon />
           Log out
         </DropdownMenuItem>
