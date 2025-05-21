@@ -10,10 +10,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { AstrologerDetails } from "@/lib/api/auth.api";
 import { Pencil } from "lucide-react";
-import React from "react";
+import React, { FC } from "react";
 
-export const Profile = () => {
+interface ProfileProps {
+  profile: AstrologerDetails;
+}
+
+export const Profile: FC<ProfileProps> = ({ profile }) => {
+  const getInitials = (name: string): string => {
+    if (!name) return "";
+
+    const names = name.split(" ");
+    let initials = names[0].substring(0, 1).toUpperCase();
+
+    if (names.length > 1) {
+      initials += names[names.length - 1].substring(0, 1).toUpperCase();
+    }
+
+    return initials;
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -39,8 +57,8 @@ export const Profile = () => {
           <div className="relative">
             <div className="size-32 bg-accent relative rounded-full ring-2 ring-yellow-500">
               <Avatar className="h-full w-full">
-                <AvatarImage src="https://i.pravatar.cc/150?img=33" />
-                <AvatarFallback>PS</AvatarFallback>
+                <AvatarImage src={profile.profileImage} />
+                <AvatarFallback>{getInitials(profile.name)}</AvatarFallback>
               </Avatar>
               <Button
                 size="icon"
@@ -56,54 +74,47 @@ export const Profile = () => {
                 <p className="text-sm font-semibold text-foreground/80">
                   Full Name
                 </p>
-                <p className="md:text-lg font-semibold">
-                  Acharya Ramesh Sharma
-                </p>
+                <p className="md:text-lg font-semibold">{profile.name}</p>
               </div>
-              <div className="space-y-1 flex-1">
+              {/* <div className="space-y-1 flex-1">
                 <p className="text-sm font-semibold text-foreground/80">
                   Title
                 </p>
                 <p className="md:text-lg font-semibold">
                   Vedic Astrology Expert
                 </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col md:flex-row gap-6">
+              </div> */}
               <div className="space-y-1 flex-1">
                 <p className="text-sm font-semibold text-foreground/80">
                   Languages
                 </p>
-                <p className="md:text-lg font-semibold">
-                  Hindi, English, Sanskrit
+                <p className="md:text-lg font-semibold capitalize">
+                  {profile.languages.join(", ")}
                 </p>
               </div>
+            </div>
+
+            {/* <div className="flex flex-col md:flex-row gap-6">
               <div className="space-y-1 flex-1">
                 <p className="text-sm font-semibold text-foreground/80">
                   Experience
                 </p>
                 <p className="md:text-lg font-semibold">15+ Years</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="space-y-1 flex-1">
               <p className="text-sm font-semibold text-foreground/80">
                 Expertise
               </p>
-              <p className="md:text-lg font-semibold">
-                Vedic Astrology, Vastu Shastra, Graha Shanti, Kundali Analysis
+              <p className="md:text-lg font-semibold capitalize">
+                {profile.expertise.join(", ")}
               </p>
             </div>
 
             <div className="space-y-1 flex-1">
               <p className="text-sm font-semibold text-foreground/80">Bio</p>
-              <p className="md:text-lg font-semibold">
-                Dedicated Vedic astrologer with over 15 years of experience
-                guiding seekers through life's challenges using ancient wisdom.
-                Specializing in Graha Shanti remedies and personalized spiritual
-                guidance{" "}
-              </p>
+              <p className="md:text-lg font-semibold">{profile.about}</p>
             </div>
           </div>
         </div>

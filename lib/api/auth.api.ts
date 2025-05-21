@@ -1,18 +1,25 @@
 import { handleAPIError } from "@/lib/utils";
 import { axiosClient } from "@/lib/axios-client";
 
-interface AstrologerDetails {
-  id: string;
+export interface AstrologerDetails {
+  _id: string;
   name: string;
   email: string;
-  phone: string;
-  experience: number;
-  specializations: string[];
-  languages: string[];
-  rating: number;
-  totalConsultations: number;
-  isVerified: boolean;
+  phoneNumber: string;
   profileImage?: string;
+  languages: string[];
+  expertise: string[];
+  availability: "online" | "offline" | "busy";
+  chatPrice: number;
+  callPrice: number;
+  videoPrice: number;
+  role: string;
+  about: string;
+  rating: {
+    average: number;
+    reviewsCount: number;
+  };
+  createdAt: string;
 }
 
 interface WalletDetails {
