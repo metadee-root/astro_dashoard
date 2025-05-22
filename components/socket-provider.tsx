@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { SessionRequest } from "@/types/session";
 import { Button } from "./ui/button";
+import { connectionRequestToast } from "./connection-request-toast";
+import { useRouter } from "next/navigation";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -33,6 +35,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   const { data: session } = useSession();
   const [isConnected, setIsConnected] = React.useState(false);
   const websocket = useRef<Socket | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (!session?.user.token || !process.env.NEXT_PUBLIC_BACKEND_URL) return;
@@ -58,24 +61,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     // Session request
     socket.on("session_request", (data: SessionRequest) => {
       console.log(data);
-
-      toast(`${data.mode} requested!`, {
-        description: `${data.consultationDetails.fullName}, ${data.consultationDetails.gender}, ${data.consultationDetails.placeOfBirth}`,
-        action: (
-          <Button
-            size="sm"
-            className="flex ml-auto"
-            onClick={() =>
-              socket.emit("join_session", {
-                sessionId: data.sessionId,
-                roomId: data.roomId,
-              })
-            }
-          >
-            Connect
-          </Button>
-        ),
-      });
+      connectionRequestToast({ request: data });
     });
     socket.on("session_request_failed", ({ error }) => {
       toast.error(error || "Session request failed!");
@@ -83,6 +69,29 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
 
     socket.on("join_session_failed", ({ error }) => {
       toast.error(error || "Failed to join session!");
+    });
+
+    socket.on(
+      "joined_session",
+      ({
+        roomId,
+        sessionId,
+        mode,
+      }: {
+        sessionId: string;
+        roomId: string;
+        mode: "chat" | "video" | "call";
+      }) => {
+        router.push(`/session/${sessionId}/${roomId}?mode=${mode}`);
+      }
+    );
+
+    socket.on("reject_session_failed", ({ error }) => {
+      toast.error(error || "Failed to reject session!");
+    });
+
+    socket.on("message_failed", ({ error }) => {
+      toast.error(error || "Failed to send message!");
     });
 
     socket.on("disconnect", () => {
@@ -107,20 +116,6 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   return (
     <SocketContext.Provider value={{ socket: websocket.current, isConnected }}>
       {children}
-
-      <div
-        className={cn(
-          "flex items-center bg-background border text-sm justify-center gap-2.5 px-4 py-2.5 font-semibold shadow-xl rounded-full fixed bottom-6 right-6"
-        )}
-      >
-        <div
-          className={cn(
-            "size-2.5 rounded-full shrink-0",
-            isConnected ? "bg-green-500" : "bg-red-500"
-          )}
-        />
-        {isConnected ? "Connected" : "Not Connected"}
-      </div>
     </SocketContext.Provider>
   );
 };

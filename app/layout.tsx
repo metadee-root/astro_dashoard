@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Cinzel, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
 import { Provider } from "@/components/provider";
 
 const montserrat = Montserrat({
@@ -40,14 +39,7 @@ export default function RootLayout({
     >
       <body>
         <Provider>
-          <main>
-            {children}
-            <Toaster
-              richColors
-              theme="light"
-              className={montserrat.className}
-            />
-          </main>
+          <main>{children}</main>
         </Provider>
       </body>
     </html>

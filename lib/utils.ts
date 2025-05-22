@@ -19,3 +19,19 @@ export const handleAPIError = (error: any) => {
   }
   throw new Error("Something went wrong");
 };
+
+export const capitalizeString = (str: string): string => {
+  if (!str) return str;
+
+  // Split the string into words
+  const words = str.split(" ");
+
+  // Capitalize first letter of each word and lowercase the rest
+  const capitalizedWords = words.map((word) => {
+    if (!word) return "";
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
+
+  // Join the words back together
+  return capitalizedWords.join(" ");
+};
