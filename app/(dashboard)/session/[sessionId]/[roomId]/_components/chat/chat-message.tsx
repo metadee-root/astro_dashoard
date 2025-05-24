@@ -44,7 +44,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
           </div>
         );
       default:
-        return <p className="text-sm">{content}</p>;
+        return <p className="text-sm font-medium">{content}</p>;
     }
   };
 
@@ -55,16 +55,18 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
         isCurrentUser ? "flex-row-reverse" : "flex-row"
       )}
     >
-      <div
-        className={cn(
-          "flex max-w-[75%] flex-col gap-1 rounded-lg px-3 py-2",
-          isCurrentUser
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted text-muted-foreground"
-        )}
-      >
-        {renderContent()}
-        <span className="text-xs opacity-70">{format(timestamp, "HH:mm")}</span>
+      <div>
+        <div
+          className={cn(
+            "flex flex-col gap-1 rounded-xl px-4 py-2.5",
+            isCurrentUser
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground"
+          )}
+        >
+          {renderContent()}
+        </div>
+        {/* <span className="text-xs opacity-70">{format(timestamp, "HH:mm")}</span> */}
       </div>
     </div>
   );

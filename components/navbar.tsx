@@ -15,7 +15,9 @@ export const Navbar = () => {
       <div className="px-4 sm:px-6 w-full max-w-7xl mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Image src={logo} alt="logo" className="w-10 h-auto" />
-          <p className="font-cinzel font-bold text-xl">Sanatan Vision</p>
+          <p className="font-cinzel font-bold text-xl hidden md:block">
+            Sanatan Vision
+          </p>
         </Link>
 
         <div className="flex items-center gap-4">
