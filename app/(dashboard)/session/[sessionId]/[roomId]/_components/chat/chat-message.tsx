@@ -1,5 +1,5 @@
 import { type ChatMessage as IChatMessage } from "@/types/session";
-import { cn } from "@/lib/utils";
+import { cn, formatRelativeTimeShort } from "@/lib/utils";
 import { format } from "date-fns";
 import Image from "next/image";
 import { FC } from "react";
@@ -55,16 +55,25 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
         isCurrentUser ? "flex-row-reverse" : "flex-row"
       )}
     >
-      <div>
+      <div className="w-fit max-w-md">
         <div
           className={cn(
             "flex flex-col gap-1 rounded-xl px-4 py-2.5",
             isCurrentUser
-              ? "bg-primary text-primary-foreground"
+              ? "bg-blue-500 text-primary-foreground"
               : "bg-muted text-muted-foreground"
           )}
         >
           {renderContent()}
+
+          <p
+            className={cn(
+              "text-xs font-medium opacity-70",
+              isCurrentUser ? "text-right" : "text-left"
+            )}
+          >
+            {formatRelativeTimeShort(new Date(message.timestamp))}
+          </p>
         </div>
         {/* <span className="text-xs opacity-70">{format(timestamp, "HH:mm")}</span> */}
       </div>

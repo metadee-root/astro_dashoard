@@ -27,11 +27,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface VideoCallingProps {
   type: "audio" | "video";
+  sessionId: string;
+  roomId: string;
 }
 
 export const VideoCalling: FC<VideoCallingProps> = ({ type }) => {
   const { data: session } = useSession();
-  const [calling, setCalling] = useState(true);
+  const [calling, setCalling] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isConnected = useIsConnected();
   const [appId, setAppId] = useState("b353b1b203dc4a698a4cab5632c64b69");

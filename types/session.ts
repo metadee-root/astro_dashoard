@@ -1,10 +1,11 @@
 type ConsultationMode = "call" | "video" | "chat";
+
 export interface ConsultationDetails {
   fullName: string;
-  dateOfBirth: string;
+  dateTimeOfBirth: string;
   gender: string;
-  timeOfBirth: string;
   placeOfBirth: string;
+  concern: string;
 }
 
 export interface SessionRequest {

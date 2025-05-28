@@ -1,13 +1,13 @@
 import React from "react";
-import { VideoCalling } from "./_components/video-calling";
-import { AgoraProvider } from "./_components/agora-rtc-provider";
+// import { VideoCalling } from "./_components/video-calling";
+// import { AgoraProvider } from "./_components/agora-rtc-provider";
 
 const Page = () => {
   return (
     <div>
-      <AgoraProvider>
+      {/* <AgoraProvider>
         <VideoCalling type="video" />
-      </AgoraProvider>
+      </AgoraProvider> */}
     </div>
   );
 };

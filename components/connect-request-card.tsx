@@ -29,24 +29,19 @@ export const ConnectRequestCard: FC<ConnectRequestCardProps> = ({
   request,
 }) => {
   const { consultationDetails: user } = request;
-  const { isConnected, socket } = useSocket();
+  const { joinSession, rejectSession } = useSocket();
 
   const onAccept = () => {
-    if (socket && isConnected) {
-      socket.emit("join_session", {
-        sessionId: request.sessionId,
-        roomId: request.roomId,
-      });
-      toast.dismiss();
-    }
+    joinSession({
+      sessionId: request.sessionId,
+      roomId: request.roomId,
+    });
+    toast.dismiss();
   };
 
   const onReject = () => {
-    if (!socket || !isConnected) return;
-
-    socket.emit("reject_session", {
+    rejectSession({
       sessionId: request.sessionId,
-      reason: "Expert rejected your call request",
     });
     toast.dismiss();
   };
@@ -54,7 +49,7 @@ export const ConnectRequestCard: FC<ConnectRequestCardProps> = ({
   return (
     <div
       className={cn(
-        "rounded-md shadow-sm w-full md:w-80 bg-background border",
+        "rounded-md shadow-sm w-full font-medium md:w-80 bg-background border",
         montserrat.className
       )}
     >
@@ -76,26 +71,41 @@ export const ConnectRequestCard: FC<ConnectRequestCardProps> = ({
             </p>
           </div>
         </div>
-        <div className="space-y-4">
-          <div className="flex items-center text-sm font-medium">
-            Type of Consultation:{" "}
-            <span className="inline-flex items-center gap-1">
+        <div className="space-y-2.5">
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground font-medium">
+              Type of Consultation
+            </p>
+            <p className="flex items-center gap-1 text-sm">
               {React.createElement(modeIcons[request.mode as Mode], {
                 className: "size-4 ml-1.5",
               })}{" "}
               {capitalizeString(request.mode)}
-            </span>
+            </p>
           </div>
-          <div className="flex items-center text-sm font-medium">
-            Date of Birth:{" "}
-            {format(request.consultationDetails.dateOfBirth, "d MMM, yyyy")}
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground font-medium">
+              Date Time of Birth
+            </p>
+            <p className="text-sm">
+              {format(
+                request.consultationDetails.dateTimeOfBirth,
+                "d MMM, yyyy, h:mm a"
+              )}
+            </p>
           </div>
-          <div className="flex items-center text-sm font-medium">
-            Time of Birth:{" "}
-            {format(request.consultationDetails.timeOfBirth, "hh:mm a")}
+
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground font-medium">
+              Place of Birth
+            </p>
+            <p className="text-sm">
+              {request.consultationDetails.placeOfBirth}
+            </p>
           </div>
-          <div className="flex items-center text-sm font-medium">
-            Place of Birth: {request.consultationDetails.placeOfBirth}
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground font-medium">Concern</p>
+            <p className="text-sm">{request.consultationDetails.concern}</p>
           </div>
         </div>
         <div className="flex gap-2.5 pt-2">

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SendHorizonal } from "lucide-react";
 import React, { FC, useState } from "react";
-import { toast } from "sonner";
 
 interface ChatInputProps {
   sessionId: string;
@@ -13,21 +12,15 @@ interface ChatInputProps {
 
 export const ChatInput: FC<ChatInputProps> = ({ roomId, sessionId }) => {
   const [input, setInput] = useState("");
-  const { socket, isConnected } = useSocket();
+  const { sendMessage } = useSocket();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!socket) {
-      toast.error("Socket not connected");
-    }
-    if (!input) return;
-    if (!isConnected || !socket) return;
 
-    socket.emit("send_message", {
+    sendMessage({
       sessionId,
       roomId,
       message: input,
-      type: "text",
     });
     setInput("");
   };
