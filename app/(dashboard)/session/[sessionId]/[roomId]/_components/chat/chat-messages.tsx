@@ -18,7 +18,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({ messages }) => {
   }, [messages]);
 
   return (
-    <div className="flex-1 flex flex-col overflow-y-auto space-y-4">
+    <div className="flex-1 space-y-4 flex flex-col overflow-y-auto">
       {messages.map((message, i) => (
         <ChatMessage key={message.messageId + i} message={message} />
       ))}

@@ -30,6 +30,7 @@ interface SocketContextType {
   sendMessage: (values: SendMessagePayload) => void;
   joinSession: (values: JoinSessionPayload) => void;
   rejectSession: (values: RejectSessionPayload) => void;
+  endSession: (sessionId: string) => void;
   isLoading: boolean;
   currentSession: SessionRequest | null;
 }
@@ -43,6 +44,7 @@ const SocketContext = createContext<SocketContextType>({
   messages: [],
   isLoading: false,
   currentSession: null,
+  endSession: () => {},
 });
 
 export const useSocket = () => {
@@ -79,6 +81,19 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     });
   };
 
+  const endSession = (sessionId: string) => {
+    const socket = websocket.current;
+    if (!socket || !isConnected) {
+      toast.error("Socket is not connected!");
+      return;
+    }
+    socket.emit("end_session", {
+      sessionId,
+    });
+    setMessages([]);
+    setCurrentSession(null);
+  };
+
   const rejectSession = (values: RejectSessionPayload) => {
     const socket = websocket.current;
     if (!socket || !isConnected) {
@@ -104,6 +119,17 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       message: values.message,
       type: "text",
     });
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        message: values.message,
+        messageId: `${Date.now()}-${Math.random()}`,
+        senderId: session?.user.id || "unknown",
+        senderName: session?.user.name || "Unknown User",
+        timestamp: Date.now(),
+        type: "text",
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -153,12 +179,22 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
         roomId: string;
         mode: "chat" | "video" | "call";
       }) => {
+        if (mode === "call" || mode === "video") {
+          socket.emit("start_call", { sessionId, roomId });
+        }
         router.push(`/session/${sessionId}/${roomId}?mode=${mode}`);
       }
     );
 
     socket.on("reject_session_failed", ({ error }) => {
       toast.error(error || "Failed to reject session!");
+    });
+
+    socket.on("session_ended", ({ reason }) => {
+      setCurrentSession(null);
+      setMessages([]);
+      toast(reason || "Session ended successfully!");
+      router.push("/");
     });
 
     socket.on("receive_message", (data: ChatMessage) => {
@@ -170,6 +206,11 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       prevMessages.pop();
       setMessages(prevMessages);
       toast.error(error || "Failed to send message!");
+    });
+
+    socket.on("call_started", (values) => {
+      toast.success("Call started successfully!");
+      console.log(values);
     });
 
     socket.on("disconnect", () => {
@@ -202,6 +243,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
         joinSession,
         rejectSession,
         currentSession,
+        endSession,
       }}
     >
       {children}

@@ -14,7 +14,7 @@ export const Chat: FC<ChatProps> = ({ roomId, sessionId }) => {
   const { messages } = useSocket();
 
   return (
-    <div className="flex flex-col h-[calc(100svh-7rem)] space-y-4 w-full max-w-2xl mx-auto">
+    <div className="flex flex-col h-[calc(100svh-7rem)] gap-4 w-full max-w-2xl mx-auto">
       <ChatHeader />
       <ChatMessages messages={messages} />
       <ChatInput roomId={roomId} sessionId={sessionId} />
