@@ -18,6 +18,10 @@ import {
   CameraOff,
   PhoneCall,
   PhoneOff,
+  Loader2,
+  AlertCircle,
+  ShieldAlert,
+  LogIn,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, getInitials } from "@/lib/utils";
@@ -25,6 +29,8 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSocket } from "@/components/socket-provider";
+import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 interface VideoCallingProps {
   type: "audio" | "video";
@@ -33,7 +39,7 @@ interface VideoCallingProps {
 }
 
 export const VideoCalling: FC<VideoCallingProps> = ({ type, sessionId }) => {
-  const { callDetails } = useSocket();
+  const { callDetails, endSession } = useSocket();
   const { data: session } = useSession();
   const [calling, setCalling] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -42,6 +48,7 @@ export const VideoCalling: FC<VideoCallingProps> = ({ type, sessionId }) => {
   const [cameraOn, setCamera] = useState(false);
   const { localMicrophoneTrack } = useLocalMicrophoneTrack(micOn);
   const { localCameraTrack } = useLocalCameraTrack(cameraOn);
+  const router = useRouter();
 
   useEffect(() => {
     if (!callDetails) {
@@ -80,38 +87,85 @@ export const VideoCalling: FC<VideoCallingProps> = ({ type, sessionId }) => {
 
   if (!session?.user) {
     return (
-      <div className="h-[80vh] flex flex-col items-center justify-center gap-4">
-        <p className="text-lg font-medium text-muted-foreground">
-          Please sign in to join the call
-        </p>
+      <div className="h-[calc(100vh-8rem)] flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="p-4 rounded-full bg-muted">
+                <LogIn className="size-8 text-muted-foreground" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold">
+                  Authentication Required
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Please sign in to your account to join the video call session
+                </p>
+              </div>
+              <Button variant="outline" className="mt-2">
+                Sign In
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (!callDetails) {
     return (
-      <div className="h-[80vh] flex flex-col items-center justify-center gap-4">
-        <Skeleton className="size-20 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[200px]" />
-          <Skeleton className="h-4 w-[150px]" />
-        </div>
-        <p className="text-sm text-muted-foreground animate-pulse">
-          Waiting for call details...
-        </p>
+      <div className="h-[calc(100vh-8rem)] flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="p-4 rounded-full bg-muted">
+                <Loader2 className="size-8 text-muted-foreground animate-spin" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold">Initializing Call</h3>
+                <p className="text-sm text-muted-foreground">
+                  Please wait while we set up your video call session...
+                </p>
+              </div>
+              <div className="flex gap-2 items-center mt-4 text-sm text-muted-foreground">
+                <AlertCircle className="size-4" />
+                <span>This may take a few moments</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (callDetails.sessionId !== sessionId) {
     return (
-      <div className="h-[80vh] flex flex-col items-center justify-center gap-4">
-        <p className="text-lg font-medium text-destructive">
-          Invalid session ID
-        </p>
-        <p className="text-sm text-muted-foreground">
-          The call details do not match this session
-        </p>
+      <div className="flex h-[calc(100vh-8rem)] items-center w-full justify-center">
+        <Card className="w-full max-w-md border-destructive">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="p-4 rounded-full bg-destructive/10">
+                <ShieldAlert className="size-8 text-destructive" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold text-destructive">
+                  Invalid Session
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  The call details do not match this session. Please ensure you
+                  have the correct link.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                className="mt-2"
+                onClick={() => router.push("/")}
+              >
+                Return to Dashboard
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -232,7 +286,14 @@ export const VideoCalling: FC<VideoCallingProps> = ({ type, sessionId }) => {
             </Button>
           )}
           <Button
-            onClick={() => setCalling((a) => !a)}
+            onClick={() => {
+              if (calling) {
+                endSession(sessionId);
+                setCalling(false);
+              } else {
+                setCalling(true);
+              }
+            }}
             variant={calling ? "destructive" : "default"}
             size={isMobile ? "icon" : "default"}
           >

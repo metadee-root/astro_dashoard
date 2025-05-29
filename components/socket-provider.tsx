@@ -111,6 +111,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       sessionId,
     });
     setMessages([]);
+    setCallDetails(null);
     setCurrentSession(null);
   };
 
