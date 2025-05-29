@@ -7,6 +7,14 @@ import { ChatMessage, SessionRequest } from "@/types/session";
 import { connectionRequestToast } from "./connection-request-toast";
 import { useRouter } from "next/navigation";
 
+interface CallDetails {
+  sessionId: string;
+  channelName: string;
+  mode: "video" | "audio";
+  agoraAppId: string;
+  agoraToken: string;
+}
+
 interface SendMessagePayload {
   sessionId: string;
   roomId: string;
@@ -33,6 +41,7 @@ interface SocketContextType {
   endSession: (sessionId: string) => void;
   isLoading: boolean;
   currentSession: SessionRequest | null;
+  callDetails: CallDetails | null;
 }
 
 const SocketContext = createContext<SocketContextType>({
@@ -44,6 +53,7 @@ const SocketContext = createContext<SocketContextType>({
   messages: [],
   isLoading: false,
   currentSession: null,
+  callDetails: null,
   endSession: () => {},
 });
 
@@ -68,6 +78,16 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   const [isConnected, setIsConnected] = React.useState(false);
   const websocket = useRef<Socket | null>(null);
   const router = useRouter();
+  const [callDetails, setCallDetails] = React.useState<CallDetails | null>({
+    agoraAppId: "b353b1b203dc4a698a4cab5632c64b69",
+    agoraToken:
+      "007eJxTYJj9We3UvooF0vn5fz4FHlgqc6BkWeVr5be5bFkCrD3nC/YoMCQZmxonGSYZGRinJJskmllaJJokJyaZmhkbJZuZJJlZijpZZDQEMjJsf7uBiZEBAkF8HoaS1OKS+OSMxLy81BwGBgDNPCPB",
+    channelName: "test_channel",
+    mode: "video",
+    sessionId: "6838478ccd14e18229a798be",
+  });
+
+  console.log(callDetails);
 
   const joinSession = (values: JoinSessionPayload) => {
     const socket = websocket.current;
@@ -179,9 +199,6 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
         roomId: string;
         mode: "chat" | "video" | "call";
       }) => {
-        if (mode === "call" || mode === "video") {
-          socket.emit("start_call", { sessionId, roomId });
-        }
         router.push(`/session/${sessionId}/${roomId}?mode=${mode}`);
       }
     );
@@ -208,9 +225,8 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       toast.error(error || "Failed to send message!");
     });
 
-    socket.on("call_started", (values) => {
-      toast.success("Call started successfully!");
-      console.log(values);
+    socket.on("call_started", (values: CallDetails) => {
+      setCallDetails(values);
     });
 
     socket.on("disconnect", () => {
@@ -227,6 +243,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("connect_error");
+      socket.off("call_started");
       socket.disconnect();
       websocket.current = null;
     };
@@ -244,6 +261,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
         rejectSession,
         currentSession,
         endSession,
+        callDetails,
       }}
     >
       {children}

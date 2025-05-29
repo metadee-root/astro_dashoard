@@ -24,6 +24,7 @@ import { cn, getInitials } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSocket } from "@/components/socket-provider";
 
 interface VideoCallingProps {
   type: "audio" | "video";
@@ -31,30 +32,40 @@ interface VideoCallingProps {
   roomId: string;
 }
 
-export const VideoCalling: FC<VideoCallingProps> = ({ type }) => {
+export const VideoCalling: FC<VideoCallingProps> = ({ type, sessionId }) => {
+  const { callDetails } = useSocket();
   const { data: session } = useSession();
   const [calling, setCalling] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isConnected = useIsConnected();
-  const [appId, setAppId] = useState("b353b1b203dc4a698a4cab5632c64b69");
-  const [channel, setChannel] = useState("test-channel");
-  const [token, setToken] = useState(
-    "007eJxTYJBlfX/bfFnA3Ib+ddvYM3+c/hHqvXg+y+37pueK5Wf9s96swJBkbGqcZJhkZGCckmySaGZpkWiSnJhkamZslGxmkmRm2VhskNEQyMjQO/syCyMDBIL4PAwlqcUluskZiXl5qTkMDADS3iQI"
-  );
   const [micOn, setMic] = useState(false);
   const [cameraOn, setCamera] = useState(false);
-
   const { localMicrophoneTrack } = useLocalMicrophoneTrack(micOn);
   const { localCameraTrack } = useLocalCameraTrack(cameraOn);
 
+  useEffect(() => {
+    if (!callDetails) {
+      return;
+    }
+
+    if (callDetails.sessionId !== sessionId) {
+      return;
+    }
+
+    setCalling(true);
+  }, [callDetails, sessionId]);
+
   useJoin(
     {
-      appid: appId,
-      channel: channel,
-      token: token ? token : null,
+      appid: callDetails?.agoraAppId || "",
+      channel: callDetails?.channelName || "",
+      token: callDetails?.agoraToken || null,
       uid: session?.user.name!,
     },
-    calling
+    calling &&
+      !!callDetails?.agoraAppId &&
+      !!callDetails?.channelName &&
+      !!session?.user.name
   );
 
   let tracks = [localMicrophoneTrack];
@@ -67,8 +78,46 @@ export const VideoCalling: FC<VideoCallingProps> = ({ type }) => {
 
   const remoteUsers = useRemoteUsers();
 
+  if (!session?.user) {
+    return (
+      <div className="h-[80vh] flex flex-col items-center justify-center gap-4">
+        <p className="text-lg font-medium text-muted-foreground">
+          Please sign in to join the call
+        </p>
+      </div>
+    );
+  }
+
+  if (!callDetails) {
+    return (
+      <div className="h-[80vh] flex flex-col items-center justify-center gap-4">
+        <Skeleton className="size-20 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[200px]" />
+          <Skeleton className="h-4 w-[150px]" />
+        </div>
+        <p className="text-sm text-muted-foreground animate-pulse">
+          Waiting for call details...
+        </p>
+      </div>
+    );
+  }
+
+  if (callDetails.sessionId !== sessionId) {
+    return (
+      <div className="h-[80vh] flex flex-col items-center justify-center gap-4">
+        <p className="text-lg font-medium text-destructive">
+          Invalid session ID
+        </p>
+        <p className="text-sm text-muted-foreground">
+          The call details do not match this session
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="w-full">
       <div>
         {isConnected ? (
           <div className="relative aspect-[9/16] md:aspect-square lg:aspect-video">
