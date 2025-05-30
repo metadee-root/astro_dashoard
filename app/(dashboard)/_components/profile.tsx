@@ -1,24 +1,26 @@
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { AstrologerDetails } from "@/lib/api/auth.api";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Pencil } from "lucide-react";
+import Link from "next/link";
 import React, { FC } from "react";
+import { api } from "@/lib/api";
 
-interface ProfileProps {
-  profile: AstrologerDetails;
-}
+export const Profile = () => {
+  const { data: profile } = useSuspenseQuery({
+    queryKey: ["profile"],
+    queryFn: api.auth.getDetails,
+  });
 
-export const Profile: FC<ProfileProps> = ({ profile }) => {
   const getInitials = (name: string): string => {
     if (!name) return "";
 
@@ -37,9 +39,11 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
       <CardHeader>
         <CardTitle className="text-xl md:text-[22px]">Profile</CardTitle>
         <CardAction>
-          <Button variant="outline">
-            <Pencil /> Edit Profile
-          </Button>
+          <Link href="/edit-profile">
+            <Button variant="outline">
+              <Pencil /> Edit Profile
+            </Button>
+          </Link>
         </CardAction>
       </CardHeader>
       <CardContent>

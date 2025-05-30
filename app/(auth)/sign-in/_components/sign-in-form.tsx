@@ -59,10 +59,12 @@ export const SignInForm = () => {
 
     if (data?.error) {
       toast.error(data.error);
+      setIsLoading(false);
       return;
     }
 
     router.push("/");
+    setIsLoading(false);
   };
 
   return (

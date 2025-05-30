@@ -6,19 +6,26 @@ import { WalletAndEarnings } from "../_components/wallet-and-earnings";
 import { UserReviews } from "../_components/user-reviews";
 import { Stats } from "../_components/stats";
 import { api } from "@/lib/api";
+import { HydrateClient, prefetch } from "@/components/hydrate-client";
+import { PujaBookingsCard } from "../_components/puja-bookings-card";
 
-const Page = async () => {
-  const profile = await api.auth.getDetails();
+const Page = () => {
+  prefetch({ queryKey: ["profile"], queryFn: api.auth.getDetails });
+
+  prefetch({ queryKey: ["puja-bookings"], queryFn: api.puja.getBookings });
 
   return (
-    <div className="space-y-6">
-      <DashboardHeader />
-      <Stats />
-      <RecentUserInteractions />
-      <Profile profile={profile} />
-      <WalletAndEarnings />
-      <UserReviews />
-    </div>
+    <HydrateClient>
+      <div className="space-y-6">
+        <DashboardHeader />
+        <Stats />
+        <Profile />
+        <WalletAndEarnings />
+        <PujaBookingsCard />
+        <RecentUserInteractions />
+        <UserReviews />
+      </div>
+    </HydrateClient>
   );
 };
 
