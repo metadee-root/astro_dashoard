@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 const Page = async () => {
-  const data = await api.auth.getConsultationRecords();
+  const data = await api.consultation.getConsultationRecords();
   console.log(data);
   return <div>Page</div>;
 };
