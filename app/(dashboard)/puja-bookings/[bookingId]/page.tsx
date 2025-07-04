@@ -1,33 +1,24 @@
-"use client";
-import { api } from "@/lib/api";
-import React, { FC } from "react";
 import { AgoraProvider } from "../../session/[sessionId]/[roomId]/_components/agora-rtc-provider";
 import { PujaVideoCall } from "./_components/puja-video-call";
-import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 interface PageProps {
-  params: Promise<{ bookingId: string }>;
+  params: { bookingId: string };
 }
 
-const Page: FC<PageProps> = ({ params }) => {
-  // const { bookingId } = await params;
-  const { bookingId } = useParams();
+const Page = async ({ params }: PageProps) => {
+  const { bookingId } = params;
 
-  const { data } = useQuery({
-    queryKey: ["agora-token", bookingId],
-    queryFn: () => api.puja.getAgoraTokenForBooking(bookingId as string),
-  });
+  const data = await api.puja.getAgoraTokenForBooking(bookingId);
 
   return (
     <div className="space-y-6">
       <h1 className="text-xl md:text-2xl font-semibold tracking-tight">
         Puja Session
       </h1>
-
-      {/* <AgoraProvider>
+      <AgoraProvider>
         <PujaVideoCall agoraTokenResponse={data} bookingId={bookingId} />
-      </AgoraProvider> */}
+      </AgoraProvider>
     </div>
   );
 };

@@ -58,7 +58,7 @@ export const PujaVideoCall: FC<PujaVideoCallProps> = ({
     mutationFn: () => api.puja.completeAndEndCall(bookingId),
     onSuccess: () => {
       toast.success("Call ended successfully!");
-      router.back(); // Or navigate to a different page
+      router.push("/puja-bookings"); // Or navigate to a different page
     },
     onError: (error) => {
       console.error("Error completing call:", error);

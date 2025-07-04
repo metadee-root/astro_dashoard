@@ -1,5 +1,6 @@
 import { axiosClient } from "@/lib/axios-client";
 import { handleAPIError } from "@/lib/utils";
+import { AxiosError } from "axios";
 
 export interface AgoraTokenResponse {
   channelName: string;
@@ -63,10 +64,12 @@ const getBookings = async () => {
   }
 };
 
-const getAgoraTokenForBooking = async (bookingId: string) => {
+const getAgoraTokenForBooking = async (
+  bookingId: string
+): Promise<AgoraTokenResponse> => {
   try {
     const { data } = await axiosClient.get(
-      `/bookings/${bookingId}/agora-token`
+      `/api/astrology/book-my-pooja/bookings/${bookingId}/agora-token`
     );
     return data.data as AgoraTokenResponse;
   } catch (error) {
@@ -77,7 +80,7 @@ const getAgoraTokenForBooking = async (bookingId: string) => {
 const completeAndEndCall = async (bookingId: string) => {
   try {
     const { data } = await axiosClient.put(
-      `/bookings/${bookingId}/complete-and-end-call`
+      `/api/astrology/book-my-pooja/bookings/${bookingId}/complete-and-end-call`
     );
     return data.data;
   } catch (error) {
@@ -87,7 +90,9 @@ const completeAndEndCall = async (bookingId: string) => {
 
 const getActiveCallSession = async () => {
   try {
-    const { data } = await axiosClient.get(`/call-session/active`);
+    const { data } = await axiosClient.get(
+      `/api/astrology/book-my-pooja/call-session/active`
+    );
     return data.data as {
       bookingId: string;
       panditId: string;
