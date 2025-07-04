@@ -1,17 +1,25 @@
 import { axiosClient } from "@/lib/axios-client";
 import { handleAPIError } from "@/lib/utils";
 
-interface ConsultationRecord {
-  id: string;
+export interface ConsultationRecord {
+  _id: string;
   userId: string;
-  userName: string;
-  startTime: string;
-  endTime: string;
-  duration: number;
-  amount: number;
+  expertId: string;
+  fullName: string;
+  dateTimeOfBirth: string;
+  gender: "male" | "female";
+  placeOfBirth: string;
+  concern: string;
   status: "completed" | "cancelled" | "no-show";
-  rating?: number;
-  feedback?: string;
+  mode: "video" | "voice" | "chat";
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Pagination {
+  totalItems: number;
+  totalPages: number;
+  page: number;
 }
 
 const getConsultationRecords = async (page: number = 1, limit: number = 10) => {
@@ -22,7 +30,7 @@ const getConsultationRecords = async (page: number = 1, limit: number = 10) => {
         params: { page, limit },
       }
     );
-    return data as { data: ConsultationRecord[] };
+    return data as { data: ConsultationRecord[]; pagination: Pagination };
   } catch (error) {
     throw handleAPIError(error);
   }

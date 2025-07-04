@@ -14,6 +14,11 @@ const Page = () => {
 
   prefetch({ queryKey: ["puja-bookings"], queryFn: api.puja.getBookings });
 
+  prefetch({
+    queryKey: ["recent-consultations"],
+    queryFn: () => api.consultation.getConsultationRecords(1, 2),
+  });
+
   return (
     <HydrateClient>
       <div className="space-y-6">
