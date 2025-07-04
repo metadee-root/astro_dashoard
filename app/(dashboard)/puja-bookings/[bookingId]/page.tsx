@@ -1,13 +1,14 @@
 import { AgoraProvider } from "../../session/[sessionId]/[roomId]/_components/agora-rtc-provider";
 import { PujaVideoCall } from "./_components/puja-video-call";
 import { api } from "@/lib/api";
+import { FC } from "react";
 
 interface PageProps {
-  params: { bookingId: string };
+  params: Promise<{ bookingId: string }>;
 }
 
-const Page = async ({ params }: PageProps) => {
-  const { bookingId } = params;
+const Page: FC<PageProps> = async ({ params }) => {
+  const { bookingId } = await params;
 
   const data = await api.puja.getAgoraTokenForBooking(bookingId);
 
