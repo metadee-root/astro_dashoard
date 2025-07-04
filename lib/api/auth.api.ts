@@ -33,27 +33,6 @@ interface WalletDetails {
   pendingPayouts: number;
 }
 
-interface ConsultationRecord {
-  id: string;
-  userId: string;
-  userName: string;
-  startTime: string;
-  endTime: string;
-  duration: number;
-  amount: number;
-  status: "completed" | "cancelled" | "no-show";
-  rating?: number;
-  feedback?: string;
-}
-
-interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
 const login = async (body: { email: string; password: string }) => {
   try {
     const { data } = await axiosClient.post(
@@ -93,26 +72,8 @@ const getWallet = async (): Promise<WalletDetails> => {
   }
 };
 
-const getConsultationRecords = async (
-  page: number = 1,
-  limit: number = 10
-): Promise<PaginatedResponse<ConsultationRecord>> => {
-  try {
-    const { data } = await axiosClient.get(
-      "/api/astrology/auth/astrologer/consultation-records",
-      {
-        params: { page, limit },
-      }
-    );
-    return data as PaginatedResponse<ConsultationRecord>;
-  } catch (error) {
-    throw handleAPIError(error);
-  }
-};
-
 export const authApi = {
   login,
   getDetails,
   getWallet,
-  getConsultationRecords,
 };

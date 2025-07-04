@@ -16,7 +16,7 @@ export const PujaBookings = () => {
   }
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-2 gap-6">
       {data.map((booking) => (
         <PujaBookingCard key={booking._id} booking={booking} />
       ))}

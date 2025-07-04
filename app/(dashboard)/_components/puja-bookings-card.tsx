@@ -34,8 +34,8 @@ export const PujaBookingsCard = () => {
         {pujaBookings.length === 0 ? (
           <NoPujaBookings />
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pujaBookings.map((booking) => (
+          <div className="grid md:grid-cols-2 gap-6">
+            {pujaBookings.slice(0, 4).map((booking) => (
               <PujaBookingCard key={booking._id} booking={booking} />
             ))}
           </div>

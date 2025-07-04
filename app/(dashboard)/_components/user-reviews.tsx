@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import React from "react";
-import { UserReviewCard } from "./user-review-card";
+import { UserReviewCard } from "../reviews/_components/user-review-card";
 import { Rating, RatingButton } from "@/components/ui/rating";
 
 const reviews = [
