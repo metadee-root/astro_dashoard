@@ -12,12 +12,16 @@ import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { ConsultationCard } from "../consultations/_components/consultation-card";
+import { NoConsultations } from "../consultations/_components/no-consultations";
 
 export const RecentUserInteractions = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["recent-consultations"],
     queryFn: () => api.consultation.getConsultationRecords(1, 2),
   });
+
+  const hasConsultations = data.data && data.data.length > 0;
+
   return (
     <Card>
       <CardHeader>
@@ -31,14 +35,21 @@ export const RecentUserInteractions = () => {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <div className="grid md:grid-cols-2 gap-4">
-          {data.data.map((consultation) => (
-            <ConsultationCard
-              key={consultation._id}
-              consultation={consultation}
-            />
-          ))}
-        </div>
+        {hasConsultations ? (
+          <div className="grid md:grid-cols-2 gap-4">
+            {data.data.map((consultation) => (
+              <ConsultationCard
+                key={consultation._id}
+                consultation={consultation}
+              />
+            ))}
+          </div>
+        ) : (
+          <NoConsultations
+            onUpdateProfile={() => window.location.href = "/edit-profile"}
+            onViewAvailability={() => window.location.href = "/availability"}
+          />
+        )}
       </CardContent>
     </Card>
   );

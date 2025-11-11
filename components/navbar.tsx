@@ -6,7 +6,7 @@ import logo from "@/public/logo.png";
 import { UserMenu } from "./user-menu";
 import { useSocket } from "./socket-provider";
 import { cn } from "@/lib/utils";
-import { Circle, Dot, WifiIcon } from "lucide-react";
+import { Circle } from "lucide-react";
 
 export const Navbar = () => {
   const { isConnected } = useSocket();

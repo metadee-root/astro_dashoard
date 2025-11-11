@@ -1,27 +1,45 @@
-import { CalendarOff } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import React from "react";
+import { Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
-export const NoPujaBookings = () => {
+interface NoPujaBookingsProps {
+  onUpdateProfile?: () => void;
+  onViewAvailability?: () => void;
+}
+
+export const NoPujaBookings = ({
+  onUpdateProfile,
+  onViewAvailability
+}: NoPujaBookingsProps) => {
   return (
-    <Card className="w-full border-dashed">
-      <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="rounded-full bg-orange-100 p-4 mb-4">
-          <CalendarOff className="h-8 w-8 text-orange-600" />
+    <Empty>
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Calendar className="size-6" />
+        </EmptyMedia>
+        <EmptyTitle>No Puja Bookings Yet</EmptyTitle>
+        <EmptyDescription>
+          You haven&apos;t received any puja bookings from devotees yet. Update your
+          profile, set your availability, and make your puja services more visible
+          to attract bookings.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <div className="flex gap-2">
+          <Button onClick={onUpdateProfile}>Update Profile</Button>
+          <Button variant="outline" onClick={onViewAvailability}>
+            Set Availability
+          </Button>
         </div>
-        
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">
-          No Puja Bookings Yet
-        </h3>
-        
-        <p className="text-sm text-gray-500 max-w-[300px] mb-6">
-          You don't have any puja bookings at the moment. New bookings will appear here when devotees schedule pujas with you.
-        </p>
-
-        <div className="text-xs text-gray-500 flex flex-col items-center gap-1">
-          <p>Keep your profile updated to increase visibility</p>
-          <p>Respond promptly to booking requests when they arrive</p>
-        </div>
-      </CardContent>
-    </Card>
+      </EmptyContent>
+    </Empty>
   );
 };

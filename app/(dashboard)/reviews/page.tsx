@@ -1,4 +1,8 @@
-import { HydrateClient, prefetch } from "@/components/hydrate-client";
+import {
+  HydrateClient,
+  prefetch,
+  prefetchInfinite,
+} from "@/components/hydrate-client";
 import React, { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { api } from "@/lib/api";
@@ -10,9 +14,15 @@ export const metadata = {
 };
 
 const Page = () => {
-  prefetch({
-    queryKey: ["reviews"],
-    queryFn: () => api.reviews.getReviews({ page: 1, limit: 30 }),
+  prefetchInfinite({
+    queryKey: ["reviews", "infinite"],
+    queryFn: async ({ pageParam }) => {
+      return await api.reviews.getReviews({
+        page: pageParam as number,
+        limit: 12,
+      });
+    },
+    initialPageParam: 1,
   });
   return (
     <HydrateClient>

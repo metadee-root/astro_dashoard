@@ -1,14 +1,45 @@
 import React from "react";
-import { Frown } from "lucide-react";
+import { Users, ArrowUpRightIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
-export const NoConsultations = () => {
+interface NoConsultationsProps {
+  onUpdateProfile?: () => void;
+  onViewAvailability?: () => void;
+}
+
+export const NoConsultations = ({
+  onUpdateProfile,
+  onViewAvailability,
+}: NoConsultationsProps) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-gray-500">
-      <Frown className="w-16 h-16 mb-4" />
-      <p className="text-lg font-semibold">No consultations found.</p>
-      <p className="text-sm">
-        It looks like you don't have any consultation records yet.
-      </p>
-    </div>
+    <Empty>
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Users className="size-6" />
+        </EmptyMedia>
+        <EmptyTitle>No Client Consultations Yet</EmptyTitle>
+        <EmptyDescription>
+          Clients haven&apos;t booked any consultations with you yet. Update
+          your profile, set your availability, and make your services more
+          visible to attract clients.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <div className="flex gap-2">
+          <Button onClick={onUpdateProfile}>Update Profile</Button>
+          <Button variant="outline" onClick={onViewAvailability}>
+            Set Availability
+          </Button>
+        </div>
+      </EmptyContent>
+    </Empty>
   );
 };
