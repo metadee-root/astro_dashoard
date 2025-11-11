@@ -14,13 +14,13 @@ import { Pencil } from "lucide-react";
 import Link from "next/link";
 import React, { FC } from "react";
 import { api } from "@/lib/api";
+import { AstrologerDetails } from "@/lib/api/auth.api";
 
-export const Profile = () => {
-  const { data: profile } = useSuspenseQuery({
-    queryKey: ["profile"],
-    queryFn: api.auth.getDetails,
-  });
+interface ProfileProps {
+  profile: AstrologerDetails;
+}
 
+export const Profile: FC<ProfileProps> = ({ profile }) => {
   const getInitials = (name: string): string => {
     if (!name) return "";
 

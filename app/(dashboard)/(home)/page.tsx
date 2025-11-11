@@ -8,9 +8,14 @@ import { Stats } from "../_components/stats";
 import { api } from "@/lib/api";
 import { HydrateClient, prefetch } from "@/components/hydrate-client";
 import { PujaBookingsCard } from "../_components/puja-bookings-card";
+import { getQueryClient } from "@/lib/get-query-client";
 
-const Page = () => {
-  prefetch({ queryKey: ["profile"], queryFn: api.auth.getDetails });
+const Page = async () => {
+  const queryClient = getQueryClient();
+  const profile = await queryClient.fetchQuery({
+    queryKey: ["profile"],
+    queryFn: api.auth.getDetails,
+  });
 
   prefetch({ queryKey: ["puja-bookings"], queryFn: api.puja.getBookings });
 
@@ -22,9 +27,9 @@ const Page = () => {
   return (
     <HydrateClient>
       <div className="space-y-6">
-        <DashboardHeader />
+        <DashboardHeader profile={profile} />
         <Stats />
-        <Profile />
+        <Profile profile={profile} />
         <WalletAndEarnings />
         <PujaBookingsCard />
         <RecentUserInteractions />

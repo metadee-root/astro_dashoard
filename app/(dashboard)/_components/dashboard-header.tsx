@@ -1,17 +1,24 @@
 "use client";
 import { Switch } from "@/components/ui/switch";
 import React from "react";
+import { format } from "date-fns";
+import { AstrologerDetails } from "@/lib/api/auth.api";
 
-export const DashboardHeader = () => {
+export const DashboardHeader = ({
+  profile,
+}: {
+  profile: AstrologerDetails;
+}) => {
   const [isOnline, setIsOnline] = React.useState(false);
   return (
     <div className="flex flex-col gap-4 md:flex-row md:justify-between">
       <div className="space-y-1">
         <h2 className="text-xl md:text-[22px] font-semibold">
-          Namaste, Acharya Ramesh Sharma
+          Namaste, {profile.name}
         </h2>
         <p className="font-medium">
-          Today is Shukla Paksha, Dwitiya | 15 October, 2023
+          Today is Shukla Paksha, Dwitiya |{" "}
+          {format(new Date(), "dd MMMM, yyyy")}
         </p>
       </div>
 
