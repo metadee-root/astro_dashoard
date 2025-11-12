@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { VerifyEmail } from "./_components/verifiy-email";
 
 export const metadata = {
@@ -6,7 +6,11 @@ export const metadata = {
 };
 
 const Page = () => {
-  return <VerifyEmail />;
+  return (
+    <Suspense>
+      <VerifyEmail />
+    </Suspense>
+  );
 };
 
 export default Page;

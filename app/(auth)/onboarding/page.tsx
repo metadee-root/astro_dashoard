@@ -1,12 +1,7 @@
-import { Onboarding } from "@/components/onboarding";
-import React from "react";
-
 export const metadata = {
-  title: "Onboarding",
+  title: "Astrologer Onboarding",
 };
 
-const Page = () => {
-  return <div></div>;
-};
-
-export default Page;
+export default function OnboardingPage() {
+  return <div className="min-h-screen bg-background"></div>;
+}
