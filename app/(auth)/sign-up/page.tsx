@@ -1,5 +1,6 @@
-import Link from "next/link";
-import { SignUpForm } from "./_components/sign-up-form";
+import { SignUpForm } from "./_components/sign-up";
+import planetsImage from "@/public/planets.jpg";
+import Image from "next/image";
 
 export const metadata = {
   title: "Sign Up",
@@ -7,17 +8,13 @@ export const metadata = {
 
 const SignUpPage = () => {
   return (
-    <div className="w-full space-y-6">
-      <h1 className="text-lg sr-only md:text-xl font-semibold">
-        Sign Up - Astro Advisor
-      </h1>
-      <SignUpForm />
-      <p className="text-center text-muted-foreground text-sm">
-        Already have an account?{" "}
-        <Link href="/sign-in" className="font-medium text-primary">
-          Sign in
-        </Link>
-      </p>
+    <div className="w-full min-h-screen flex flex-col md:flex-row">
+      <div className="relative flex-1 hidden md:flex">
+        <Image src={planetsImage} alt="Planets" fill className="object-cover" />
+      </div>
+      <div className="flex-1 flex items-center justify-center">
+        <SignUpForm />
+      </div>
     </div>
   );
 };

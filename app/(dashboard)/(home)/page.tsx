@@ -17,6 +17,15 @@ const Page = async () => {
     queryFn: api.auth.getDetails,
   });
 
+  prefetch({
+    queryKey: ["analytics"],
+    queryFn: () =>
+      api.analytics.getAnalytics({
+        period: "monthly",
+        year: new Date().getFullYear(),
+      }),
+  });
+
   prefetch({ queryKey: ["puja-bookings"], queryFn: api.puja.getBookings });
 
   prefetch({

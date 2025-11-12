@@ -14,11 +14,14 @@ export const formatINR = (num: number) => {
 };
 
 export const handleAPIError = (error: any) => {
-  console.log(error);
   if (error instanceof AxiosError) {
-    throw new Error(error.response?.data?.error ?? "Something went wrong");
+    throw new Error(
+      error.response?.data?.error ??
+        error.response?.data?.message ??
+        "Something went wrong"
+    );
   }
-  throw new Error("Something went wrong");
+  throw new Error(error?.message || "Something went wrong");
 };
 
 export const capitalizeString = (str: string): string => {

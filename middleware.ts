@@ -8,6 +8,7 @@ const authRoutes = [
   "/sign-up",
   "/forgot-password",
   "/reset-password",
+  "/verify",
 ];
 
 export async function middleware(request: NextRequest) {

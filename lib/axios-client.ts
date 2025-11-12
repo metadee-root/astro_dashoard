@@ -28,10 +28,10 @@ axiosClient.interceptors.request.use(
   }
 );
 
-axiosClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const message = error.response?.data?.error || "An error occurred";
-    throw new Error(message);
-  }
-);
+// axiosClient.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     const message = error.response?.data?.error || "An error occurred";
+//     throw new Error(message);
+//   }
+// );
