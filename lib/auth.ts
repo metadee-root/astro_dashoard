@@ -19,7 +19,10 @@ export const authOptions: AuthOptions = {
           password: credentials.password,
         });
 
-        return user;
+        return {
+          ...user,
+          image: user.profileImage,
+        };
       },
     }),
   ],
@@ -28,12 +31,14 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.id = user.id;
         token.token = user.token;
+        token.status = user.status;
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id as string;
       session.user.token = token.token as string;
+      session.user.status = token.status as string;
 
       return session;
     },

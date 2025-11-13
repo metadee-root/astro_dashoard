@@ -5,6 +5,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     token: string;
+    status: string;
   }
 }
 
@@ -13,11 +14,13 @@ declare module "next-auth" {
     user: User & {
       id: string;
       token: string;
+      status: string;
     };
   }
 
   interface User extends User {
     id: string;
     token: string;
+    status: string;
   }
 }
