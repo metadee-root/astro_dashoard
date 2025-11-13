@@ -8,42 +8,43 @@ import { SpecializationStep } from "./steps/specialization-step";
 import { DocumentationStep } from "./steps/documentation-step";
 import { FinancialStep } from "./steps/financial-step";
 import { ReviewStep } from "./steps/review-step";
+import {
+  Stepper,
+  StepperIndicator,
+  StepperItem,
+  StepperSeparator,
+  StepperTitle,
+  StepperTrigger,
+} from "@/components/ui/stepper";
 
-const STEP_CONFIG = [
+const steps = [
   {
-    id: 0,
+    step: 1,
     title: "Personal Information",
-    description: "Tell us about yourself",
   },
   {
-    id: 1,
+    step: 2,
     title: "Professional Background",
-    description: "Share your experience and expertise",
   },
   {
-    id: 2,
+    step: 3,
     title: "Services & Pricing",
-    description: "Set up your services and pricing",
   },
   {
-    id: 3,
+    step: 4,
     title: "Specialization",
-    description: "Define your specialized areas",
   },
   {
-    id: 4,
+    step: 5,
     title: "Documentation",
-    description: "Upload required documents",
   },
   {
-    id: 5,
+    step: 6,
     title: "Financial Information",
-    description: "Set up your payment details",
   },
   {
-    id: 6,
+    step: 7,
     title: "Review & Submit",
-    description: "Review your application and submit",
   },
 ];
 
@@ -61,7 +62,6 @@ export const Onboarding = () => {
   const { currentStep, totalSteps } = useOnboardingStore();
 
   const CurrentStepComponent = stepComponents[currentStep];
-  const stepInfo = STEP_CONFIG[currentStep];
 
   return (
     <div className="min-h-screen bg-background">
@@ -75,67 +75,27 @@ export const Onboarding = () => {
             </p>
           </div>
 
-          {/* Progress Bar */}
-          <div className="max-w-3xl mx-auto">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium">
-                  Step {currentStep + 1} of {totalSteps}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  ({stepInfo.title})
-                </span>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {Math.round(((currentStep + 1) / totalSteps) * 100)}% Complete
-              </div>
-            </div>
-
-            {/* Visual Progress Indicators */}
-            <div className="relative">
-              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 -translate-y-1/2" />
-              <div
-                className="absolute top-1/2 left-0 h-0.5 bg-blue-600 -translate-y-1/2 transition-all duration-300"
-                style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
-              />
-              <div className="relative flex justify-between">
-                {STEP_CONFIG.map((step, index) => (
-                  <div
-                    key={step.id}
-                    className={`flex flex-col items-center ${
-                      index <= currentStep ? "text-blue-600" : "text-gray-400"
-                    }`}
-                  >
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium border-2 bg-background ${
-                        index <= currentStep
-                          ? "border-blue-600 text-blue-600"
-                          : "border-gray-300 text-gray-400"
-                      }`}
-                    >
-                      {index < currentStep ? (
-                        <svg
-                          className="w-4 h-4"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : (
-                        index + 1
-                      )}
+          {/* Stepper */}
+          <div className="max-w-4xl mx-auto">
+            <Stepper value={currentStep + 1}>
+              {steps.map(({ step, title }) => (
+                <StepperItem
+                  key={step}
+                  step={step}
+                  className="relative flex-1 flex-col!"
+                >
+                  <StepperTrigger className="flex-col gap-3 rounded">
+                    <StepperIndicator />
+                    <div className="space-y-0.5 px-2">
+                      <StepperTitle>{title}</StepperTitle>
                     </div>
-                    <span className="text-xs mt-2 hidden sm:block">
-                      {step.title.split(" ")[0]}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  </StepperTrigger>
+                  {step < steps.length && (
+                    <StepperSeparator className="absolute inset-x-0 top-3 left-[calc(50%+0.75rem+0.125rem)] -order-1 m-0 -translate-y-1/2 group-data-[orientation=horizontal]/stepper:w-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=horizontal]/stepper:flex-none" />
+                  )}
+                </StepperItem>
+              ))}
+            </Stepper>
           </div>
         </div>
 

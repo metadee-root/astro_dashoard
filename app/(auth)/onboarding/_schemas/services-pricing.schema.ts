@@ -4,8 +4,8 @@ const priceSchema = z.string()
   .min(1, 'Price is required')
   .regex(/^\d+$/, 'Price must be a valid number')
   .transform((val) => parseInt(val, 10))
-  .refine((val) => val >= 50, 'Minimum price should be ₹50')
-  .refine((val) => val <= 10000, 'Maximum price should be ₹10,000')
+  .refine((val) => val >= 1, 'Minimum price should be ₹1')
+  .refine((val) => val <= 1000, 'Maximum price should be ₹1,000')
   .transform((val) => val.toString());
 
 const consultationLimitSchema = z.number()
@@ -21,8 +21,7 @@ export const servicesPricingSchema = z.object({
 
   callPrice: priceSchema,
 
-  videoPrice: priceSchema
-    .refine((val) => parseInt(val) >= 100, 'Video consultation minimum price should be ₹100'),
+  videoPrice: priceSchema,
 
   maxConsultationsPerDay: consultationLimitSchema,
 

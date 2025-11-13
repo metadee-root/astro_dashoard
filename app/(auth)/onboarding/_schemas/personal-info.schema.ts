@@ -65,8 +65,7 @@ export const personalInfoSchema = z.object({
         "image/jpg",
       ];
       return allowedTypes.includes(file.type);
-    }, "Profile image must be JPEG, PNG, or WebP format")
-    .optional(),
+    }, "Profile image must be JPEG, PNG, or WebP format"),
 });
 
 export type PersonalInfoData = z.infer<typeof personalInfoSchema>;

@@ -55,7 +55,6 @@ const login = async (body: { email: string; password: string }) => {
       "/api/astrology/auth/astrologer/login",
       body
     );
-    console.log(data);
     return data.data as {
       id: string;
       name: string;

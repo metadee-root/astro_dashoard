@@ -13,6 +13,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 
 export interface Option {
   value: string;
@@ -480,12 +481,13 @@ const MultipleSelector = React.forwardRef<
                   )}
                   data-fixed={option.fixed}
                   data-disabled={disabled || undefined}
+                  variant="outline"
                 >
                   {option.label}
                   <button
                     type="button"
                     className={cn(
-                      "ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                      "rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2",
                       (disabled || option.fixed) && "hidden"
                     )}
                     onKeyDown={(e) => {
@@ -539,7 +541,9 @@ const MultipleSelector = React.forwardRef<
               )}
             />
           </div>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             type="button"
             onClick={() => {
               setSelected(selected.filter((s) => s.fixed));
@@ -555,7 +559,7 @@ const MultipleSelector = React.forwardRef<
             )}
           >
             <X />
-          </button>
+          </Button>
           <ChevronDownIcon
             className={cn(
               "size-5 text-muted-foreground/50",

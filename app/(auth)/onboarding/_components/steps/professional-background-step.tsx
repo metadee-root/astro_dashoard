@@ -96,7 +96,7 @@ export const ProfessionalBackgroundStep = () => {
               name="expertise"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Areas of Expertise *</FormLabel>
+                  <FormLabel>Areas of Expertise <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
                     <MultipleSelector
                       value={
@@ -115,79 +115,76 @@ export const ProfessionalBackgroundStep = () => {
                     />
                   </FormControl>
                   <FormMessage />
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     Select at least one area where you have expertise
                   </div>
                 </FormItem>
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="yearsOfExperience"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Years of Experience *</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter number of years"
-                        min="0"
-                        max="50"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(parseInt(e.target.value) || 0)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    <div className="text-sm text-gray-500">
-                      Total years practicing astrology
-                    </div>
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="yearsOfExperience"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Years of Experience <span className="text-destructive">*</span></FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter number of years"
+                      min="0"
+                      max="50"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value) || 0)
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <div className="text-sm text-muted-foreground">
+                    Total years practicing astrology
+                  </div>
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="astrologySystems"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Astrology Systems *</FormLabel>
-                    <FormControl>
-                      <MultipleSelector
-                        value={
-                          field.value?.map((item) => ({
-                            value: item,
-                            label:
-                              ASTROLOGY_SYSTEMS.find(
-                                (opt) => opt.value === item
-                              )?.label || item,
-                          })) || []
-                        }
-                        onChange={(options) =>
-                          field.onChange(options.map((opt) => opt.value))
-                        }
-                        options={[...ASTROLOGY_SYSTEMS]}
-                        placeholder="Select astrology systems you use"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    <div className="text-sm text-gray-500">
-                      Select at least one astrology system
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="astrologySystems"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Astrology Systems <span className="text-destructive">*</span></FormLabel>
+                  <FormControl>
+                    <MultipleSelector
+                      value={
+                        field.value?.map((item) => ({
+                          value: item,
+                          label:
+                            ASTROLOGY_SYSTEMS.find((opt) => opt.value === item)
+                              ?.label || item,
+                        })) || []
+                      }
+                      onChange={(options) =>
+                        field.onChange(options.map((opt) => opt.value))
+                      }
+                      options={[...ASTROLOGY_SYSTEMS]}
+                      placeholder="Select astrology systems you use"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <div className="text-sm text-muted-foreground">
+                    Select at least one astrology system
+                  </div>
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
               name="otherPractices"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Other Practices (Optional)</FormLabel>
+                  <FormLabel>Other Practices</FormLabel>
                   <FormControl>
                     <MultipleSelector
                       value={
@@ -206,7 +203,7 @@ export const ProfessionalBackgroundStep = () => {
                     />
                   </FormControl>
                   <FormMessage />
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     Any other healing or spiritual practices you offer
                   </div>
                 </FormItem>
@@ -219,7 +216,7 @@ export const ProfessionalBackgroundStep = () => {
                 name="teachers"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Teachers/Gurus (Optional)</FormLabel>
+                    <FormLabel>Teachers/Gurus</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Names of your teachers or gurus in astrology"
@@ -227,7 +224,7 @@ export const ProfessionalBackgroundStep = () => {
                       />
                     </FormControl>
                     <FormMessage />
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
                       Your teachers or mentors who guided your astrological
                       journey
                     </div>
@@ -240,7 +237,7 @@ export const ProfessionalBackgroundStep = () => {
                 name="lineage"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Lineage/Tradition (Optional)</FormLabel>
+                    <FormLabel>Lineage/Tradition</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Your astrological lineage or tradition"
@@ -248,7 +245,7 @@ export const ProfessionalBackgroundStep = () => {
                       />
                     </FormControl>
                     <FormMessage />
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
                       Any specific astrological tradition or lineage you follow
                     </div>
                   </FormItem>
@@ -261,7 +258,7 @@ export const ProfessionalBackgroundStep = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Formal Education in Astrology (Optional)
+                      Formal Education in Astrology
                     </FormLabel>
                     <FormControl>
                       <Textarea
@@ -271,7 +268,7 @@ export const ProfessionalBackgroundStep = () => {
                       />
                     </FormControl>
                     <FormMessage />
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
                       Any formal degrees, certifications, or specialized courses
                     </div>
                   </FormItem>

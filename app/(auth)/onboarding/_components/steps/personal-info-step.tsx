@@ -117,7 +117,9 @@ export const PersonalInfoStep = () => {
                 name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name *</FormLabel>
+                    <FormLabel>
+                      Full Name <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter your full name as per official documents"
@@ -134,7 +136,9 @@ export const PersonalInfoStep = () => {
                 name="dateOfBirth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date of Birth *</FormLabel>
+                    <FormLabel>
+                      Date of Birth <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="date"
@@ -159,7 +163,9 @@ export const PersonalInfoStep = () => {
                 name="timeOfBirth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Time of Birth *</FormLabel>
+                    <FormLabel>
+                      Time of Birth <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="time"
@@ -195,7 +201,9 @@ export const PersonalInfoStep = () => {
                 name="placeOfBirth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Place of Birth *</FormLabel>
+                    <FormLabel>
+                      Place of Birth <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="City, State, Country" {...field} />
                     </FormControl>
@@ -208,11 +216,14 @@ export const PersonalInfoStep = () => {
                 control={form.control}
                 name="primaryLanguage"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Primary Language *</FormLabel>
+                  <FormItem className="w-full">
+                    <FormLabel>
+                      Primary Language{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select your primary language" />
                         </SelectTrigger>
                       </FormControl>
@@ -235,7 +246,7 @@ export const PersonalInfoStep = () => {
               name="languages"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Additional Languages (Optional)</FormLabel>
+                  <FormLabel>Additional Languages</FormLabel>
                   <FormControl>
                     <MultipleSelector
                       value={
@@ -249,9 +260,11 @@ export const PersonalInfoStep = () => {
                       onChange={(options) =>
                         field.onChange(options.map((opt) => opt.value))
                       }
-                      options={[...getAdditionalLanguageOptions(
-                        form.watch("primaryLanguage")
-                      )]}
+                      options={[
+                        ...getAdditionalLanguageOptions(
+                          form.watch("primaryLanguage")
+                        ),
+                      ]}
                       placeholder="Additional languages"
                       emptyIndicator={
                         <p className="text-center text-sm">
@@ -271,7 +284,9 @@ export const PersonalInfoStep = () => {
               name="profileImage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Profile Photo (Optional)</FormLabel>
+                  <FormLabel>
+                    Profile Photo <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <FileUpload
                       accept="image/*"
@@ -320,7 +335,7 @@ export const PersonalInfoStep = () => {
                     </FileUpload>
                   </FormControl>
                   <FormMessage />
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     Upload a clear photo of yourself for your profile
                   </div>
                 </FormItem>
@@ -332,7 +347,9 @@ export const PersonalInfoStep = () => {
               name="about"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>About Yourself *</FormLabel>
+                  <FormLabel>
+                    About Yourself <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Tell us about your journey in astrology, your approach, what makes you unique, and how you help clients..."
@@ -341,7 +358,7 @@ export const PersonalInfoStep = () => {
                     />
                   </FormControl>
                   <FormMessage />
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     Minimum 50 characters required
                   </div>
                 </FormItem>
