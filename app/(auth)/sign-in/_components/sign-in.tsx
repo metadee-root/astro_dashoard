@@ -104,7 +104,7 @@ export const SignIn = () => {
                   <div className="inline-flex items-center justify-between">
                     <FormLabel>Password</FormLabel>
                     <Link
-                      href="/forgot-password"
+                      href="/reset-password"
                       className="text-xs font-medium text-muted-foreground hover:underline"
                     >
                       Forgot password?

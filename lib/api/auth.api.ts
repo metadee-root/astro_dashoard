@@ -55,6 +55,7 @@ const login = async (body: { email: string; password: string }) => {
       "/api/astrology/auth/astrologer/login",
       body
     );
+    console.log(data);
     return data.data as {
       id: string;
       name: string;
@@ -71,6 +72,56 @@ const verifyMail = async (body: { email: string; otp: string }) => {
     const { data } = await axiosClient.post(
       "/api/astrology/auth/astrologer/verify-mail",
       body
+    );
+    return data.data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+};
+
+const validateToken = async (token: string) => {
+  try {
+    const { data } = await axiosClient.post(
+      `/api/astrology/auth/astrologer/validate-token?token=${token}`
+    );
+    return data.data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+};
+
+const resetPassword = async (body: {
+  email: string;
+  otp: string;
+  password: string;
+}) => {
+  try {
+    const { data } = await axiosClient.post(
+      "/api/astrology/auth/astrologer/reset-password",
+      body
+    );
+    return data.data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+};
+
+const forgotPasswordOtp = async (body: { email: string }) => {
+  try {
+    const { data } = await axiosClient.post(
+      "/api/astrology/auth/astrologer/forgot-password-otp",
+      body
+    );
+    return data.data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+};
+
+const logout = async () => {
+  try {
+    const { data } = await axiosClient.post(
+      "/api/astrology/auth/astrologer/logout"
     );
     return data.data;
   } catch (error) {
@@ -147,6 +198,21 @@ const updateProfile = async (formData: UpdateProfileFormData) => {
       }
     );
     return data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+};
+
+const changePassword = async (body: {
+  oldPassword: string;
+  newPassword: string;
+}) => {
+  try {
+    const { data } = await axiosClient.post(
+      "/api/astrology/auth/astrologer/change-password",
+      body
+    );
+    return data.data;
   } catch (error) {
     throw handleAPIError(error);
   }
@@ -257,8 +323,13 @@ export const authApi = {
   signup,
   login,
   verifyMail,
+  validateToken,
+  resetPassword,
+  forgotPasswordOtp,
+  logout,
   getDetails,
   getWallet,
   updateProfile,
+  changePassword,
   submitOnboarding,
 };

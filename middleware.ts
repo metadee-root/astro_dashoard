@@ -3,13 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Auth pages that should be accessible only when not signed in
-const authRoutes = [
-  "/sign-in",
-  "/sign-up",
-  "/forgot-password",
-  "/reset-password",
-  "/verify",
-];
+const authRoutes = ["/sign-in", "/sign-up", "/reset-password", "/verify"];
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
