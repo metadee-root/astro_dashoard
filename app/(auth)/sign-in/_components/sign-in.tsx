@@ -156,6 +156,15 @@ export const SignIn = () => {
           </Link>
         </p>
 
+        <div className="flex justify-center gap-4 text-sm">
+          <Link
+            href="/missing-verification"
+            className="text-muted-foreground hover:underline"
+          >
+            Missing verification email?
+          </Link>
+        </div>
+
         <p className="text-xs font-medium text-center text-muted-foreground">
           By continuing, you agree to Sanatan Vision's{" "}
           <a href="" className="hover:underline text-primary">

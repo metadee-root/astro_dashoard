@@ -31,10 +31,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
 
 const verifyEmailSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
   pin: z.string().min(6, {
     message: "Your one-time password must be 6 characters.",
   }),
@@ -50,7 +46,6 @@ export const VerifyEmail = () => {
   const form = useForm<VerifyEmailValues>({
     resolver: zodResolver(verifyEmailSchema),
     defaultValues: {
-      email: emailFromQuery || "",
       pin: "",
     },
   });
@@ -58,7 +53,7 @@ export const VerifyEmail = () => {
   const verifyMutation = useMutation({
     mutationFn: (values: VerifyEmailValues) =>
       api.auth.verifyMail({
-        email: values.email,
+        email: emailFromQuery || "",
         otp: values.pin,
       }),
     onSuccess: () => {
@@ -71,8 +66,29 @@ export const VerifyEmail = () => {
     },
   });
 
+  const resendMutation = useMutation({
+    mutationFn: (email: string) => api.auth.resendOtp({ email }),
+    onSuccess: () => {
+      toast.success("Verification code resent successfully!");
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error(error.message || "Failed to resend code. Please try again.");
+    },
+  });
+
+  const handleResendCode = () => {
+    if (emailFromQuery) {
+      resendMutation.mutate(emailFromQuery);
+    } else {
+      toast.error("Email address is required to resend code");
+    }
+  };
+
   const onSubmit = (values: VerifyEmailValues) => {
-    verifyMutation.mutate(values);
+    verifyMutation.mutate({
+      pin: values.pin,
+    });
   };
 
   const isLoading = verifyMutation.isPending;
@@ -122,12 +138,25 @@ export const VerifyEmail = () => {
           </form>
         </Form>
 
-        <p className="text-sm font-medium text-center text-muted-foreground">
-          Already verified?{" "}
-          <Link href="/sign-in" className="hover:underline text-primary">
-            Sign in
-          </Link>
-        </p>
+        <div className="flex flex-col items-center gap-4 mt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleResendCode}
+            disabled={resendMutation.isPending}
+            className="w-full"
+          >
+            {resendMutation.isPending && <Spinner />}
+            Resend Code
+          </Button>
+
+          <p className="text-sm font-medium text-center text-muted-foreground">
+            Already verified?{" "}
+            <Link href="/sign-in" className="hover:underline text-primary">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </CardContent>
     </Card>
   );

@@ -128,6 +128,18 @@ const logout = async () => {
   }
 };
 
+const resendOtp = async (body: { email: string }) => {
+  try {
+    const { data } = await axiosClient.post(
+      "/api/astrology/auth/astrologer/resend-otp",
+      body
+    );
+    return data.data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+};
+
 const getDetails = async (): Promise<AstrologerDetails> => {
   try {
     const { data } = await axiosClient.get(
@@ -326,6 +338,7 @@ export const authApi = {
   resetPassword,
   forgotPasswordOtp,
   logout,
+  resendOtp,
   getDetails,
   getWallet,
   updateProfile,
