@@ -288,7 +288,7 @@ export const SpecializationStep = () => {
               <h4 className="font-medium text-purple-900 mb-2">
                 Specialization Benefits
               </h4>
-              <ul className="text-sm text-purple-800 space-y-1 list-disc -ml-4">
+              <ul className="text-sm text-purple-800 space-y-1 list-disc ml-4">
                 <li>
                   Being specific about your specialization helps attract the
                   right clients
