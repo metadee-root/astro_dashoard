@@ -47,7 +47,7 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2 mb-6">
+        {/* <div className="space-y-2 mb-6">
           <div className="text-sm font-medium flex justify-between">
             <p>Profile completion</p>
             <p>65% Completed</p>
@@ -56,13 +56,15 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
           <p className="text-sm ">
             Complete your profile to increase visibility to seekers
           </p>
-        </div>
+        </div> */}
         <div className="flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8">
           <div className="relative">
             <div className="size-32 bg-accent relative rounded-full ring-2 ring-yellow-500">
               <Avatar className="h-full w-full">
                 <AvatarImage src={profile.profileImage} />
-                <AvatarFallback>{getInitials(profile.name)}</AvatarFallback>
+                <AvatarFallback>
+                  {getInitials(profile?.name || profile.fullName)}
+                </AvatarFallback>
               </Avatar>
               <Button
                 size="icon"
@@ -78,7 +80,9 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
                 <p className="text-sm font-semibold text-foreground/80">
                   Full Name
                 </p>
-                <p className="md:text-lg font-semibold">{profile.name}</p>
+                <p className="md:text-lg font-semibold">
+                  {profile.name || profile.fullName}
+                </p>
               </div>
               {/* <div className="space-y-1 flex-1">
                 <p className="text-sm font-semibold text-foreground/80">

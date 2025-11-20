@@ -16,7 +16,8 @@ export const formatINR = (num: number) => {
 export const handleAPIError = (error: any) => {
   if (error instanceof AxiosError) {
     throw new Error(
-      error.response?.data?.error ??
+      error.response?.data?.error?.message ??
+        error.response?.data?.error ??
         error.response?.data?.message ??
         "Something went wrong"
     );

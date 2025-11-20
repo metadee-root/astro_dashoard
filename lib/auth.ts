@@ -1,6 +1,7 @@
 import { AuthOptions } from "next-auth";
 import CredendialsProvider from "next-auth/providers/credentials";
 import { api } from "./api";
+import { Status } from "@/types/next-auth";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -22,6 +23,7 @@ export const authOptions: AuthOptions = {
         return {
           ...user,
           image: user.profileImage,
+          status: user.status as Status,
         };
       },
     }),
@@ -38,7 +40,7 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       session.user.id = token.id as string;
       session.user.token = token.token as string;
-      session.user.status = token.status as string;
+      session.user.status = token.status as Status;
 
       return session;
     },

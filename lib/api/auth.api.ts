@@ -2,24 +2,66 @@ import { handleAPIError } from "@/lib/utils";
 import { axiosClient } from "@/lib/axios-client";
 
 export interface AstrologerDetails {
+  rating: { average: number; reviewsCount: number };
+  bankDetails: {
+    bankName: string;
+    ifscCode: string;
+    accountHolderName: string;
+    branchName: string;
+    upiId: string;
+  };
   _id: string;
-  name: string;
   email: string;
-  phoneNumber: string;
-  profileImage?: string;
+  emailVerified: string;
+  fullName: string;
+  name?: string;
+  phoneNumber?: string;
+  canPerformPuja: boolean;
   languages: string[];
   expertise: string[];
-  availability: "online" | "offline" | "busy";
+  availability: "available" | "busy" | "offline";
   chatPrice: number;
   callPrice: number;
   videoPrice: number;
-  role: string;
+  role: "expert" | "admin" | "user";
   about: string;
-  rating: {
-    average: number;
-    reviewsCount: number;
-  };
+  isVerified: boolean;
+  status: "onboarding" | "verified" | "in_review";
+  adminNote: string;
+  astrologySystems: string[];
+  otherPractices: string[];
+  educationCertificates: string[];
+  consultationTypes: string[];
+  predictionTools: string[];
+  deliveryMethods: string[];
+  workingDays: string[];
+  timeSlots: string[];
+  providesRemedies: boolean;
+  remediesTypes: string[];
+  excludedPredictionAreas: string[];
+  createHoroscopeContent: boolean;
+  createDailyPredictions: boolean;
+  createEducationalPosts: boolean;
+  comfortableWithVideo: boolean;
+  comfortableWithAudio: boolean;
+  participateInLiveEvents: boolean;
+  participateInWebinars: boolean;
+  participateInSanatanPrograms: boolean;
+  aadharCard: string;
+  addressProof: string;
+  dateOfBirth: string;
+  expectedResponseTime: string;
+  formalEducation: string;
+  lineage: string;
+  maxConsultationsPerDay: number;
+  placeOfBirth: string;
+  primaryLanguage: string;
+  profileImage: string;
+  teachers: string;
+  timeOfBirth: string;
+  yearsOfExperience: number;
   createdAt: string;
+  __v: number;
 }
 
 interface WalletDetails {

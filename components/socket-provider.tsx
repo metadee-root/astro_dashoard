@@ -42,6 +42,8 @@ interface SocketContextType {
   isLoading: boolean;
   currentSession: SessionRequest | null;
   callDetails: CallDetails | null;
+  connect: () => void;
+  disconnect: () => void;
 }
 
 const SocketContext = createContext<SocketContextType>({
@@ -55,6 +57,8 @@ const SocketContext = createContext<SocketContextType>({
   currentSession: null,
   callDetails: null,
   endSession: () => {},
+  connect: () => {},
+  disconnect: () => {},
 });
 
 export const useSocket = () => {
@@ -120,34 +124,16 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     });
   };
 
-  const sendMessage = (values: SendMessagePayload) => {
-    const socket = websocket.current;
-    if (!socket || !isConnected) {
-      toast.error("Socket is not connected!");
+  const connect = () => {
+    if (!session?.user.token || !process.env.NEXT_PUBLIC_BACKEND_URL) {
+      toast.error("Authentication required or backend URL not configured!");
       return;
     }
-    setIsLoading(true);
-    socket.emit("send_message", {
-      sessionId: values.sessionId,
-      roomId: values.roomId,
-      message: values.message,
-      type: "text",
-    });
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        message: values.message,
-        messageId: `${Date.now()}-${Math.random()}`,
-        senderId: session?.user.id || "unknown",
-        senderName: session?.user.name || "Unknown User",
-        timestamp: Date.now(),
-        type: "text",
-      },
-    ]);
-  };
 
-  useEffect(() => {
-    if (!session?.user.token || !process.env.NEXT_PUBLIC_BACKEND_URL) return;
+    if (websocket.current?.connected) {
+      toast.info("Already connected!");
+      return;
+    }
 
     websocket.current = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
       auth: {
@@ -165,6 +151,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     socket.on("connect", () => {
       setIsConnected(true);
       console.log("connected");
+      toast.success("You're now online and ready to receive consultation requests! 🙏");
     });
 
     // Session request
@@ -231,17 +218,66 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     socket.on("connect_error", (error) => {
       setIsConnected(false);
       console.error("connection error:", error);
+      toast.error("Connection error: " + error.message);
     });
+  };
 
-    return () => {
+  const disconnect = () => {
+    const socket = websocket.current;
+    if (socket) {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("connect_error");
       socket.off("call_started");
+      socket.off("session_request");
+      socket.off("session_request_failed");
+      socket.off("join_session_failed");
+      socket.off("joined_session");
+      socket.off("reject_session_failed");
+      socket.off("session_ended");
+      socket.off("receive_message");
+      socket.off("message_failed");
       socket.disconnect();
       websocket.current = null;
+      setIsConnected(false);
+      setCurrentSession(null);
+      setMessages([]);
+      setCallDetails(null);
+      toast.success("You're now offline. You won't receive consultation requests until you come back online. 👋");
+    }
+  };
+
+  const sendMessage = (values: SendMessagePayload) => {
+    const socket = websocket.current;
+    if (!socket || !isConnected) {
+      toast.error("Socket is not connected!");
+      return;
+    }
+    setIsLoading(true);
+    socket.emit("send_message", {
+      sessionId: values.sessionId,
+      roomId: values.roomId,
+      message: values.message,
+      type: "text",
+    });
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        message: values.message,
+        messageId: `${Date.now()}-${Math.random()}`,
+        senderId: session?.user.id || "unknown",
+        senderName: session?.user.name || "Unknown User",
+        timestamp: Date.now(),
+        type: "text",
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    return () => {
+      disconnect();
     };
-  }, [session?.user.token]);
+  }, []);
 
   return (
     <SocketContext.Provider
@@ -256,6 +292,8 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
         currentSession,
         endSession,
         callDetails,
+        connect,
+        disconnect,
       }}
     >
       {children}

@@ -29,6 +29,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  // If the user is signed in and has onboarding or in-review status, redirect to onboarding
+  if (
+    token &&
+    (token.status === "onboarding" || token.status === "in_review")
+  ) {
+    // Only redirect if not already on onboarding page
+    if (!request.nextUrl.pathname.startsWith("/onboarding")) {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
