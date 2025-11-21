@@ -80,7 +80,7 @@ const servicesAvailabilitySchema = z.object({
   workingDays: z.array(z.string()).min(1, "Select at least one working day"),
   timeSlots: z.array(z.string()).min(1, "Select at least one time slot"),
   expectedResponseTime: z.string().min(1, "Expected response time is required"),
-  canPerformPuja: z.string().optional(),
+  canPerformPuja: z.boolean().optional(),
 });
 
 type ServicesAvailabilityData = z.infer<typeof servicesAvailabilitySchema>;
@@ -102,7 +102,7 @@ export const ServicesAvailabilityTab = ({ profile }: ServicesAvailabilityTabProp
       workingDays: profile?.workingDays || [],
       timeSlots: profile?.timeSlots || [],
       expectedResponseTime: profile?.expectedResponseTime || "",
-      canPerformPuja: profile?.canPerformPuja ? "true" : "false",
+      canPerformPuja: profile?.canPerformPuja || false,
     },
   });
 
@@ -213,8 +213,8 @@ export const ServicesAvailabilityTab = ({ profile }: ServicesAvailabilityTabProp
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox
-                          checked={field.value === "true"}
-                          onCheckedChange={(checked) => field.onChange(checked ? "true" : "false")}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
