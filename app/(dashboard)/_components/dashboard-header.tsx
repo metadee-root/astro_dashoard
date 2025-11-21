@@ -20,6 +20,15 @@ export const DashboardHeader = ({
     }
   };
 
+  const [date, setDate] = React.useState(new Date());
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setDate(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 md:flex-row md:justify-between">
       <div className="space-y-1">
@@ -28,7 +37,7 @@ export const DashboardHeader = ({
         </h2>
         <p className="font-medium">
           {/* Today is Shukla Paksha, Dwitiya |{" "} */}
-          {format(new Date(), "PPpp")}
+          {format(date, "PPpp")}
         </p>
       </div>
 

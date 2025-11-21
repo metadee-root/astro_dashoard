@@ -18,6 +18,11 @@ const Page = async () => {
   });
 
   prefetch({
+    queryKey: ["wallet"],
+    queryFn: api.auth.getWallet,
+  });
+
+  prefetch({
     queryKey: ["analytics"],
     queryFn: () =>
       api.analytics.getAnalytics({

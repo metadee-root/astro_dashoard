@@ -64,7 +64,7 @@ export interface AstrologerDetails {
   __v: number;
 }
 
-interface WalletDetails {
+export interface WalletDetails {
   balance: number;
   currency: string;
   lastTransaction?: {
@@ -493,6 +493,17 @@ const submitOnboarding = async (formData: OnboardingFormData) => {
   }
 };
 
+const getStatus = async () => {
+  try {
+    const { data } = await axiosClient.get(
+      "/api/astrology/auth/astrologer/status"
+    );
+    return data.data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+};
+
 export const authApi = {
   signup,
   login,
@@ -507,4 +518,5 @@ export const authApi = {
   updateProfile,
   changePassword,
   submitOnboarding,
+  getStatus,
 };

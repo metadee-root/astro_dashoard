@@ -1,3 +1,7 @@
+"use client";
+
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,6 +18,10 @@ import { BankAccountDetailsForm } from "./bank-account-details-form";
 import { Transactions } from "./transactions";
 
 export const WalletAndEarnings = () => {
+  const { data: wallet } = useSuspenseQuery({
+    queryKey: ["wallet"],
+    queryFn: api.auth.getWallet,
+  });
   return (
     <Card>
       <Tabs defaultValue="wallet">
@@ -47,10 +55,14 @@ export const WalletAndEarnings = () => {
               <div className="flex-1 flex items-center space-y-1 gap-4 flex-col md:flex-row  md:justify-between">
                 <div className="font-medium">
                   <p>Wallet Balance</p>
-                  <p className="text-2xl md:text-3xl font-bold">₹18,200</p>
+                  <p className="text-2xl md:text-3xl font-bold">
+                    {wallet.currency || "₹"}
+                    {wallet.balance.toLocaleString()}
+                  </p>
                   <p>
-                    ₹13,650 available now. (You can withdraw 75% of the amount
-                    only)
+                    {wallet.currency || "₹"}
+                    {(wallet.balance * 0.75).toLocaleString()} available now.
+                    (You can withdraw 75% of the amount only)
                   </p>
                 </div>
                 <Button>
@@ -59,7 +71,7 @@ export const WalletAndEarnings = () => {
                 </Button>
               </div>
             </div>
-            <BankAccountDetailsForm />
+            {/* <BankAccountDetailsForm /> */}
           </TabsContent>
           <TabsContent value="transactions">
             <Transactions />
