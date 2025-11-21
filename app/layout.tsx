@@ -41,7 +41,6 @@ export default function RootLayout({
       <body>
         <Provider>
           <main>{children}</main>
-          <Toaster richColors theme="light" className="font-sans" />
         </Provider>
       </body>
     </html>

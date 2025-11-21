@@ -29,14 +29,24 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // If the user is signed in and has onboarding or in-review status, redirect to onboarding
-  if (
-    token &&
-    (token.status === "onboarding" || token.status === "in_review")
-  ) {
+  // If the user is signed in and has onboarding status, redirect to onboarding
+  if (token && token.status === "onboarding") {
     // Only redirect if not already on onboarding page
     if (!request.nextUrl.pathname.startsWith("/onboarding")) {
       return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+  }
+
+  // If the user is signed in and has in_review status, restrict access
+  if (token && token.status === "in_review") {
+    const allowedPaths = ["/in-review", "/profile"];
+    const isAllowedPath = allowedPaths.some((path) =>
+      request.nextUrl.pathname.startsWith(path)
+    );
+
+    // Only redirect if not already on allowed pages
+    if (!isAllowedPath) {
+      return NextResponse.redirect(new URL("/in-review", request.url));
     }
   }
 

@@ -15,6 +15,7 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
       <div>
         <Navbar />
         <div className="w-full max-w-7xl mx-auto p-4 sm:p-6">{children}</div>
+        <Toaster richColors theme="light" className="font-sans" />
       </div>
     </SocketProvider>
   );
