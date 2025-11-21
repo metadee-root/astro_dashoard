@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -123,6 +124,19 @@ const professionalBackgroundSchema = z.object({
   excludedPredictionAreas: z.array(z.string()).optional(),
   createHoroscopeContent: z.boolean().optional(),
   createDailyPredictions: z.boolean().optional(),
+  educationCertificates: z
+    .array(
+      z.union([
+        z.string(),
+        typeof File !== "undefined" ? z.instanceof(File) : z.any(),
+      ])
+    )
+    .optional(),
+  createEducationalPosts: z.boolean().optional(),
+  comfortableWithVideo: z.boolean().optional(),
+  comfortableWithAudio: z.boolean().optional(),
+  participateInLiveEvents: z.boolean().optional(),
+  participateInWebinars: z.boolean().optional(),
 });
 
 type ProfessionalBackgroundData = z.infer<typeof professionalBackgroundSchema>;
@@ -148,6 +162,12 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
       excludedPredictionAreas: profile?.excludedPredictionAreas || [],
       createHoroscopeContent: profile?.createHoroscopeContent || false,
       createDailyPredictions: profile?.createDailyPredictions || false,
+      educationCertificates: profile?.educationCertificates || [],
+      createEducationalPosts: profile?.createEducationalPosts || false,
+      comfortableWithVideo: profile?.comfortableWithVideo || false,
+      comfortableWithAudio: profile?.comfortableWithAudio || false,
+      participateInLiveEvents: profile?.participateInLiveEvents || false,
+      participateInWebinars: profile?.participateInWebinars || false,
     },
   });
 
@@ -440,56 +460,7 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
               )}
             />
 
-            <div>
-              <h3 className="font-semibold mb-4">Content Creation Preferences</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="createHoroscopeContent"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="text-sm font-normal">
-                          Create horoscope content
-                        </FormLabel>
-                        <FormDescription>
-                          Interested in creating horoscope-related content
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
 
-                <FormField
-                  control={form.control}
-                  name="createDailyPredictions"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="text-sm font-normal">
-                          Daily predictions
-                        </FormLabel>
-                        <FormDescription>
-                          Create daily/weekly astrological predictions
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
 
             <FormField
               control={form.control}
@@ -545,8 +516,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox
-                          checked={field.value === "true"}
-                          onCheckedChange={(checked) => field.onChange(checked ? "true" : "false")}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -568,8 +539,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox
-                          checked={field.value === "true"}
-                          onCheckedChange={(checked) => field.onChange(checked ? "true" : "false")}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -591,8 +562,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox
-                          checked={field.value === "true"}
-                          onCheckedChange={(checked) => field.onChange(checked ? "true" : "false")}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -619,8 +590,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox
-                          checked={field.value === "true"}
-                          onCheckedChange={(checked) => field.onChange(checked ? "true" : "false")}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -642,8 +613,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox
-                          checked={field.value === "true"}
-                          onCheckedChange={(checked) => field.onChange(checked ? "true" : "false")}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -665,8 +636,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox
-                          checked={field.value === "true"}
-                          onCheckedChange={(checked) => field.onChange(checked ? "true" : "false")}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -688,8 +659,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox
-                          checked={field.value === "true"}
-                          onCheckedChange={(checked) => field.onChange(checked ? "true" : "false")}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">

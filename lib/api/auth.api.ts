@@ -238,7 +238,12 @@ interface UpdateProfileFormData {
   profileImage?: File;
   aadharCard?: File;
   addressProof?: File;
-  educationCertificates?: File[];
+  educationCertificates?: (File | string)[];
+  createEducationalPosts?: boolean;
+  comfortableWithVideo?: boolean;
+  comfortableWithAudio?: boolean;
+  participateInLiveEvents?: boolean;
+  participateInWebinars?: boolean;
 }
 
 const updateProfile = async (formData: UpdateProfileFormData) => {
@@ -336,8 +341,38 @@ const updateProfile = async (formData: UpdateProfileFormData) => {
     if (formData.videoPrice) {
       form.append("videoPrice", formData.videoPrice);
     }
-    if (formData.canPerformPuja) {
+    if (formData.canPerformPuja !== undefined) {
       form.append("canPerformPuja", formData.canPerformPuja.toString());
+    }
+    if (formData.createEducationalPosts !== undefined) {
+      form.append(
+        "createEducationalPosts",
+        formData.createEducationalPosts.toString()
+      );
+    }
+    if (formData.comfortableWithVideo !== undefined) {
+      form.append(
+        "comfortableWithVideo",
+        formData.comfortableWithVideo.toString()
+      );
+    }
+    if (formData.comfortableWithAudio !== undefined) {
+      form.append(
+        "comfortableWithAudio",
+        formData.comfortableWithAudio.toString()
+      );
+    }
+    if (formData.participateInLiveEvents !== undefined) {
+      form.append(
+        "participateInLiveEvents",
+        formData.participateInLiveEvents.toString()
+      );
+    }
+    if (formData.participateInWebinars !== undefined) {
+      form.append(
+        "participateInWebinars",
+        formData.participateInWebinars.toString()
+      );
     }
 
     // Append files
