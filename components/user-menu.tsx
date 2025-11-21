@@ -9,12 +9,14 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { LogOutIcon } from "lucide-react";
+import { LogOutIcon, UserCircle } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Skeleton } from "./ui/skeleton";
+import { useRouter } from "next/navigation";
 
 export const UserMenu = () => {
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   const getInitials = (name: string): string => {
     if (!name) return "";
@@ -63,6 +65,10 @@ export const UserMenu = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => router.push("/profile")}>
+          <UserCircle />
+          Profile
+        </DropdownMenuItem>
 
         <DropdownMenuItem onClick={() => signOut()}>
           <LogOutIcon />

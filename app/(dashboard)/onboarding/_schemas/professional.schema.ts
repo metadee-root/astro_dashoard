@@ -38,6 +38,7 @@ export const professionalSchema = z.object({
     .refine((val) => !val || val.length >= 20, 'If provided, education details must be at least 20 characters')
     .refine((val) => !val || val.length <= 1000, 'Education details must not exceed 1000 characters')
     .optional(),
-});
+
+  });
 
 export type ProfessionalData = z.infer<typeof professionalSchema>;

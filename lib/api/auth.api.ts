@@ -208,28 +208,121 @@ const getWallet = async (): Promise<WalletDetails> => {
 };
 
 interface UpdateProfileFormData {
-  profileImage?: File;
-  identityProof?: File;
-  name?: string;
+  fullName?: string;
+  dateOfBirth?: string;
+  timeOfBirth?: string;
+  placeOfBirth?: string;
+  primaryLanguage?: string;
+  languages?: string[];
+  expertise?: string[];
+  yearsOfExperience?: string;
+  astrologySystems?: string[];
+  otherPractices?: string[];
+  teachers?: string;
+  lineage?: string;
+  formalEducation?: string;
+  maxConsultationsPerDay?: string;
+  workingDays?: string[];
+  timeSlots?: string[];
+  expectedResponseTime?: string;
+  remediesTypes?: string[];
+  excludedPredictionAreas?: string[];
+  createHoroscopeContent?: boolean;
+  createDailyPredictions?: boolean;
+  bankDetails?: string;
   about?: string;
   chatPrice?: string;
   callPrice?: string;
   videoPrice?: string;
+  canPerformPuja?: boolean;
+  profileImage?: File;
+  aadharCard?: File;
+  addressProof?: File;
+  educationCertificates?: File[];
 }
 
 const updateProfile = async (formData: UpdateProfileFormData) => {
   try {
     const form = new FormData();
 
-    // Append all optional fields
-    if (formData.profileImage) {
-      form.append("profileImage", formData.profileImage);
+    // Append all optional text fields
+    if (formData.fullName) {
+      form.append("fullName", formData.fullName);
     }
-    if (formData.identityProof) {
-      form.append("identityProof", formData.identityProof);
+    if (formData.dateOfBirth) {
+      form.append("dateOfBirth", formData.dateOfBirth);
     }
-    if (formData.name) {
-      form.append("name", formData.name);
+    if (formData.timeOfBirth) {
+      form.append("timeOfBirth", formData.timeOfBirth);
+    }
+    if (formData.placeOfBirth) {
+      form.append("placeOfBirth", formData.placeOfBirth);
+    }
+    if (formData.primaryLanguage) {
+      form.append("primaryLanguage", formData.primaryLanguage);
+    }
+    if (formData.languages) {
+      form.append("languages", JSON.stringify(formData.languages));
+    }
+    if (formData.expertise) {
+      form.append("expertise", JSON.stringify(formData.expertise));
+    }
+    if (formData.yearsOfExperience) {
+      form.append("yearsOfExperience", formData.yearsOfExperience);
+    }
+    if (formData.astrologySystems) {
+      form.append(
+        "astrologySystems",
+        JSON.stringify(formData.astrologySystems)
+      );
+    }
+    if (formData.otherPractices) {
+      form.append("otherPractices", JSON.stringify(formData.otherPractices));
+    }
+    if (formData.teachers) {
+      form.append("teachers", formData.teachers);
+    }
+    if (formData.lineage) {
+      form.append("lineage", formData.lineage);
+    }
+    if (formData.formalEducation) {
+      form.append("formalEducation", formData.formalEducation);
+    }
+    if (formData.maxConsultationsPerDay) {
+      form.append("maxConsultationsPerDay", formData.maxConsultationsPerDay);
+    }
+    if (formData.workingDays) {
+      form.append("workingDays", JSON.stringify(formData.workingDays));
+    }
+    if (formData.timeSlots) {
+      form.append("timeSlots", JSON.stringify(formData.timeSlots));
+    }
+    if (formData.expectedResponseTime) {
+      form.append("expectedResponseTime", formData.expectedResponseTime);
+    }
+    if (formData.remediesTypes) {
+      form.append("remediesTypes", JSON.stringify(formData.remediesTypes));
+    }
+    if (formData.excludedPredictionAreas) {
+      form.append(
+        "excludedPredictionAreas",
+        JSON.stringify(formData.excludedPredictionAreas)
+      );
+    }
+    if (formData.createHoroscopeContent) {
+      form.append(
+        "createHoroscopeContent",
+        formData.createHoroscopeContent.toString()
+      );
+    }
+    if (formData.createDailyPredictions) {
+      form.append(
+        "createDailyPredictions",
+        formData.createDailyPredictions.toString()
+      );
+    }
+    if (formData.bankDetails) {
+      form.append("bankDetails", formData.bankDetails);
     }
     if (formData.about) {
       form.append("about", formData.about);
@@ -242,6 +335,25 @@ const updateProfile = async (formData: UpdateProfileFormData) => {
     }
     if (formData.videoPrice) {
       form.append("videoPrice", formData.videoPrice);
+    }
+    if (formData.canPerformPuja) {
+      form.append("canPerformPuja", formData.canPerformPuja.toString());
+    }
+
+    // Append files
+    if (formData.profileImage) {
+      form.append("profileImage", formData.profileImage);
+    }
+    if (formData.aadharCard) {
+      form.append("aadharCard", formData.aadharCard);
+    }
+    if (formData.addressProof) {
+      form.append("addressProof", formData.addressProof);
+    }
+    if (formData.educationCertificates) {
+      formData.educationCertificates.forEach((file) => {
+        form.append("educationCertificates", file);
+      });
     }
 
     const { data } = await axiosClient.patch(
@@ -294,14 +406,14 @@ interface OnboardingFormData {
   expectedResponseTime: string;
   remediesTypes: string[];
   excludedPredictionAreas: string[];
-  createHoroscopeContent: string;
-  createDailyPredictions: string;
+  createHoroscopeContent: boolean;
+  createDailyPredictions: boolean;
   bankDetails: string;
   about: string;
   chatPrice: string;
   callPrice: string;
   videoPrice: string;
-  canPerformPuja: string;
+  canPerformPuja: boolean;
   profileImage?: File;
   aadharCard?: File;
   addressProof?: File;
@@ -335,14 +447,20 @@ const submitOnboarding = async (formData: OnboardingFormData) => {
       "excludedPredictionAreas",
       JSON.stringify(formData.excludedPredictionAreas)
     );
-    form.append("createHoroscopeContent", formData.createHoroscopeContent);
-    form.append("createDailyPredictions", formData.createDailyPredictions);
+    form.append(
+      "createHoroscopeContent",
+      formData.createHoroscopeContent.toString()
+    );
+    form.append(
+      "createDailyPredictions",
+      formData.createDailyPredictions.toString()
+    );
     form.append("bankDetails", formData.bankDetails);
     form.append("about", formData.about);
     form.append("chatPrice", formData.chatPrice);
     form.append("callPrice", formData.callPrice);
     form.append("videoPrice", formData.videoPrice);
-    form.append("canPerformPuja", formData.canPerformPuja);
+    form.append("canPerformPuja", formData.canPerformPuja.toString());
 
     // Append files
     if (formData.profileImage) {

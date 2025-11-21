@@ -17,30 +17,11 @@ export const specializationSchema = z.object({
       "You can exclude maximum 15 prediction areas"
     ),
 
-  createHoroscopeContent: z
-    .string()
-    .min(1, "Please select your preference for creating horoscope content")
-    .refine(
-      (val) => ["yes", "no", "maybe"].includes(val.toLowerCase()),
-      "Invalid option selected"
-    ),
+  createHoroscopeContent: z.boolean(),
 
-  createDailyPredictions: z
-    .string()
-    .min(1, "Please select your preference for creating daily predictions")
-    .refine(
-      (val) => ["yes", "no", "maybe"].includes(val.toLowerCase()),
-      "Invalid option selected"
-    ),
+  createDailyPredictions: z.boolean(),
 
-  canPerformPuja: z
-    .string()
-    .min(1, "Please select if you can perform puja services")
-    .refine(
-      (val) =>
-        ["yes", "no", "trained", "certified"].includes(val.toLowerCase()),
-      "Invalid option selected"
-    ),
+  canPerformPuja: z.boolean(),
 
   // Optional fields for more detailed specialization information
   predictionMethodology: z

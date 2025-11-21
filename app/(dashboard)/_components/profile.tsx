@@ -39,7 +39,7 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
       <CardHeader>
         <CardTitle className="text-xl md:text-[22px]">Profile</CardTitle>
         <CardAction>
-          <Link href="/edit-profile">
+          <Link href="/profile">
             <Button variant="outline">
               <Pencil /> Edit Profile
             </Button>

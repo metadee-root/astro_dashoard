@@ -17,11 +17,13 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -49,9 +51,9 @@ export const SpecializationStep = () => {
     defaultValues: savedData || {
       remediesTypes: [],
       excludedPredictionAreas: [],
-      createHoroscopeContent: "",
-      createDailyPredictions: "",
-      canPerformPuja: "",
+      createHoroscopeContent: false,
+      createDailyPredictions: false,
+      canPerformPuja: false,
     },
   });
 
@@ -167,34 +169,21 @@ export const SpecializationStep = () => {
                     control={form.control}
                     name="createHoroscopeContent"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          Would you like to create horoscope content?{" "}
-                          <span className="text-destructive">*</span>
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select your preference" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {YES_NO_MAYBE_OPTIONS.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        <div className="text-sm text-muted-foreground">
-                          Creating horoscope content for the platform users
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-sm font-normal">
+                            Create horoscope content
+                          </FormLabel>
+                          <FormDescription>
+                            Creating horoscope content for the platform users
+                          </FormDescription>
+                          <FormMessage />
                         </div>
                       </FormItem>
                     )}
@@ -204,35 +193,21 @@ export const SpecializationStep = () => {
                     control={form.control}
                     name="createDailyPredictions"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          Would you like to create daily predictions?{" "}
-                          <span className="text-destructive">*</span>
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select your preference" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {YES_NO_MAYBE_OPTIONS.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        <div className="text-sm text-muted-foreground">
-                          Writing daily astrological predictions for zodiac
-                          signs
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-sm font-normal">
+                            Create daily predictions
+                          </FormLabel>
+                          <FormDescription>
+                            Writing daily astrological predictions for zodiac signs
+                          </FormDescription>
+                          <FormMessage />
                         </div>
                       </FormItem>
                     )}
@@ -247,35 +222,21 @@ export const SpecializationStep = () => {
                     control={form.control}
                     name="canPerformPuja"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          Can you perform puja services?{" "}
-                          <span className="text-destructive">*</span>
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select your puja capability" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {PUJA_CAPABILITY.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        <div className="text-sm text-muted-foreground">
-                          Your capability to perform religious/spiritual pujas
-                          for clients
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-sm font-normal">
+                            Can perform puja services
+                          </FormLabel>
+                          <FormDescription>
+                            Your capability to perform religious/spiritual pujas for clients
+                          </FormDescription>
+                          <FormMessage />
                         </div>
                       </FormItem>
                     )}

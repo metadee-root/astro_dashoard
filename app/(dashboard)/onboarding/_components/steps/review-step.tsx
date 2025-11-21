@@ -239,15 +239,15 @@ export const ReviewStep: React.FC<ReviewStepProps> = () => {
               </div>
               <div>
                 <span className="font-medium">Creates Horoscope Content:</span>{" "}
-                {specialization.createHoroscopeContent}
+                {specialization.createHoroscopeContent ? "Yes" : "No"}
               </div>
               <div>
                 <span className="font-medium">Creates Daily Predictions:</span>{" "}
-                {specialization.createDailyPredictions}
+                {specialization.createDailyPredictions ? "Yes" : "No"}
               </div>
               <div>
                 <span className="font-medium">Can Perform Puja:</span>{" "}
-                {specialization.canPerformPuja}
+                {specialization.canPerformPuja ? "Yes" : "No"}
               </div>
             </div>
           ) : (
@@ -397,15 +397,15 @@ const transformFormDataForAPI = (formData: any) => {
     excludedPredictionAreas:
       formData.specialization?.excludedPredictionAreas || [],
     createHoroscopeContent:
-      formData.specialization?.createHoroscopeContent || "no",
+      formData.specialization?.createHoroscopeContent || false,
     createDailyPredictions:
-      formData.specialization?.createDailyPredictions || "no",
+      formData.specialization?.createDailyPredictions || false,
     bankDetails: JSON.stringify(formData.financial || {}),
     about: formData.personalInfo?.about || "",
     chatPrice: formData.servicesPricing?.chatPrice || "500",
     callPrice: formData.servicesPricing?.callPrice || "1000",
     videoPrice: formData.servicesPricing?.videoPrice || "1500",
-    canPerformPuja: formData.specialization?.canPerformPuja || "no",
+    canPerformPuja: formData.specialization?.canPerformPuja || false,
     profileImage: formData.personalInfo?.profileImage,
     aadharCard: formData.documentation?.aadharCard,
     addressProof: formData.documentation?.addressProof,
