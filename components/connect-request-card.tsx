@@ -103,6 +103,18 @@ export const ConnectRequestCard: FC<ConnectRequestCardProps> = ({
               {request.consultationDetails.placeOfBirth}
             </p>
           </div>
+          {request.consultationDetails.latitude &&
+            request.consultationDetails.longitude && (
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground font-medium">
+                  Coordinates
+                </p>
+                <p className="text-sm">
+                  {request.consultationDetails.latitude},{" "}
+                  {request.consultationDetails.longitude}
+                </p>
+              </div>
+            )}
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground font-medium">Concern</p>
             <p className="text-sm">{request.consultationDetails.concern}</p>

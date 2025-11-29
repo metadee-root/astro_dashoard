@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, Briefcase, Calendar, CreditCard } from "lucide-react";
+import { User, Briefcase, Calendar, CreditCard, Settings } from "lucide-react";
 import { PersonalInfoTab } from "./tabs/personal-info-tab";
 import { ProfessionalBackgroundTab } from "./tabs/professional-background-tab";
 import { ServicesAvailabilityTab } from "./tabs/services-availability-tab";
 import { BankingPaymentTab } from "./tabs/banking-payment-tab";
+import { ProfileActionsTab } from "./tabs/profile-actions-tab";
 
 export const ProfileTabs = () => {
   const [activeTab, setActiveTab] = useState("personal");
@@ -42,6 +43,12 @@ export const ProfileTabs = () => {
       icon: CreditCard,
       component: <BankingPaymentTab profile={profile} />,
     },
+    {
+      value: "actions",
+      label: "Profile Actions",
+      icon: Settings,
+      component: <ProfileActionsTab profile={profile} />,
+    },
   ];
 
   return (
@@ -54,7 +61,7 @@ export const ProfileTabs = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}

@@ -548,6 +548,18 @@ const getStatus = async (): Promise<StatusResponse> => {
   }
 };
 
+const requestAccountDeletion = async (body: { reason: string }) => {
+  try {
+    const { data } = await axiosClient.post(
+      "/api/astrology/UserAstrology/account-deletion-request",
+      body
+    );
+    return data.data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+};
+
 export const authApi = {
   signup,
   login,
@@ -563,4 +575,5 @@ export const authApi = {
   changePassword,
   submitOnboarding,
   getStatus,
+  requestAccountDeletion,
 };

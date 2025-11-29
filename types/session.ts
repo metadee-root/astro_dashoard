@@ -6,6 +6,8 @@ export interface ConsultationDetails {
   gender: string;
   placeOfBirth: string;
   concern: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface SessionRequest {
@@ -22,4 +24,7 @@ export interface ChatMessage {
   message: string;
   type: "text" | "image" | "file";
   timestamp: number;
+  mediaUrl?: string;
+  fileName?: string;
+  mimeType?: string;
 }
