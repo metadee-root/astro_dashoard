@@ -1,7 +1,7 @@
 import { User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
-type Status = "onboarding" | "verified" | "in_review";
+type Status = "onboarding" | "verified" | "in_review" | "rejected";
 
 declare module "next-auth/jwt" {
   interface JWT {

@@ -528,12 +528,21 @@ const submitOnboarding = async (formData: OnboardingFormData) => {
   }
 };
 
-const getStatus = async () => {
+export interface StatusResponse {
+  id: string;
+  fullName: string;
+  email: string;
+  status: "onboarding" | "verified" | "in_review";
+  isVerified: boolean;
+  adminNote: string | null;
+}
+
+const getStatus = async (): Promise<StatusResponse> => {
   try {
     const { data } = await axiosClient.get(
       "/api/astrology/auth/astrologer/status"
     );
-    return data.data;
+    return data.data as StatusResponse;
   } catch (error) {
     throw handleAPIError(error);
   }

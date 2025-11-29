@@ -21,6 +21,7 @@ import {
   CreditCard,
   Star,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface ReviewStepProps {}
 
@@ -416,6 +417,7 @@ const transformFormDataForAPI = (formData: any) => {
 // Separate component for submission with mutation
 const SubmitOnboardingButton = () => {
   const { getCompleteFormData, resetForm } = useOnboardingStore();
+  const { update } = useSession();
   const router = useRouter();
 
   const { mutate: submitApplication, isPending } = useMutation({
@@ -441,11 +443,14 @@ const SubmitOnboardingButton = () => {
       console.log("Submitting transformed data:", apiData);
       return await api.auth.submitOnboarding(apiData);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       toast.success("Application submitted successfully! 🎉");
       resetForm();
       // Redirect to dashboard or success page
-      router.push("/dashboard");
+      update({
+        status: "in_review",
+      });
+      router.push("/in-review");
     },
     onError: (error: any) => {
       console.error("Submission error:", error);

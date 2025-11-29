@@ -1,8 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "mcp__web-reader__webReader"
-    ],
+    "allow": ["mcp__web-reader__webReader"],
     "deny": [],
     "ask": []
   }

@@ -37,8 +37,16 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // If the user is signed in and has verified status, redirect to dashboard
+  if (token && token.status === "verified") {
+    // If trying to access in-review page, redirect to dashboard
+    if (request.nextUrl.pathname.startsWith("/in-review")) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
   // If the user is signed in and has in_review status, restrict access
-  if (token && token.status === "in_review") {
+  if (token && (token.status === "in_review" || token.status === "rejected")) {
     const allowedPaths = ["/in-review", "/profile"];
     const isAllowedPath = allowedPaths.some((path) =>
       request.nextUrl.pathname.startsWith(path)

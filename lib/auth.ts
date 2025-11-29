@@ -29,7 +29,12 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ user, token }) {
+    async jwt({ user, token, trigger, session }) {
+      if (trigger === "update") {
+        if (session.name) token.name = session.name;
+        if (session.token) token.token = session.token;
+        if (session.status) token.status = session.status;
+      }
       if (user) {
         token.id = user.id;
         token.token = user.token;

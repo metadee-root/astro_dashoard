@@ -2,6 +2,57 @@
 
 A modern web application for connecting users with professional astrologers. Built with Next.js and featuring real-time communication, user reviews, and an intuitive dashboard.
 
+## 📋 Quick Start Guide
+
+### For New Developers
+
+1. **Setup your environment**
+   ```bash
+   # Install dependencies
+   pnpm install
+
+   # Copy environment template
+   cp .env.example .env.local
+
+   # Add your secrets to .env.local
+   ```
+
+2. **Run the application**
+   ```bash
+   # Start development server
+   pnpm dev
+
+   # Open http://localhost:3000
+   ```
+
+3. **Create an account**
+   - Sign up as a new user
+   - Complete the astrologer onboarding flow
+   - Set up your profile and services
+
+### Key Things to Know
+
+- **Package Manager**: Always use `pnpm` (not npm)
+- **Code Style**: Arrow functions only, interfaces over types
+- **File Names**: kebab-case (e.g., `user-profile.tsx`)
+- **Environment**: All secrets in `.env.local`
+
+### Common Tasks
+
+```bash
+# Add new dependency
+pnpm add package-name
+
+# Run linting
+pnpm lint
+
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
+```
+
 ## ✨ Features
 
 - **User Authentication**: Secure login and registration system
