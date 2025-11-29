@@ -37,7 +37,7 @@ export const DashboardHeader = ({
         </h2>
         <p className="font-medium">
           {/* Today is Shukla Paksha, Dwitiya |{" "} */}
-          {format(date, "PPpp")}
+          {format(date, "PPp")}
         </p>
       </div>
 

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Cinzel, Geist_Mono, Montserrat } from "next/font/google";
+import { Cinzel, Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const montserrat = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
 });
 
@@ -37,6 +37,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${montserrat.variable} ${geistMono.variable} ${cinzel.variable} antialiased`}
+      suppressHydrationWarning
     >
       <body>
         <Provider>

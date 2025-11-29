@@ -7,6 +7,7 @@ import { UserMenu } from "./user-menu";
 import { useSocket } from "./socket-provider";
 import { cn } from "@/lib/utils";
 import { Circle } from "lucide-react";
+import { ThemeToggle } from "./ui/theme-toggle";
 
 export const Navbar = () => {
   const { isConnected } = useSocket();
@@ -32,6 +33,7 @@ export const Navbar = () => {
             />
             {isConnected ? "Connected" : "Not Connected"}
           </div>
+          <ThemeToggle />
 
           <UserMenu />
         </div>
