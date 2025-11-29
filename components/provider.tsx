@@ -3,7 +3,7 @@ import { getQueryClient } from "@/lib/get-query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import React, { FC } from "react";
 import { SessionProvider } from "next-auth/react";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "next-themes";
 
 interface ProviderProps {
   children: React.ReactNode;

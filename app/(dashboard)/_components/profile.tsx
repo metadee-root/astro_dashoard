@@ -8,12 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 import React, { FC } from "react";
-import { api } from "@/lib/api";
 import { AstrologerDetails } from "@/lib/api/auth.api";
 
 interface ProfileProps {
@@ -77,26 +74,22 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="space-y-1 flex-1">
-                <p className="text-sm font-semibold text-foreground/80">
-                  Full Name
-                </p>
-                <p className="md:text-lg font-semibold">
+                <p className="text-sm text-muted-foreground">Full Name</p>
+                <p className="font-medium">
                   {profile.name || profile.fullName}
                 </p>
               </div>
               {/* <div className="space-y-1 flex-1">
-                <p className="text-sm font-semibold text-foreground/80">
+                <p className="text-sm text-muted-foreground">
                   Title
                 </p>
-                <p className="md:text-lg font-semibold">
+                <p className="font-medium">
                   Vedic Astrology Expert
                 </p>
               </div> */}
               <div className="space-y-1 flex-1">
-                <p className="text-sm font-semibold text-foreground/80">
-                  Languages
-                </p>
-                <p className="md:text-lg font-semibold capitalize">
+                <p className="text-sm text-muted-foreground">Languages</p>
+                <p className="font-medium capitalize">
                   {profile.languages.join(", ")}
                 </p>
               </div>
@@ -104,25 +97,23 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
 
             {/* <div className="flex flex-col md:flex-row gap-6">
               <div className="space-y-1 flex-1">
-                <p className="text-sm font-semibold text-foreground/80">
+                <p className="text-sm text-muted-foreground">
                   Experience
                 </p>
-                <p className="md:text-lg font-semibold">15+ Years</p>
+                <p className="font-medium">15+ Years</p>
               </div>
             </div> */}
 
             <div className="space-y-1 flex-1">
-              <p className="text-sm font-semibold text-foreground/80">
-                Expertise
-              </p>
-              <p className="md:text-lg font-semibold capitalize">
+              <p className="text-sm text-muted-foreground">Expertise</p>
+              <p className="font-medium capitalize">
                 {profile.expertise.join(", ")}
               </p>
             </div>
 
             <div className="space-y-1 flex-1">
-              <p className="text-sm font-semibold text-foreground/80">Bio</p>
-              <p className="md:text-lg font-semibold">{profile.about}</p>
+              <p className="text-sm text-muted-foreground">Bio</p>
+              <p className="font-medium">{profile.about}</p>
             </div>
           </div>
         </div>
