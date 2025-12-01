@@ -53,7 +53,7 @@ export const ConsultationCard: React.FC<ConsultationCardProps> = ({
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <CardTitle className="text-xl font-semibold text-gray-900">
+            <CardTitle className="text-xl font-semibold">
               {consultation.fullName}
             </CardTitle>
             <div className="flex items-center gap-2 mt-1">
@@ -81,7 +81,7 @@ export const ConsultationCard: React.FC<ConsultationCardProps> = ({
       <CardContent className="space-y-4">
         {/* Personal Information Section */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
+          <h4 className="text-sm font-medium flex items-center gap-2">
             <User className="w-4 h-4" />
             Personal Information
           </h4>
@@ -125,7 +125,7 @@ export const ConsultationCard: React.FC<ConsultationCardProps> = ({
 
         {/* Consultation Details Section */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
+          <h4 className="text-sm font-medium flex items-center gap-2">
             <FileText className="w-4 h-4" />
             Consultation Details
           </h4>
@@ -143,8 +143,8 @@ export const ConsultationCard: React.FC<ConsultationCardProps> = ({
             </div>
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground">User Concern</p>
-              <div className="bg-gray-50 rounded-lg p-3 border">
-                <p className="text-sm text-gray-700 leading-relaxed">
+              <div className="bg-primary/10 rounded-lg p-3 border">
+                <p className="text-sm leading-relaxed">
                   {consultation.concern}
                 </p>
               </div>

@@ -11,7 +11,15 @@ interface ChatMessageProps {
 }
 
 export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
-  const { type, message: content, timestamp, senderId, mediaUrl, fileName, mimeType } = message;
+  const {
+    type,
+    message: content,
+    timestamp,
+    senderId,
+    mediaUrl,
+    fileName,
+    mimeType,
+  } = message;
   const { data: session } = useSession();
 
   const isCurrentUser = senderId === session?.user.id;
@@ -22,10 +30,17 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
         // Use mediaUrl if available, otherwise fallback to content
         const imageSrc = mediaUrl || content;
         if (!imageSrc) {
-          return <p className="text-sm text-muted-foreground">Image loading...</p>;
+          return (
+            <p className="text-sm text-muted-foreground">Image loading...</p>
+          );
         }
         return (
           <div className="space-y-2">
+            {/* Show message text if available */}
+            {content && mediaUrl && (
+              <p className="text-sm font-medium">{content}</p>
+            )}
+            {/* Show image */}
             <div className="relative h-48 w-48 overflow-hidden rounded-lg">
               <Image
                 src={imageSrc}
@@ -35,24 +50,25 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
-            {/* Show filename if available */}
-            {fileName && (
-              <p className="text-xs text-muted-foreground truncate">{fileName}</p>
-            )}
           </div>
         );
       case "file":
         return (
-          <div className="flex items-center gap-2 rounded-lg bg-secondary p-2">
-            <FileIcon className="h-4 w-4" />
-            <a
-              href={mediaUrl || content}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-primary underline-offset-4 hover:underline"
-            >
-              {fileName || "Download File"}
-            </a>
+          <div className="space-y-2">
+            {/* Show message text if available */}
+            {content && <p className="text-sm font-medium">{content}</p>}
+            {/* Show file attachment */}
+            <div className="flex items-center gap-2 rounded-lg bg-secondary p-2">
+              <FileIcon className="h-4 w-4" />
+              <a
+                href={mediaUrl || content}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-primary underline-offset-4 hover:underline"
+              >
+                {fileName || "Download File"}
+              </a>
+            </div>
           </div>
         );
       default:
@@ -88,7 +104,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
           className={cn(
             "flex flex-col rounded-xl px-4 py-2.5",
             isCurrentUser
-              ? "bg-blue-500 text-primary-foreground rounded-br-none"
+              ? "bg-primary text-primary-foreground rounded-br-none"
               : "bg-muted text-muted-foreground rounded-bl-none"
           )}
         >
@@ -96,7 +112,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
 
           <p
             className={cn(
-              "text-[10px] font-medium opacity-70",
+              "text-[10px] font-medium opacity-70 mt-2",
               isCurrentUser ? "text-right" : "text-left"
             )}
           >

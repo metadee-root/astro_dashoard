@@ -56,19 +56,13 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
         </div> */}
         <div className="flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8">
           <div className="relative">
-            <div className="size-32 bg-accent relative rounded-full ring-2 ring-yellow-500">
+            <div className="size-32 bg-accent relative rounded-full">
               <Avatar className="h-full w-full">
                 <AvatarImage src={profile.profileImage} />
                 <AvatarFallback>
                   {getInitials(profile?.name || profile.fullName)}
                 </AvatarFallback>
               </Avatar>
-              <Button
-                size="icon"
-                className="absolute -right-0 rounded-full -bottom-0"
-              >
-                <Pencil />
-              </Button>
             </div>
           </div>
           <div className="space-y-6">

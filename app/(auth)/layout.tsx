@@ -9,7 +9,7 @@ const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
   return (
     <div className="bg-background min-h-screen flex items-center justify-center">
       {children}
-      <Toaster richColors theme="light" className="font-sans" />
+      <Toaster richColors className="font-sans" />
     </div>
   );
 };

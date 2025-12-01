@@ -49,7 +49,7 @@ export const WalletAndEarnings = () => {
         <CardContent>
           <TabsContent value="wallet" className="space-y-6">
             <div className="p-4 bg-accent flex flex-col md:flex-row gap-4 rounded-md">
-              <div className="flex items-center justify-center bg-neutral-200 rounded-full size-20">
+              <div className="flex items-center justify-center bg-primary/10 rounded-full size-20">
                 <Wallet2 className="size-8" strokeWidth={1.5} />
               </div>
               <div className="flex-1 flex items-center space-y-1 gap-4 flex-col md:flex-row  md:justify-between">

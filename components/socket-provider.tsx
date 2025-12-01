@@ -19,6 +19,10 @@ interface SendMessagePayload {
   sessionId: string;
   roomId: string;
   message: string;
+  type: "text" | "image" | "file";
+  file?: string; // base64 encoded file
+  fileName?: string;
+  mimeType?: string;
 }
 
 interface JoinSessionPayload {
@@ -151,7 +155,9 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     socket.on("connect", () => {
       setIsConnected(true);
       console.log("connected");
-      toast.success("You're now online and ready to receive consultation requests! 🙏");
+      toast.success(
+        "You're now online and ready to receive consultation requests! 🙏"
+      );
     });
 
     // Session request
@@ -243,7 +249,9 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       setCurrentSession(null);
       setMessages([]);
       setCallDetails(null);
-      toast.success("You're now offline. You won't receive consultation requests until you come back online. 👋");
+      toast.success(
+        "You're now offline. You won't receive consultation requests until you come back online. 👋"
+      );
     }
   };
 
@@ -254,23 +262,37 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       return;
     }
     setIsLoading(true);
+
+    // Emit the full payload with all fields
     socket.emit("send_message", {
       sessionId: values.sessionId,
       roomId: values.roomId,
       message: values.message,
-      type: "text",
+      type: values.type,
+      ...(values.file && { file: values.file }),
+      ...(values.fileName && { fileName: values.fileName }),
+      ...(values.mimeType && { mimeType: values.mimeType }),
     });
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        message: values.message,
-        messageId: `${Date.now()}-${Math.random()}`,
-        senderId: session?.user.id || "unknown",
-        senderName: session?.user.name || "Unknown User",
-        timestamp: Date.now(),
-        type: "text",
-      },
-    ]);
+
+    // Optimistic update - add message to local state immediately
+    // For images, create a data URL from base64 for immediate display
+    const optimisticMessage: any = {
+      message: values.message,
+      messageId: `${Date.now()}-${Math.random()}`,
+      senderId: session?.user.id || "unknown",
+      senderName: session?.user.name || "Unknown User",
+      timestamp: Date.now(),
+      type: values.type,
+      ...(values.fileName && { fileName: values.fileName }),
+      ...(values.mimeType && { mimeType: values.mimeType }),
+    };
+
+    // If it's an image, add the mediaUrl as a data URL for immediate preview
+    if (values.type === "image" && values.file && values.mimeType) {
+      optimisticMessage.mediaUrl = `data:${values.mimeType};base64,${values.file}`;
+    }
+
+    setMessages((prevMessages) => [...prevMessages, optimisticMessage]);
   };
 
   useEffect(() => {
