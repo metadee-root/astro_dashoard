@@ -20,7 +20,7 @@ interface SendMessagePayload {
   roomId: string;
   message: string;
   type: "text" | "image" | "file";
-  file?: string; // base64 encoded file
+  file?: ArrayBuffer; // File as ArrayBuffer
   fileName?: string;
   mimeType?: string;
 }
@@ -275,7 +275,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     });
 
     // Optimistic update - add message to local state immediately
-    // For images, create a data URL from base64 for immediate display
+    // For images, create a blob URL for immediate preview
     const optimisticMessage: any = {
       message: values.message,
       messageId: `${Date.now()}-${Math.random()}`,
@@ -287,9 +287,10 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       ...(values.mimeType && { mimeType: values.mimeType }),
     };
 
-    // If it's an image, add the mediaUrl as a data URL for immediate preview
+    // If it's an image, create a blob URL for immediate preview
     if (values.type === "image" && values.file && values.mimeType) {
-      optimisticMessage.mediaUrl = `data:${values.mimeType};base64,${values.file}`;
+      const blob = new Blob([values.file], { type: values.mimeType });
+      optimisticMessage.mediaUrl = URL.createObjectURL(blob);
     }
 
     setMessages((prevMessages) => [...prevMessages, optimisticMessage]);

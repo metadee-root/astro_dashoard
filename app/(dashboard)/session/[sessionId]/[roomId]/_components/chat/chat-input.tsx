@@ -48,15 +48,12 @@ export const ChatInput: FC<ChatInputProps> = ({ roomId, sessionId }) => {
     }
   };
 
-  const convertFileToBase64 = (file: File): Promise<string> => {
+  const convertFileToArrayBuffer = (file: File): Promise<ArrayBuffer> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
       reader.onload = () => {
-        const result = reader.result as string;
-        // Remove the data:image/type;base64, prefix to get just the base64 data
-        const base64Data = result.split(",")[1];
-        resolve(base64Data);
+        resolve(reader.result as ArrayBuffer);
       };
       reader.onerror = (error) => reject(error);
     });
@@ -65,22 +62,22 @@ export const ChatInput: FC<ChatInputProps> = ({ roomId, sessionId }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // If file is selected, convert to base64 and send as image
+    // If file is selected, send as image with ArrayBuffer
     if (selectedFile) {
       try {
-        const fileBase64 = await convertFileToBase64(selectedFile);
+        const fileBuffer = await convertFileToArrayBuffer(selectedFile);
         const messageData = {
           sessionId,
           roomId,
           message: input,
           type: "image" as const,
-          file: fileBase64,
+          file: fileBuffer,
           fileName: selectedFile.name,
           mimeType: selectedFile.type,
         };
         sendMessage(messageData);
       } catch (error) {
-        console.error("Error converting file to base64:", error);
+        console.error("Error reading file:", error);
         alert("Error processing file");
         return;
       }
