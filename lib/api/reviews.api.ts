@@ -1,14 +1,15 @@
 import { axiosClient } from "@/lib/axios-client";
 import { handleAPIError } from "@/lib/utils";
 
-interface IReview {
+export interface IReview {
   _id: string;
   user: {
+    _id: string;
     name: string;
-    image?: string;
+    avatar?: string;
   };
   rating: number;
-  comment: string;
+  feedback: string;
   createdAt: string;
 }
 

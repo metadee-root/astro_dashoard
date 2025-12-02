@@ -31,12 +31,18 @@ export const UserReviews = () => {
         {hasReviews ? (
           <div className="flex items-center gap-4">
             <div>
-              <p className="text-4xl font-semibold">{rating.average.toFixed(1)}</p>
+              <p className="text-4xl font-semibold">
+                {rating.average.toFixed(1)}
+              </p>
               <Rating readOnly defaultValue={rating.average} className="gap-0">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <RatingButton
                     key={index}
-                    className={index < Math.floor(rating.average) ? "text-yellow-500" : "text-gray-300"}
+                    className={
+                      index < Math.floor(rating.average)
+                        ? "text-yellow-500"
+                        : "text-gray-300"
+                    }
                     size={14}
                   />
                 ))}
@@ -47,8 +53,11 @@ export const UserReviews = () => {
               <p>Based on {rating.reviewsCount} reviews</p>
               <p>
                 {Math.round(
-                  (reviews.filter((r) => r.rating >= 4).length / reviews.length) * 100
-                )}% of seekers rated you 4+ stars
+                  (reviews.filter((r) => r.rating >= 4).length /
+                    reviews.length) *
+                    100
+                )}
+                % of seekers rated you {rating.average.toFixed(1)} stars
               </p>
             </div>
           </div>
@@ -67,7 +76,9 @@ export const UserReviews = () => {
             ))}
           </div>
         ) : (
-          <ReviewsEmpty onShareProfile={() => window.location.href = "/edit-profile"} />
+          <ReviewsEmpty
+            onShareProfile={() => (window.location.href = "/edit-profile")}
+          />
         )}
       </CardContent>
     </Card>

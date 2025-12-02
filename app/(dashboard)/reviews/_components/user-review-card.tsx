@@ -1,18 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Rating, RatingButton } from "@/components/ui/rating";
 import React, { FC } from "react";
+import { IReview } from "@/lib/api/reviews.api";
 
 interface UserReviewCardProps {
-  review: {
-    _id: string;
-    user: {
-      name: string;
-      image?: string;
-    };
-    rating: number;
-    comment: string;
-    createdAt: string;
-  };
+  review: IReview;
 }
 
 export const UserReviewCard: FC<UserReviewCardProps> = ({ review }) => {
@@ -29,7 +21,7 @@ export const UserReviewCard: FC<UserReviewCardProps> = ({ review }) => {
     <div className="p-4 border rounded-md space-y-2">
       <div className="flex items-center gap-2">
         <Avatar className="size-10">
-          <AvatarImage src={review.user.image} />
+          <AvatarImage src={review.user.avatar} />
           <AvatarFallback>{getInitials(review.user.name)}</AvatarFallback>
         </Avatar>
 
@@ -42,7 +34,7 @@ export const UserReviewCard: FC<UserReviewCardProps> = ({ review }) => {
           </Rating>
         </div>
       </div>
-      <p className="font-medium text-foreground/80">{review.comment}</p>
+      <p className="font-medium text-foreground/80">{review.feedback}</p>
     </div>
   );
 };
