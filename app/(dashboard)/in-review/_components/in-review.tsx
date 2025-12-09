@@ -60,16 +60,30 @@ export const InReview = () => {
     },
   });
 
+  const isRedirectingRef = React.useRef(false);
+
   React.useEffect(() => {
-    if (data && session?.user && session.user.status !== data.status) {
-      updateSession({ status: data.status });
-      // Use hard redirect to ensure middleware handles the new status correctly
-      if (data.status === "verified") {
-        window.location.href = "/";
-      } else {
-        window.location.reload();
+    const handleStatusChange = async () => {
+      // Prevent multiple redirects
+      if (isRedirectingRef.current) return;
+
+      if (data && session?.user && session.user.status !== data.status) {
+        isRedirectingRef.current = true;
+
+        // Update session first and wait for it
+        await updateSession({ status: data.status });
+
+        // Use hard redirect to ensure middleware handles the new status correctly
+        if (data.status === "verified") {
+          window.location.href = "/";
+        } else if (data.status !== session.user.status) {
+          // Only reload if status actually changed to something other than verified
+          window.location.reload();
+        }
       }
-    }
+    };
+
+    handleStatusChange();
   }, [data, session, updateSession]);
 
   if (isLoading) {
