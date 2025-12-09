@@ -1,18 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   personalInfoSchema,
   PersonalInfoData,
 } from "../../_schemas/personal-info.schema";
-import { StepProps } from "../../_types/step.types";
 import { LANGUAGE_OPTIONS } from "../../_constants/form-options";
 import { useOnboardingStore } from "../../_hooks/use-onboarding-store";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,23 +27,353 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import MultipleSelector, { type Option } from "@/components/ui/multiselect";
 import {
-  FileUpload,
-  FileUploadDropzone,
-  FileUploadItem,
-  FileUploadItemDelete,
-  FileUploadItemMetadata,
-  FileUploadItemPreview,
-  FileUploadList,
-  FileUploadTrigger,
-} from "@/components/ui/file-upload";
-import { Upload, X } from "lucide-react";
-import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useFileUpload } from "@/hooks/use-file-upload";
+import {
+  Cropper,
+  CropperCropArea,
+  CropperDescription,
+  CropperImage,
+} from "@/components/ui/cropper";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Slider } from "@/components/ui/slider";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import {
+  ArrowLeftIcon,
+  CalendarIcon,
+  CircleUserRoundIcon,
+  XIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
+} from "lucide-react";
+
+// Define type for pixel crop area
+type Area = { x: number; y: number; width: number; height: number };
+
+// Helper function to create a cropped image blob
+const createImage = (url: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", (error) => reject(error));
+    image.setAttribute("crossOrigin", "anonymous");
+    image.src = url;
+  });
+
+const getCroppedImg = async (
+  imageSrc: string,
+  pixelCrop: Area,
+  outputWidth: number = pixelCrop.width,
+  outputHeight: number = pixelCrop.height
+): Promise<Blob | null> => {
+  try {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      return null;
+    }
+
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
+
+    ctx.drawImage(
+      image,
+      pixelCrop.x,
+      pixelCrop.y,
+      pixelCrop.width,
+      pixelCrop.height,
+      0,
+      0,
+      outputWidth,
+      outputHeight
+    );
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(blob);
+      }, "image/jpeg");
+    });
+  } catch (error) {
+    console.error("Error in getCroppedImg:", error);
+    return null;
+  }
+};
+
+interface ProfileImageUploaderProps {
+  value?: File | null;
+  onChange: (file: File | null) => void;
+}
+
+const ProfileImageUploader = ({
+  value,
+  onChange,
+}: ProfileImageUploaderProps) => {
+  const [
+    { files, isDragging },
+    {
+      handleDragEnter,
+      handleDragLeave,
+      handleDragOver,
+      handleDrop,
+      openFileDialog,
+      removeFile,
+      getInputProps,
+    },
+  ] = useFileUpload({
+    accept: "image/*",
+    maxSize: 2 * 1024 * 1024, // 2MB
+  });
+
+  const previewUrl = files[0]?.preview || null;
+  const fileId = files[0]?.id;
+
+  const [finalImageUrl, setFinalImageUrl] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const previousFileIdRef = useRef<string | undefined | null>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [zoom, setZoom] = useState(1);
+
+  // Initialize with existing value if present
+  useEffect(() => {
+    if (value && !finalImageUrl) {
+      const url = URL.createObjectURL(value);
+      setFinalImageUrl(url);
+    }
+  }, [value, finalImageUrl]);
+
+  const handleCropChange = useCallback((pixels: Area | null) => {
+    setCroppedAreaPixels(pixels);
+  }, []);
+
+  const handleApply = async () => {
+    if (!previewUrl || !fileId || !croppedAreaPixels) {
+      console.error("Missing data for apply:", {
+        croppedAreaPixels,
+        fileId,
+        previewUrl,
+      });
+      if (fileId) {
+        removeFile(fileId);
+        setCroppedAreaPixels(null);
+      }
+      return;
+    }
+
+    try {
+      const croppedBlob = await getCroppedImg(previewUrl, croppedAreaPixels);
+
+      if (!croppedBlob) {
+        throw new Error("Failed to generate cropped image blob.");
+      }
+
+      // Create a File from the Blob
+      const croppedFile = new File([croppedBlob], "profile-image.jpg", {
+        type: "image/jpeg",
+      });
+
+      // Create a NEW object URL from the cropped blob
+      const newFinalUrl = URL.createObjectURL(croppedBlob);
+
+      // Revoke the OLD finalImageUrl if it exists
+      if (finalImageUrl) {
+        URL.revokeObjectURL(finalImageUrl);
+      }
+
+      // Set the final avatar state to the NEW URL
+      setFinalImageUrl(newFinalUrl);
+
+      // Call onChange with the cropped file
+      onChange(croppedFile);
+
+      // Close the dialog
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Error during apply:", error);
+      setIsDialogOpen(false);
+    }
+  };
+
+  const handleRemoveFinalImage = () => {
+    if (finalImageUrl) {
+      URL.revokeObjectURL(finalImageUrl);
+    }
+    setFinalImageUrl(null);
+    onChange(null);
+  };
+
+  useEffect(() => {
+    const currentFinalUrl = finalImageUrl;
+    return () => {
+      if (currentFinalUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(currentFinalUrl);
+      }
+    };
+  }, [finalImageUrl]);
+
+  // Effect to open dialog when a *new* file is ready
+  useEffect(() => {
+    if (fileId && fileId !== previousFileIdRef.current) {
+      setIsDialogOpen(true);
+      setCroppedAreaPixels(null);
+      setZoom(1);
+    }
+    previousFileIdRef.current = fileId;
+  }, [fileId]);
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <div className="relative inline-flex">
+        <button
+          aria-label={finalImageUrl ? "Change image" : "Upload image"}
+          className="relative flex size-32 items-center justify-center overflow-hidden rounded-full border-2 border-input border-dashed outline-none transition-colors hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-disabled:pointer-events-none has-[img]:border-none has-disabled:opacity-50 data-[dragging=true]:bg-accent/50"
+          data-dragging={isDragging || undefined}
+          onClick={openFileDialog}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          type="button"
+        >
+          {finalImageUrl ? (
+            <img
+              alt="Profile photo"
+              className="size-full object-cover"
+              height={128}
+              src={finalImageUrl}
+              style={{ objectFit: "cover" }}
+              width={128}
+            />
+          ) : (
+            <div
+              aria-hidden="true"
+              className="flex flex-col items-center gap-2"
+            >
+              <CircleUserRoundIcon className="size-10 opacity-40" />
+              <span className="text-xs text-muted-foreground">
+                Click to upload
+              </span>
+            </div>
+          )}
+        </button>
+        {finalImageUrl && (
+          <Button
+            aria-label="Remove image"
+            className="-top-1 -right-1 absolute size-8 rounded-full border-2 border-background shadow-none focus-visible:border-background"
+            onClick={handleRemoveFinalImage}
+            size="icon"
+            variant="destructive"
+            type="button"
+          >
+            <XIcon className="size-4" />
+          </Button>
+        )}
+        <input
+          {...getInputProps()}
+          aria-label="Upload image file"
+          className="sr-only"
+          tabIndex={-1}
+        />
+      </div>
+      <p className="text-xs text-muted-foreground text-center">
+        Supports: JPEG, PNG up to 2MB
+        <br />
+        <span className="text-primary">Click or drag to upload</span>
+      </p>
+
+      {/* Cropper Dialog */}
+      <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+        <DialogContent className="gap-0 p-0 sm:max-w-140 *:[button]:hidden">
+          <DialogDescription className="sr-only">
+            Crop image dialog
+          </DialogDescription>
+          <DialogHeader className="contents space-y-0 text-left">
+            <DialogTitle className="flex items-center justify-between border-b p-4 text-base">
+              <div className="flex items-center gap-2">
+                <Button
+                  aria-label="Cancel"
+                  className="-my-1 opacity-60"
+                  onClick={() => setIsDialogOpen(false)}
+                  size="icon"
+                  type="button"
+                  variant="ghost"
+                >
+                  <ArrowLeftIcon aria-hidden="true" />
+                </Button>
+                <span>Crop Profile Photo</span>
+              </div>
+              <Button
+                autoFocus
+                className="-my-1"
+                disabled={!previewUrl}
+                onClick={handleApply}
+                type="button"
+              >
+                Apply
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          {previewUrl && (
+            <Cropper
+              className="h-96 sm:h-120"
+              image={previewUrl}
+              onCropChange={handleCropChange}
+              onZoomChange={setZoom}
+              zoom={zoom}
+            >
+              <CropperDescription />
+              <CropperImage />
+              <CropperCropArea />
+            </Cropper>
+          )}
+          <DialogFooter className="border-t px-4 py-6">
+            <div className="mx-auto flex w-full max-w-80 items-center gap-4">
+              <ZoomOutIcon
+                aria-hidden="true"
+                className="shrink-0 opacity-60"
+                size={16}
+              />
+              <Slider
+                aria-label="Zoom slider"
+                defaultValue={[1]}
+                max={3}
+                min={1}
+                onValueChange={(value) => setZoom(value[0])}
+                step={0.1}
+                value={[zoom]}
+              />
+              <ZoomInIcon
+                aria-hidden="true"
+                className="shrink-0 opacity-60"
+                size={16}
+              />
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
 
 export const PersonalInfoStep = () => {
   const { updateStepData, getStepData, nextStep, previousStep } =
@@ -111,6 +439,26 @@ export const PersonalInfoStep = () => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Profile Image with Cropper */}
+            <FormField
+              control={form.control}
+              name="profileImage"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-center">
+                  <FormLabel>
+                    Profile Photo <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <ProfileImageUploader
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
@@ -135,24 +483,44 @@ export const PersonalInfoStep = () => {
                 control={form.control}
                 name="dateOfBirth"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>
                       Date of Birth <span className="text-destructive">*</span>
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="date"
-                        {...field}
-                        value={
-                          field.value instanceof Date
-                            ? field.value.toISOString().split("T")[0]
-                            : ""
-                        }
-                        onChange={(e) =>
-                          field.onChange(new Date(e.target.value))
-                        }
-                      />
-                    </FormControl>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          defaultMonth={field.value}
+                          captionLayout="dropdown"
+                          fromYear={1940}
+                          toYear={new Date().getFullYear()}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1940-01-01")
+                          }
+                        />
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -275,69 +643,6 @@ export const PersonalInfoStep = () => {
                     />
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="profileImage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Profile Photo <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <FileUpload
-                      accept="image/*"
-                      maxFiles={1}
-                      maxSize={2 * 1024 * 1024}
-                      value={field.value ? [field.value] : []}
-                      onValueChange={(files) => field.onChange(files[0])}
-                      className="w-full"
-                    >
-                      <FileUploadDropzone className="">
-                        <div className="flex flex-col items-center justify-center gap-3 p-6 text-center">
-                          <Upload className="h-8 w-8 text-muted-foreground" />
-                          <div className="flex flex-col gap-1">
-                            <p className="text-sm text-muted-foreground">
-                              Drop your profile photo here or
-                            </p>
-                            <FileUploadTrigger asChild>
-                              <Button type="button" variant="outline" size="sm">
-                                browse
-                              </Button>
-                            </FileUploadTrigger>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            Supports: JPEG, PNG up to 2MB
-                          </p>
-                        </div>
-                      </FileUploadDropzone>
-                      <FileUploadList className="mt-2" />
-                      {field.value && (
-                        <FileUploadList>
-                          <FileUploadItem value={field.value}>
-                            <FileUploadItemPreview />
-                            <FileUploadItemMetadata />
-                            <FileUploadItemDelete asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="size-7"
-                              >
-                                <X />
-                              </Button>
-                            </FileUploadItemDelete>
-                          </FileUploadItem>
-                        </FileUploadList>
-                      )}
-                    </FileUpload>
-                  </FormControl>
-                  <FormMessage />
-                  <div className="text-sm text-muted-foreground">
-                    Upload a clear photo of yourself for your profile
-                  </div>
                 </FormItem>
               )}
             />

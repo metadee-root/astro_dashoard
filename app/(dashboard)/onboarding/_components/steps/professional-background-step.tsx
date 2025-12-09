@@ -96,7 +96,10 @@ export const ProfessionalBackgroundStep = () => {
               name="expertise"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Areas of Expertise <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>
+                    Areas of Expertise{" "}
+                    <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <MultipleSelector
                       value={
@@ -127,7 +130,10 @@ export const ProfessionalBackgroundStep = () => {
               name="yearsOfExperience"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Years of Experience <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>
+                    Years of Experience{" "}
+                    <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -153,7 +159,10 @@ export const ProfessionalBackgroundStep = () => {
               name="astrologySystems"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Astrology Systems <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>
+                    Astrology Systems{" "}
+                    <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <MultipleSelector
                       value={
@@ -251,37 +260,34 @@ export const ProfessionalBackgroundStep = () => {
                   </FormItem>
                 )}
               />
+            </div>
 
-              </div>
+            <FormField
+              control={form.control}
+              name="formalEducation"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Formal Education in Astrology</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Degrees, certifications, courses, or formal training in astrology..."
+                      className="min-h-[100px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <div className="text-sm text-muted-foreground">
+                    Any formal degrees, certifications, or specialized courses
+                  </div>
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="formalEducation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Formal Education in Astrology
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Degrees, certifications, courses, or formal training in astrology..."
-                        className="min-h-[100px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    <div className="text-sm text-muted-foreground">
-                      Any formal degrees, certifications, or specialized courses
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-medium text-blue-900 mb-2">
+            <div className="bg-muted/50 border rounded-lg p-4">
+              <h4 className="font-medium text-foreground mb-2">
                 Professional Summary
               </h4>
-              <p className="text-sm text-blue-800">
+              <p className="text-sm text-muted-foreground">
                 Your professional background helps clients understand your
                 expertise and approach to astrology. Be honest about your
                 experience and qualifications.

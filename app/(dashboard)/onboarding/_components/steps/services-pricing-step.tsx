@@ -315,11 +315,11 @@ export const ServicesPricingStep = () => {
                 </div>
               </div>
 
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="font-medium text-yellow-900 mb-2">
+              <div className="bg-muted/50 border rounded-lg p-4">
+                <h4 className="font-medium text-foreground mb-2">
                   Pricing Guidelines
                 </h4>
-                <ul className="text-sm text-yellow-800 space-y-1 list-disc ml-4">
+                <ul className="text-sm text-muted-foreground space-y-1 list-disc ml-4">
                   <li>Consider your experience level when setting prices</li>
                   <li>
                     Video consultations typically cost more than chat/call

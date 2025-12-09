@@ -306,14 +306,14 @@ export const DocumentationStep = () => {
               )}
             />
 
-            <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="bg-muted/50 border rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+                <AlertCircle className="h-5 w-5 text-primary mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-blue-900 mb-2">
+                  <h4 className="font-medium text-foreground mb-2">
                     Document Security & Privacy
                   </h4>
-                  <ul className="text-sm text-blue-800 space-y-1 list-disc -ml-4">
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc ml-4">
                     <li>All documents are encrypted and stored securely</li>
                     <li>Documents are used only for verification purposes</li>
                     <li>

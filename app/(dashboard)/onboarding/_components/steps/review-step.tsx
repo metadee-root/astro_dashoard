@@ -57,17 +57,13 @@ export const ReviewStep: React.FC<ReviewStepProps> = () => {
     children: React.ReactNode;
     isComplete: boolean;
   }) => (
-    <Card
-      className={`${
-        isComplete ? "border-green-200 bg-green-50/30" : "border-gray-200"
-      }`}
-    >
+    <Card className={`${isComplete ? "border-primary/30 bg-primary/5" : ""}`}>
       <CardHeader>
         <div className="flex items-center gap-2">
           <Icon className="h-5 w-5" />
           <CardTitle className="text-lg">{title}</CardTitle>
           {isComplete && (
-            <CheckCircle2 className="h-4 w-4 text-green-600 ml-auto" />
+            <CheckCircle2 className="h-4 w-4 text-primary ml-auto" />
           )}
         </div>
       </CardHeader>
@@ -347,12 +343,12 @@ export const ReviewStep: React.FC<ReviewStepProps> = () => {
         </SectionCard>
 
         {/* Submission Button */}
-        <div className="bg-blue-50 p-6 rounded-lg">
+        <div className="bg-muted/50 border rounded-lg p-6">
           <div className="text-center">
-            <h4 className="font-semibold text-blue-900 mb-2">
+            <h4 className="font-semibold text-foreground mb-2">
               Ready to Submit?
             </h4>
-            <p className="text-blue-800 text-sm mb-6">
+            <p className="text-muted-foreground text-sm mb-6">
               Your application will be reviewed within 2-3 business days. You'll
               receive a notification once the review is complete.
             </p>
@@ -446,11 +442,12 @@ const SubmitOnboardingButton = () => {
     onSuccess: async (data) => {
       toast.success("Application submitted successfully! 🎉");
       resetForm();
-      // Redirect to dashboard or success page
-      update({
+      // Update session with new status
+      await update({
         status: "in_review",
       });
-      router.push("/in-review");
+      // Use hard redirect instead of router.push to ensure middleware gets updated token
+      window.location.href = "/in-review";
     },
     onError: (error: any) => {
       console.error("Submission error:", error);

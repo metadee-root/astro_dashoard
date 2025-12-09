@@ -39,7 +39,7 @@ export const UserMenu = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Avatar className="size-10">
           <AvatarImage src={user.image!} alt={user.name!} />
           <AvatarFallback>{getInitials(user.name!)}</AvatarFallback>
@@ -65,10 +65,12 @@ export const UserMenu = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/profile")}>
-          <UserCircle />
-          Profile
-        </DropdownMenuItem>
+        {user.status !== "onboarding" && (
+          <DropdownMenuItem onClick={() => router.push("/profile")}>
+            <UserCircle />
+            Profile
+          </DropdownMenuItem>
+        )}
 
         <DropdownMenuItem onClick={() => signOut()}>
           <LogOutIcon />

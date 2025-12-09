@@ -205,7 +205,8 @@ export const SpecializationStep = () => {
                             Create daily predictions
                           </FormLabel>
                           <FormDescription>
-                            Writing daily astrological predictions for zodiac signs
+                            Writing daily astrological predictions for zodiac
+                            signs
                           </FormDescription>
                           <FormMessage />
                         </div>
@@ -234,7 +235,8 @@ export const SpecializationStep = () => {
                             Can perform puja services
                           </FormLabel>
                           <FormDescription>
-                            Your capability to perform religious/spiritual pujas for clients
+                            Your capability to perform religious/spiritual pujas
+                            for clients
                           </FormDescription>
                           <FormMessage />
                         </div>
@@ -245,11 +247,11 @@ export const SpecializationStep = () => {
               </div>
             </div>
 
-            <div className="bg-purple-50 p-4 rounded-lg">
-              <h4 className="font-medium text-purple-900 mb-2">
+            <div className="bg-muted/50 border rounded-lg p-4">
+              <h4 className="font-medium text-foreground mb-2">
                 Specialization Benefits
               </h4>
-              <ul className="text-sm text-purple-800 space-y-1 list-disc ml-4">
+              <ul className="text-sm text-muted-foreground space-y-1 list-disc ml-4">
                 <li>
                   Being specific about your specialization helps attract the
                   right clients

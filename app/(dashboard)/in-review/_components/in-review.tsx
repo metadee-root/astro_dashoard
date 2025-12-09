@@ -63,9 +63,14 @@ export const InReview = () => {
   React.useEffect(() => {
     if (data && session?.user && session.user.status !== data.status) {
       updateSession({ status: data.status });
-      router.refresh();
+      // Use hard redirect to ensure middleware handles the new status correctly
+      if (data.status === "verified") {
+        window.location.href = "/";
+      } else {
+        window.location.reload();
+      }
     }
-  }, [data, session, updateSession, router]);
+  }, [data, session, updateSession]);
 
   if (isLoading) {
     return <InReviewSkeleton />;

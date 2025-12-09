@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useOnboardingStore } from "../_hooks/use-onboarding-store";
 import { PersonalInfoStep } from "./steps/personal-info-step";
 import { ProfessionalBackgroundStep } from "./steps/professional-background-step";
@@ -61,6 +61,11 @@ const stepComponents = [
 export const Onboarding = () => {
   const { currentStep, totalSteps } = useOnboardingStore();
 
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentStep]);
+
   const CurrentStepComponent = stepComponents[currentStep];
 
   return (
@@ -109,11 +114,17 @@ export const Onboarding = () => {
           <div className="text-sm text-muted-foreground">
             <p>Need help? Contact our support team</p>
             <div className="flex justify-center space-x-4 mt-2">
-              <a href="#" className="text-blue-600 hover:underline">
+              <a
+                href="https://www.sanatanvision.com/privacy-policy"
+                className="text-primary hover:underline"
+              >
                 Privacy Policy
               </a>
               <span>•</span>
-              <a href="#" className="text-blue-600 hover:underline">
+              <a
+                href="https://www.sanatanvision.com/terms-and-conditions"
+                className="text-primary hover:underline"
+              >
                 Terms of Service
               </a>
             </div>
