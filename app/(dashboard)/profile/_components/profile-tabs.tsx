@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { api } from "@/lib/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, Briefcase, Calendar, CreditCard, Settings } from "lucide-react";
@@ -10,8 +11,19 @@ import { ServicesAvailabilityTab } from "./tabs/services-availability-tab";
 import { BankingPaymentTab } from "./tabs/banking-payment-tab";
 import { ProfileActionsTab } from "./tabs/profile-actions-tab";
 
+const TAB_VALUES = [
+  "personal",
+  "professional",
+  "services",
+  "banking",
+  "actions",
+] as const;
+
 export const ProfileTabs = () => {
-  const [activeTab, setActiveTab] = useState("personal");
+  const [activeTab, setActiveTab] = useQueryState(
+    "tab",
+    parseAsStringLiteral(TAB_VALUES).withDefault("personal")
+  );
 
   const { data: profile } = useSuspenseQuery({
     queryKey: ["profile"],
@@ -60,7 +72,13 @@ export const ProfileTabs = () => {
         </p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) =>
+          setActiveTab(value as (typeof TAB_VALUES)[number])
+        }
+        className="w-full"
+      >
         <TabsList className="grid w-full grid-cols-5">
           {tabs.map((tab) => (
             <TabsTrigger

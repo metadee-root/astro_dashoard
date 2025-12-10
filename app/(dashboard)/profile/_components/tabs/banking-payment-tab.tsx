@@ -59,24 +59,29 @@ const PAYOUT_FREQUENCY = [
   { value: "quarterly", label: "Quarterly" },
 ];
 
-const bankingPaymentSchema = z.object({
-  bankName: z.string().min(1, "Bank name is required"),
-  accountHolderName: z.string().min(1, "Account holder name is required"),
-  accountNumber: z.string().min(1, "Bank account number is required"),
-  confirmAccountNumber: z.string().min(1, "Confirm account number is required"),
-  ifscCode: z.string().min(1, "IFSC code is required"),
-  branchName: z.string().min(1, "Branch name is required"),
-  accountType: z.string().min(1, "Account type is required"),
-  upiId: z.string().optional(),
-  panNumber: z.string().optional(),
-  gstNumber: z.string().optional(),
-  preferredPaymentMethod: z.array(z.string()).min(1, "Select at least one payment method"),
-  payoutFrequency: z.string().min(1, "Payout frequency is required"),
-})
-.refine((data) => data.accountNumber === data.confirmAccountNumber, {
-  message: "Account numbers do not match",
-  path: ["confirmAccountNumber"],
-});
+const bankingPaymentSchema = z
+  .object({
+    bankName: z.string().min(1, "Bank name is required"),
+    accountHolderName: z.string().min(1, "Account holder name is required"),
+    accountNumber: z.string().min(1, "Bank account number is required"),
+    confirmAccountNumber: z
+      .string()
+      .min(1, "Confirm account number is required"),
+    ifscCode: z.string().min(1, "IFSC code is required"),
+    branchName: z.string().min(1, "Branch name is required"),
+    accountType: z.string().min(1, "Account type is required"),
+    upiId: z.string().optional(),
+    panNumber: z.string().optional(),
+    gstNumber: z.string().optional(),
+    preferredPaymentMethod: z
+      .array(z.string())
+      .min(1, "Select at least one payment method"),
+    payoutFrequency: z.string().min(1, "Payout frequency is required"),
+  })
+  .refine((data) => data.accountNumber === data.confirmAccountNumber, {
+    message: "Account numbers do not match",
+    path: ["confirmAccountNumber"],
+  });
 
 type BankingPaymentData = z.infer<typeof bankingPaymentSchema>;
 
@@ -117,7 +122,7 @@ export const BankingPaymentTab = ({ profile }: BankingPaymentTabProps) => {
           branchName: data.branchName,
           accountType: data.accountType,
           upiId: data.upiId,
-        })
+        }),
       };
       return api.auth.updateProfile(apiData);
     },
@@ -126,7 +131,9 @@ export const BankingPaymentTab = ({ profile }: BankingPaymentTabProps) => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to update banking and payment information");
+      toast.error(
+        error.message || "Failed to update banking and payment information"
+      );
     },
   });
 
@@ -428,14 +435,14 @@ export const BankingPaymentTab = ({ profile }: BankingPaymentTabProps) => {
               </div>
             </div>
 
-            <div className="bg-yellow-50 p-4 rounded-lg">
+            <div className="bg-yellow-50 dark:bg-yellow-950/30 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800/50">
               <div className="flex items-start gap-3">
-                <AlertCircle className="size-4 text-yellow-600 mt-0.5" />
+                <AlertCircle className="size-4 text-yellow-600 dark:text-yellow-400 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-yellow-900 mb-2">
+                  <h4 className="font-medium text-yellow-900 dark:text-yellow-200 mb-2">
                     Important Information
                   </h4>
-                  <ul className="text-sm text-yellow-800 space-y-1 list-disc -ml-4">
+                  <ul className="text-sm text-yellow-800 dark:text-yellow-300/80 space-y-1 list-disc -ml-4">
                     <li>
                       Bank details will be used for processing your consultation
                       earnings
@@ -457,10 +464,7 @@ export const BankingPaymentTab = ({ profile }: BankingPaymentTabProps) => {
             </div>
 
             <div className="flex justify-end pt-6">
-              <Button
-                type="submit"
-                disabled={updateMutation.isPending}
-              >
+              <Button type="submit" disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -296,11 +296,15 @@ const updateProfile = async (formData: UpdateProfileFormData) => {
     if (formData.maxConsultationsPerDay) {
       form.append("maxConsultationsPerDay", formData.maxConsultationsPerDay);
     }
-    if (formData.workingDays) {
-      form.append("workingDays", JSON.stringify(formData.workingDays));
+    if (formData.workingDays && formData.workingDays.length > 0) {
+      formData.workingDays.forEach((day) => {
+        form.append("workingDays", day);
+      });
     }
-    if (formData.timeSlots) {
-      form.append("timeSlots", JSON.stringify(formData.timeSlots));
+    if (formData.timeSlots && formData.timeSlots.length > 0) {
+      formData.timeSlots.forEach((slot) => {
+        form.append("timeSlots", slot);
+      });
     }
     if (formData.expectedResponseTime) {
       form.append("expectedResponseTime", formData.expectedResponseTime);
@@ -474,8 +478,12 @@ const submitOnboarding = async (formData: OnboardingFormData) => {
     form.append("lineage", formData.lineage);
     form.append("formalEducation", formData.formalEducation);
     form.append("maxConsultationsPerDay", formData.maxConsultationsPerDay);
-    form.append("workingDays", JSON.stringify(formData.workingDays));
-    form.append("timeSlots", JSON.stringify(formData.timeSlots));
+    formData.workingDays.forEach((day) => {
+      form.append("workingDays", day);
+    });
+    formData.timeSlots.forEach((slot) => {
+      form.append("timeSlots", slot);
+    });
     form.append("expectedResponseTime", formData.expectedResponseTime);
     form.append("remediesTypes", JSON.stringify(formData.remediesTypes));
     form.append(

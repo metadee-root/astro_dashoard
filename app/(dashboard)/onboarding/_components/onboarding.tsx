@@ -16,6 +16,7 @@ import {
   StepperTitle,
   StepperTrigger,
 } from "@/components/ui/stepper";
+import { EXTERNAL_LINKS } from "@/lib/constants";
 
 const steps = [
   {
@@ -115,14 +116,18 @@ export const Onboarding = () => {
             <p>Need help? Contact our support team</p>
             <div className="flex justify-center space-x-4 mt-2">
               <a
-                href="https://www.sanatanvision.com/privacy-policy"
+                href={EXTERNAL_LINKS.PRIVACY_POLICY}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
                 Privacy Policy
               </a>
               <span>•</span>
               <a
-                href="https://www.sanatanvision.com/terms-and-conditions"
+                href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
                 Terms of Service

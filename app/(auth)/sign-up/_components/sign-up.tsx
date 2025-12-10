@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
+import { EXTERNAL_LINKS } from "@/lib/constants";
 
 const signUpSchema = z
   .object({
@@ -235,11 +236,21 @@ export const SignUpForm = () => {
 
         <p className="text-xs font-medium text-center text-muted-foreground">
           By continuing, you agree to Sanatan Vision's{" "}
-          <a href="" className="hover:underline text-primary">
+          <a
+            href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline text-primary"
+          >
             Terms of Service
           </a>{" "}
           and{" "}
-          <a href="" className="hover:underline text-primary">
+          <a
+            href={EXTERNAL_LINKS.PRIVACY_POLICY}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline text-primary"
+          >
             Privacy Policy
           </a>
           .

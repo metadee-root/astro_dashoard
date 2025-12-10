@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cinzel, Geist, Geist_Mono, Montserrat } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 import { Provider } from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -40,9 +41,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
-        <Provider>
-          <main>{children}</main>
-        </Provider>
+        <NuqsAdapter>
+          <Provider>
+            <main>{children}</main>
+          </Provider>
+        </NuqsAdapter>
       </body>
     </html>
   );

@@ -21,6 +21,7 @@ import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EXTERNAL_LINKS } from "@/lib/constants";
 
 const signInSchema = z.object({
   email: z
@@ -167,11 +168,21 @@ export const SignIn = () => {
 
         <p className="text-xs font-medium text-center text-muted-foreground">
           By continuing, you agree to Sanatan Vision's{" "}
-          <a href="" className="hover:underline text-primary">
+          <a
+            href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline text-primary"
+          >
             Terms of Service
           </a>{" "}
           and{" "}
-          <a href="" className="hover:underline text-primary">
+          <a
+            href={EXTERNAL_LINKS.PRIVACY_POLICY}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline text-primary"
+          >
             Privacy Policy
           </a>
           .

@@ -67,16 +67,20 @@ const RESPONSE_TIME_OPTIONS = [
   { value: "same_day", label: "Same day" },
 ];
 
-const CONSULTATION_LIMITS = Array.from({ length: 20 }, (_, i) => i + 1).map(num => ({
-  value: num.toString(),
-  label: num.toString(),
-}));
+const CONSULTATION_LIMITS = Array.from({ length: 20 }, (_, i) => i + 1).map(
+  (num) => ({
+    value: num.toString(),
+    label: num.toString(),
+  })
+);
 
 const servicesAvailabilitySchema = z.object({
   chatPrice: z.string().min(1, "Chat price is required"),
   callPrice: z.string().min(1, "Call price is required"),
   videoPrice: z.string().min(1, "Video price is required"),
-  maxConsultationsPerDay: z.string().min(1, "Max consultations per day is required"),
+  maxConsultationsPerDay: z
+    .string()
+    .min(1, "Max consultations per day is required"),
   workingDays: z.array(z.string()).min(1, "Select at least one working day"),
   timeSlots: z.array(z.string()).min(1, "Select at least one time slot"),
   expectedResponseTime: z.string().min(1, "Expected response time is required"),
@@ -89,7 +93,9 @@ interface ServicesAvailabilityTabProps {
   profile: any;
 }
 
-export const ServicesAvailabilityTab = ({ profile }: ServicesAvailabilityTabProps) => {
+export const ServicesAvailabilityTab = ({
+  profile,
+}: ServicesAvailabilityTabProps) => {
   const queryClient = useQueryClient();
 
   const form = useForm<ServicesAvailabilityData>({
@@ -98,7 +104,8 @@ export const ServicesAvailabilityTab = ({ profile }: ServicesAvailabilityTabProp
       chatPrice: profile?.chatPrice?.toString() || "",
       callPrice: profile?.callPrice?.toString() || "",
       videoPrice: profile?.videoPrice?.toString() || "",
-      maxConsultationsPerDay: profile?.maxConsultationsPerDay?.toString() || "5",
+      maxConsultationsPerDay:
+        profile?.maxConsultationsPerDay?.toString() || "5",
       workingDays: profile?.workingDays || [],
       timeSlots: profile?.timeSlots || [],
       expectedResponseTime: profile?.expectedResponseTime || "",
@@ -107,13 +114,16 @@ export const ServicesAvailabilityTab = ({ profile }: ServicesAvailabilityTabProp
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: ServicesAvailabilityData) => api.auth.updateProfile(data),
+    mutationFn: (data: ServicesAvailabilityData) =>
+      api.auth.updateProfile(data),
     onSuccess: () => {
       toast.success("Services and availability updated successfully");
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to update services and availability");
+      toast.error(
+        error.message || "Failed to update services and availability"
+      );
     },
   });
 
@@ -252,7 +262,10 @@ export const ServicesAvailabilityTab = ({ profile }: ServicesAvailabilityTabProp
                             </FormControl>
                             <SelectContent>
                               {CONSULTATION_LIMITS.map((limit) => (
-                                <SelectItem key={limit.value} value={limit.value}>
+                                <SelectItem
+                                  key={limit.value}
+                                  value={limit.value}
+                                >
                                   {limit.label}
                                 </SelectItem>
                               ))}
@@ -350,7 +363,8 @@ export const ServicesAvailabilityTab = ({ profile }: ServicesAvailabilityTabProp
                           </FormControl>
                           <FormMessage />
                           <FormDescription>
-                            Select time slots when you prefer to conduct consultations
+                            Select time slots when you prefer to conduct
+                            consultations
                           </FormDescription>
                         </FormItem>
                       )}
@@ -359,23 +373,24 @@ export const ServicesAvailabilityTab = ({ profile }: ServicesAvailabilityTabProp
                 </div>
               </div>
 
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <h4 className="font-medium text-yellow-900 mb-2">
+              <div className="bg-yellow-50 dark:bg-yellow-950/30 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800/50">
+                <h4 className="font-medium text-yellow-900 dark:text-yellow-200 mb-2">
                   Pricing Guidelines
                 </h4>
-                <ul className="text-sm text-yellow-800 space-y-1 list-disc ml-4">
+                <ul className="text-sm text-yellow-800 dark:text-yellow-300/80 space-y-1 list-disc ml-4">
                   <li>Consider your experience level when setting prices</li>
-                  <li>Video consultations typically cost more than chat/call</li>
+                  <li>
+                    Video consultations typically cost more than chat/call
+                  </li>
                   <li>You can adjust these prices later based on demand</li>
-                  <li>Platform commission will be deducted from these amounts</li>
+                  <li>
+                    Platform commission will be deducted from these amounts
+                  </li>
                 </ul>
               </div>
 
               <div className="flex justify-end pt-6">
-                <Button
-                  type="submit"
-                  disabled={updateMutation.isPending}
-                >
+                <Button type="submit" disabled={updateMutation.isPending}>
                   {updateMutation.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
