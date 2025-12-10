@@ -7,7 +7,6 @@ interface ChatMessagesProps {
 }
 
 export const ChatMessages: FC<ChatMessagesProps> = ({ messages }) => {
-  console.log(messages);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
