@@ -1,10 +1,11 @@
 import { type ChatMessage as IChatMessage } from "@/types/session";
-import { cn, formatRelativeTimeShort } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { FC } from "react";
-import { FileIcon } from "lucide-react";
+import { FC, useState } from "react";
+import { FileIcon, ZoomInIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { format } from "date-fns";
+import { ImageEnlargeDialog } from "./image-enlarge-dialog";
 
 interface ChatMessageProps {
   message: IChatMessage;
@@ -21,8 +22,50 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
     mimeType,
   } = message;
   const { data: session } = useSession();
+  const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
 
   const isCurrentUser = senderId === session?.user.id;
+
+  const handleImageClick = (src: string) => {
+    setEnlargedImage(src);
+  };
+
+  const handleCloseEnlarged = () => {
+    setEnlargedImage(null);
+  };
+
+  const renderClickableImage = (
+    src: string,
+    alt: string,
+    size: "small" | "medium"
+  ) => {
+    const sizeClasses = size === "small" ? "h-32 w-32" : "h-48 w-48";
+    return (
+      <div
+        className={cn(
+          "group relative overflow-hidden rounded-lg cursor-pointer",
+          sizeClasses
+        )}
+        onClick={() => handleImageClick(src)}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover transition-transform duration-200 group-hover:scale-105"
+          sizes={
+            size === "small"
+              ? "(max-width: 768px) 100vw, 25vw"
+              : "(max-width: 768px) 100vw, 50vw"
+          }
+        />
+        {/* Hover overlay with zoom icon */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <ZoomInIcon className="h-6 w-6 text-white" />
+        </div>
+      </div>
+    );
+  };
 
   const renderContent = () => {
     switch (type) {
@@ -40,16 +83,8 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
             {content && mediaUrl && (
               <p className="text-sm font-medium">{content}</p>
             )}
-            {/* Show image */}
-            <div className="relative h-48 w-48 overflow-hidden rounded-lg">
-              <Image
-                src={imageSrc}
-                alt="Message image"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
+            {/* Show clickable image */}
+            {renderClickableImage(imageSrc, "Message image", "medium")}
           </div>
         );
       case "file":
@@ -75,51 +110,51 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
         return (
           <div className="space-y-1">
             <p className="text-sm font-medium">{content}</p>
-            {/* Show attached image with text if available */}
-            {type === "text" && mediaUrl && (
-              <div className="relative h-32 w-32 overflow-hidden rounded-lg">
-                <Image
-                  src={mediaUrl}
-                  alt="Attached image"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 25vw"
-                />
-              </div>
-            )}
+            {/* Show attached clickable image with text if available */}
+            {type === "text" &&
+              mediaUrl &&
+              renderClickableImage(mediaUrl, "Attached image", "small")}
           </div>
         );
     }
   };
 
   return (
-    <div
-      className={cn(
-        "flex w-full gap-2",
-        isCurrentUser ? "flex-row-reverse" : "flex-row"
-      )}
-    >
-      <div className="w-fit max-w-md">
-        <div
-          className={cn(
-            "flex flex-col rounded-xl px-4 py-2.5",
-            isCurrentUser
-              ? "bg-primary text-primary-foreground rounded-br-none"
-              : "bg-muted text-muted-foreground rounded-bl-none"
-          )}
-        >
-          {renderContent()}
-
-          <p
+    <>
+      <div
+        className={cn(
+          "flex w-full gap-2",
+          isCurrentUser ? "flex-row-reverse" : "flex-row"
+        )}
+      >
+        <div className="w-fit max-w-md">
+          <div
             className={cn(
-              "text-[10px] font-medium opacity-70 mt-2",
-              isCurrentUser ? "text-right" : "text-left"
+              "flex flex-col rounded-xl px-4 py-2.5",
+              isCurrentUser
+                ? "bg-primary text-primary-foreground rounded-br-none"
+                : "bg-muted text-muted-foreground rounded-bl-none"
             )}
           >
-            {format(new Date(message.timestamp), "hh:mm a")}{" "}
-          </p>
+            {renderContent()}
+
+            <p
+              className={cn(
+                "text-[10px] font-medium opacity-70 mt-2",
+                isCurrentUser ? "text-right" : "text-left"
+              )}
+            >
+              {format(new Date(message.timestamp), "hh:mm a")}{" "}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Image Enlarge Dialog */}
+      <ImageEnlargeDialog
+        imageSrc={enlargedImage}
+        onClose={handleCloseEnlarged}
+      />
+    </>
   );
 };
