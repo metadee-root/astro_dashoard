@@ -2,26 +2,31 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BanknoteArrowDown, Wallet2 } from "lucide-react";
-import React from "react";
-import { BankAccountDetailsForm } from "./bank-account-details-form";
+import { Wallet2 } from "lucide-react";
 import { Transactions } from "./transactions";
+import { WithdrawDialog } from "./withdraw-dialog";
 
 export const WalletAndEarnings = () => {
   const { data: wallet } = useSuspenseQuery({
     queryKey: ["wallet"],
     queryFn: api.auth.getWallet,
   });
+
+  const { data: profile } = useSuspenseQuery({
+    queryKey: ["profile"],
+    queryFn: api.auth.getDetails,
+  });
+
+  const maxWithdrawable = wallet.balance * 0.75;
+
   return (
     <Card>
       <Tabs defaultValue="wallet">
@@ -61,17 +66,16 @@ export const WalletAndEarnings = () => {
                   </p>
                   <p>
                     {wallet.currency || "₹"}
-                    {(wallet.balance * 0.75).toLocaleString()} available now.
-                    (You can withdraw 75% of the amount only)
+                    {maxWithdrawable.toLocaleString()} available now. (You can
+                    withdraw 75% of the amount only)
                   </p>
                 </div>
-                <Button>
-                  <BanknoteArrowDown />
-                  Withdraw to Bank
-                </Button>
+                <WithdrawDialog
+                  maxWithdrawable={maxWithdrawable}
+                  defaultBankDetails={profile?.bankDetails}
+                />
               </div>
             </div>
-            {/* <BankAccountDetailsForm /> */}
           </TabsContent>
           <TabsContent value="transactions">
             <Transactions />

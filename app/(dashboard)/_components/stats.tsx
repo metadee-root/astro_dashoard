@@ -16,8 +16,8 @@ export const Stats = () => {
       }),
   });
 
-  const currentMonthEarnings = data.data.currentPeriod.earnings;
-  const totalSessions = data.data.currentPeriod.sessions;
+  const currentEarnings = data.data.overview.totalEarnings;
+  const totalSessions = data.data.overview.totalSessions;
   const walletBalance = data.data.wallet.currentBalance;
 
   return (
@@ -27,9 +27,9 @@ export const Stats = () => {
           <IndianRupee strokeWidth={1.5} className="size-8" />
         </div>
         <div className="space-y-1">
-          <p>Total Monthly Earnings</p>
+          <p>Total Earnings</p>
           <p className="text-2xl md:text-3xl font-bold">
-            {formatINR(currentMonthEarnings)}
+            {formatINR(currentEarnings)}
           </p>
         </div>
       </div>

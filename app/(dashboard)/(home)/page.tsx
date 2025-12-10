@@ -38,6 +38,11 @@ const Page = async () => {
     queryFn: () => api.consultation.getConsultationRecords(1, 2),
   });
 
+  prefetch({
+    queryKey: ["fund-transfer-requests"],
+    queryFn: () => api.payment.getFundTransferRequests({}),
+  });
+
   return (
     <HydrateClient>
       <div className="space-y-6">

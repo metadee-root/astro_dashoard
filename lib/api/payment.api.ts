@@ -7,21 +7,35 @@ type FundTransferRequestStatus =
   | "approved"
   | "rejected";
 
-interface FundTransferRequest {
-  id: string;
+export interface FundTransferRequest {
+  _id: string;
+  astrologerId: string;
   amount: number;
   status: FundTransferRequestStatus;
-  createdAt: string;
-  updatedAt: string;
+  requestDate: string;
+  bankDetails: {
+    accountNumber: string;
+    ifscCode: string;
+    accountHolderName: string;
+  };
+}
+
+interface FundTransferPayload {
+  amount: number;
+  bankDetails: {
+    accountHolderName: string;
+    accountNumber: string;
+    ifscCode: string;
+  };
 }
 
 export const createFundTransferRequest = async (
-  amount: number
+  payload: FundTransferPayload
 ): Promise<FundTransferRequest> => {
   try {
     const { data } = await axiosClient.post(
       "/api/astrology/auth/astrologer/fund-transfer-request",
-      { amount }
+      payload
     );
     return data.data;
   } catch (error) {

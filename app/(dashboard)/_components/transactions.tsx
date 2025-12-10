@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -5,83 +7,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 import { TransactionCard } from "./transaction-card";
+import { useState } from "react";
+import type { FundTransferRequest } from "@/lib/api/payment.api";
 
-const transactions = [
-  {
-    _id: "txn_001",
-    amount: 150.75,
-    type: "credit",
-    date: "2025-05-10T14:23:00Z",
-    description: "Salary Credit",
-    status: "completed",
-  },
-  {
-    _id: "txn_002",
-    amount: 45.0,
-    type: "debit",
-    date: "2025-05-09T11:15:00Z",
-    description: "Grocery Shopping",
-    status: "completed",
-  },
-  {
-    _id: "txn_003",
-    amount: 200.0,
-    type: "debit",
-    date: "2025-05-08T18:45:00Z",
-    description: "Electricity Bill",
-    status: "pending",
-  },
-  {
-    _id: "txn_004",
-    amount: 500.0,
-    type: "credit",
-    date: "2025-05-07T09:00:00Z",
-    description: "Freelance Project",
-    status: "completed",
-  },
-  {
-    _id: "txn_005",
-    amount: 75.25,
-    type: "debit",
-    date: "2025-05-06T16:30:00Z",
-    description: "Restaurant Bill",
-    status: "completed",
-  },
-  {
-    _id: "txn_006",
-    amount: 300.0,
-    type: "credit",
-    date: "2025-05-05T12:00:00Z",
-    description: "Refund from Vendor",
-    status: "pending",
-  },
-] as const;
+type FilterType = "all" | "pending" | "approved" | "rejected" | "processing";
 
 export const Transactions = () => {
+  const [filter, setFilter] = useState<FilterType>("all");
+
+  const { data: fundTransferRequests } = useSuspenseQuery({
+    queryKey: ["fund-transfer-requests", filter],
+    queryFn: () =>
+      api.payment.getFundTransferRequests({
+        status: filter === "all" ? undefined : filter,
+      }),
+  });
+
+  const requests = fundTransferRequests as FundTransferRequest[];
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4">
-        <h3 className="text-lg font-semibold md:text-xl">Transactions</h3>
+        <h3 className="text-lg font-semibold md:text-xl">
+          Withdrawal Requests
+        </h3>
 
-        <Select defaultValue="all">
+        <Select
+          value={filter}
+          onValueChange={(value) => setFilter(value as FilterType)}
+        >
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="deposit">Deposit</SelectItem>
-            <SelectItem value="withdraw">Withdraw</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="processing">Processing</SelectItem>
+            <SelectItem value="approved">Approved</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {transactions.map((transaction) => (
-          <TransactionCard key={transaction._id} transaction={transaction} />
-        ))}
-      </div>
+      {requests?.length === 0 ? (
+        <div className="text-center py-8 text-muted-foreground">
+          No withdrawal requests found.
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {requests?.map((request) => (
+            <TransactionCard key={request._id} transaction={request} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -203,7 +203,7 @@ export const VideoCalling: FC<VideoCallingProps> = ({ type, sessionId }) => {
                 >
                   <div
                     className={cn(
-                      "px-3 py-1 flex items-center [&_svg]:size-4 gap-1 text-sm bg-white shadow-sm font-medium rounded-md absolute",
+                      "px-3 py-1 flex items-center [&_svg]:size-4 gap-1 text-sm bg-white dark:bg-neutral-800 dark:text-white shadow-sm font-medium rounded-md absolute",
                       remoteUsers.length > 0
                         ? "top-2 left-2"
                         : "top-2 md:top-4 left-2 md:left-4"
@@ -222,7 +222,7 @@ export const VideoCalling: FC<VideoCallingProps> = ({ type, sessionId }) => {
                       )}
                     >
                       <AvatarImage src={session?.user.image!} />
-                      <AvatarFallback className="bg-neutral-200">
+                      <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700">
                         {getInitials(session?.user.name || "")}
                       </AvatarFallback>
                     </Avatar>
@@ -245,13 +245,13 @@ export const VideoCalling: FC<VideoCallingProps> = ({ type, sessionId }) => {
                       user.hasVideo ? "" : "bg-accent"
                     )}
                   >
-                    <div className="absolute top-2 left-2 md:top-4 md:left-4 px-3 py-1 flex items-center gap-1 [&_svg]:size-4 shadow-sm text-sm bg-white font-medium rounded-md">
+                    <div className="absolute top-2 left-2 md:top-4 md:left-4 px-3 py-1 flex items-center gap-1 [&_svg]:size-4 shadow-sm text-sm bg-white dark:bg-neutral-800 dark:text-white font-medium rounded-md">
                       {user.hasAudio || <MicOff />} <span>{user.uid}</span>
                     </div>
 
                     {user.hasVideo || (
                       <Avatar className={cn("size-20 md:size-24 text-2xl")}>
-                        <AvatarFallback className="bg-neutral-200">
+                        <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700">
                           {getInitials(user.uid.toString() || "")}
                         </AvatarFallback>
                       </Avatar>
