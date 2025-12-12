@@ -9,6 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { useRouter } from "next/navigation";
 
 interface NoConsultationsProps {
   onUpdateProfile?: () => void;
@@ -19,6 +20,7 @@ export const NoConsultations = ({
   onUpdateProfile,
   onViewAvailability,
 }: NoConsultationsProps) => {
+  const router = useRouter();
   return (
     <Empty>
       <EmptyHeader>
@@ -34,8 +36,21 @@ export const NoConsultations = ({
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
-          <Button onClick={onUpdateProfile}>Update Profile</Button>
-          <Button variant="outline" onClick={onViewAvailability}>
+          <Button
+            onClick={() => {
+              router.push("/profile");
+              onUpdateProfile?.();
+            }}
+          >
+            Update Profile
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              router.push("/profile?tab=services");
+              onViewAvailability?.();
+            }}
+          >
             Set Availability
           </Button>
         </div>

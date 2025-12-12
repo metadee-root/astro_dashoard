@@ -9,6 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { useRouter } from "next/navigation";
 
 interface NoPujaBookingsProps {
   onUpdateProfile?: () => void;
@@ -17,8 +18,9 @@ interface NoPujaBookingsProps {
 
 export const NoPujaBookings = ({
   onUpdateProfile,
-  onViewAvailability
+  onViewAvailability,
 }: NoPujaBookingsProps) => {
+  const router = useRouter();
   return (
     <Empty>
       <EmptyHeader>
@@ -27,16 +29,20 @@ export const NoPujaBookings = ({
         </EmptyMedia>
         <EmptyTitle>No Puja Bookings Yet</EmptyTitle>
         <EmptyDescription>
-          You haven&apos;t received any puja bookings from devotees yet. Update your
-          profile, set your availability, and make your puja services more visible
-          to attract bookings.
+          You haven&apos;t received any puja bookings from devotees yet. Update
+          your profile, set your availability, and make your puja services more
+          visible to attract bookings.
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
-          <Button onClick={onUpdateProfile}>Update Profile</Button>
-          <Button variant="outline" onClick={onViewAvailability}>
-            Set Availability
+          <Button
+            onClick={() => {
+              router.push("/profile");
+              onUpdateProfile?.();
+            }}
+          >
+            Update Profile
           </Button>
         </div>
       </EmptyContent>
