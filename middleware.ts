@@ -11,11 +11,22 @@ const authRoutes = [
   "/missing-verification",
 ];
 
+// Legal pages that should be accessible to everyone
+const publicRoutes = ["/privacy-policy", "/terms-and-conditions"];
+
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
   const isAuthPage = authRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
+  const isPublicRoute = publicRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  // Allow access to public routes for everyone
+  if (isPublicRoute) {
+    return NextResponse.next();
+  }
 
   // If the user is not signed in and trying to access protected routes
   if (!token && !isAuthPage) {

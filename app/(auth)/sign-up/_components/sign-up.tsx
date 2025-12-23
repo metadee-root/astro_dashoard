@@ -235,24 +235,20 @@ export const SignUpForm = () => {
         </p>
 
         <p className="text-xs font-medium text-center text-muted-foreground">
-          By continuing, you agree to Sanatan Vision's{" "}
-          <a
+          By continuing, you agree to Sanatan Vision&apos;s{" "}
+          <Link
             href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
-            target="_blank"
-            rel="noopener noreferrer"
             className="hover:underline text-primary"
           >
             Terms of Service
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a
+          <Link
             href={EXTERNAL_LINKS.PRIVACY_POLICY}
-            target="_blank"
-            rel="noopener noreferrer"
             className="hover:underline text-primary"
           >
             Privacy Policy
-          </a>
+          </Link>
           .
         </p>
       </CardContent>

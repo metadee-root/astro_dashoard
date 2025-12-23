@@ -1,4 +1,4 @@
 export const EXTERNAL_LINKS = {
-  PRIVACY_POLICY: "https://www.sanatanvision.com/privacy-policy",
-  TERMS_OF_SERVICE: "https://www.sanatanvision.com/terms-and-conditions",
+  PRIVACY_POLICY: "/privacy-policy",
+  TERMS_OF_SERVICE: "/terms-and-conditions",
 } as const;
