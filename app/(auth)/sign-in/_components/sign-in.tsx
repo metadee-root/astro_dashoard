@@ -20,7 +20,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { EXTERNAL_LINKS } from "@/lib/constants";
 
 const signInSchema = z.object({
@@ -66,8 +72,11 @@ export const SignIn = () => {
 
   return (
     <Card className="w-full max-w-[26rem]">
-      <CardHeader>
-        <CardTitle className="text-center">Sign In - Astrologers</CardTitle>
+      <CardHeader className="text-center">
+        <CardTitle>Welcome Back</CardTitle>
+        <CardDescription>
+          Sign in to continue your spiritual journey and connect with seekers
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Form {...form}>
@@ -167,7 +176,7 @@ export const SignIn = () => {
         </div>
 
         <p className="text-xs font-medium text-center text-muted-foreground">
-          By continuing, you agree to Sanatan Vision&apos;s{" "}
+          By continuing, you agree to Sanatan Vision - Pandit Ji&apos;s{" "}
           <Link
             href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
             className="hover:underline text-primary"

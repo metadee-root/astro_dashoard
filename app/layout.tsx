@@ -22,8 +22,8 @@ const cinzel = Cinzel({
 
 export const metadata: Metadata = {
   title: {
-    default: "Sanatan Vision",
-    template: "%s | Sanatan Vision",
+    default: "Sanatan Vision - Pandit Ji",
+    template: "%s | Sanatan Vision - Pandit Ji",
   },
   description:
     "Sanatan Vision - Your trusted Hindu spiritual platform for connecting with divine wisdom, astrology, and spiritual guidance. Explore ancient Vedic knowledge and spiritual practices.",

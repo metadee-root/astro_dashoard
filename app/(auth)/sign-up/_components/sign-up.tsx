@@ -21,7 +21,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { EXTERNAL_LINKS } from "@/lib/constants";
 
@@ -89,8 +95,12 @@ export const SignUpForm = () => {
 
   return (
     <Card className="w-full max-w-[26rem]">
-      <CardHeader>
-        <CardTitle className="text-center">Sign Up - Astrologers</CardTitle>
+      <CardHeader className="text-center">
+        <CardTitle>Join Our Community</CardTitle>
+        <CardDescription>
+          Create your account and start sharing your divine wisdom with seekers
+          worldwide
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Form {...form}>
@@ -235,7 +245,7 @@ export const SignUpForm = () => {
         </p>
 
         <p className="text-xs font-medium text-center text-muted-foreground">
-          By continuing, you agree to Sanatan Vision&apos;s{" "}
+          By continuing, you agree to Sanatan Vision - Pandit Ji&apos;s{" "}
           <Link
             href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
             className="hover:underline text-primary"

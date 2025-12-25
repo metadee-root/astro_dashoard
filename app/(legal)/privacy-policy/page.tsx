@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export const metadata = {
   title: "Privacy Policy",
-  description: "Privacy Policy for Sanatan Vision Astrologers",
+  description: "Privacy Policy for Sanatan Vision - Pandit Ji",
 };
 
 const PrivacyPolicyPage = () => {
@@ -12,7 +12,7 @@ const PrivacyPolicyPage = () => {
     <div className="container mx-auto max-w-4xl px-4 py-12">
       <Button variant="ghost" asChild className="mb-6">
         <Link href="/sign-in">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft />
           Back
         </Link>
       </Button>

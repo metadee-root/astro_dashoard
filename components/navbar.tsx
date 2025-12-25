@@ -17,7 +17,7 @@ export const Navbar = () => {
         <Link href="/" className="flex items-center gap-2">
           <Image src={logo} alt="logo" className="w-10 h-auto" />
           <p className="font-cinzel font-bold text-xl hidden md:block">
-            Sanatan Vision
+            Sanatan Vision - Pandit Ji
           </p>
         </Link>
 

@@ -1,4 +1,4 @@
-# Sanatan Vision Astrologers
+# Sanatan Vision - Pandit Ji
 
 A modern web application for connecting users with professional astrologers. Built with Next.js and featuring real-time communication, user reviews, and an intuitive dashboard.
 
@@ -7,6 +7,7 @@ A modern web application for connecting users with professional astrologers. Bui
 ### For New Developers
 
 1. **Setup your environment**
+
    ```bash
    # Install dependencies
    pnpm install
@@ -18,6 +19,7 @@ A modern web application for connecting users with professional astrologers. Bui
    ```
 
 2. **Run the application**
+
    ```bash
    # Start development server
    pnpm dev
@@ -86,12 +88,14 @@ pnpm start
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/sanatan-vision-astrologers.git
    cd sanatan-vision-astrologers
    ```
 
 2. Install dependencies:
+
    ```bash
    pnpm install
    # or
@@ -100,6 +104,7 @@ pnpm start
 
 3. Set up environment variables:
    Create a `.env.local` file in the root directory and add the necessary environment variables:
+
    ```env
    NEXTAUTH_SECRET=your-secret-key
    NEXTAUTH_URL=http://localhost:3000
@@ -107,6 +112,7 @@ pnpm start
    ```
 
 4. Run the development server:
+
    ```bash
    pnpm dev
    # or

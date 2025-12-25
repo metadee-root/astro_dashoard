@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export const metadata = {
   title: "Terms and Conditions",
-  description: "Terms and Conditions for Sanatan Vision Astrologers",
+  description: "Terms and Conditions for Sanatan Vision - Pandit Ji",
 };
 
 const TermsAndConditionsPage = () => {
@@ -12,7 +12,7 @@ const TermsAndConditionsPage = () => {
     <div className="container mx-auto max-w-4xl px-4 py-12">
       <Button variant="ghost" asChild className="mb-6">
         <Link href="/sign-in">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft />
           Back
         </Link>
       </Button>
@@ -24,9 +24,9 @@ const TermsAndConditionsPage = () => {
 
         <p>
           Please read these Terms and Conditions (&quot;Terms&quot;, &quot;Terms
-          and Conditions&quot;) carefully before using the Sanatan Vision
-          Astrologers application and website operated by Metadee Ai Pvt Ltd
-          (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;).
+          and Conditions&quot;) carefully before using the Sanatan Vision -
+          Pandit Ji Astrologers application and website operated by Metadee Ai
+          Pvt Ltd (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;).
         </p>
 
         <h2>1. Agreement to Terms</h2>
