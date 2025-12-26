@@ -12,11 +12,14 @@ import { api } from "@/lib/api";
 import { TransactionCard } from "./transaction-card";
 import { useState } from "react";
 import type { FundTransferRequest } from "@/lib/api/payment.api";
+import { useTranslations } from "next-intl";
 
 type FilterType = "all" | "pending" | "approved" | "rejected" | "processing";
 
 export const Transactions = () => {
   const [filter, setFilter] = useState<FilterType>("all");
+  const t = useTranslations("transactions");
+  const tc = useTranslations("common");
 
   const { data: fundTransferRequests } = useSuspenseQuery({
     queryKey: ["fund-transfer-requests", filter],
@@ -31,9 +34,7 @@ export const Transactions = () => {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4">
-        <h3 className="text-lg font-semibold md:text-xl">
-          Withdrawal Requests
-        </h3>
+        <h3 className="text-lg font-semibold md:text-xl">{t("title")}</h3>
 
         <Select
           value={filter}
@@ -43,18 +44,18 @@ export const Transactions = () => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="processing">Processing</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
+            <SelectItem value="all">{tc("all")}</SelectItem>
+            <SelectItem value="pending">{tc("pending")}</SelectItem>
+            <SelectItem value="processing">{tc("processing")}</SelectItem>
+            <SelectItem value="approved">{tc("approved")}</SelectItem>
+            <SelectItem value="rejected">{tc("rejected")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {requests?.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          No withdrawal requests found.
+          {t("noRequests")}
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">

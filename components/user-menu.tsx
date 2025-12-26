@@ -13,10 +13,12 @@ import { LogOutIcon, UserCircle } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Skeleton } from "./ui/skeleton";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export const UserMenu = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const t = useTranslations("userMenu");
 
   const getInitials = (name: string): string => {
     if (!name) return "";
@@ -68,13 +70,13 @@ export const UserMenu = () => {
         {user.status !== "onboarding" && (
           <DropdownMenuItem onClick={() => router.push("/profile")}>
             <UserCircle />
-            Profile
+            {t("profile")}
           </DropdownMenuItem>
         )}
 
         <DropdownMenuItem onClick={() => signOut()}>
           <LogOutIcon />
-          Log out
+          {t("logOut")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

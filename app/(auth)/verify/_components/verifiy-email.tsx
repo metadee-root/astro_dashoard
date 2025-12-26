@@ -29,19 +29,21 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
-
-const verifyEmailSchema = z.object({
-  pin: z.string().min(6, {
-    message: "Your one-time password must be 6 characters.",
-  }),
-});
-
-type VerifyEmailValues = z.infer<typeof verifyEmailSchema>;
+import { useTranslations } from "next-intl";
 
 export const VerifyEmail = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const emailFromQuery = searchParams.get("email");
+  const t = useTranslations("auth.verify");
+
+  const verifyEmailSchema = z.object({
+    pin: z.string().min(6, {
+      message: t("validation.otpLength"),
+    }),
+  });
+
+  type VerifyEmailValues = z.infer<typeof verifyEmailSchema>;
 
   const form = useForm<VerifyEmailValues>({
     resolver: zodResolver(verifyEmailSchema),
@@ -57,23 +59,23 @@ export const VerifyEmail = () => {
         otp: values.pin,
       }),
     onSuccess: () => {
-      toast.success("Email verified successfully!");
+      toast.success(t("messages.verified"));
       router.push("/sign-in");
     },
     onError: (error) => {
       console.error(error);
-      toast.error(error.message || "Invalid OTP. Please try again.");
+      toast.error(error.message || t("messages.invalidOtp"));
     },
   });
 
   const resendMutation = useMutation({
     mutationFn: (email: string) => api.auth.resendOtp({ email }),
     onSuccess: () => {
-      toast.success("Verification code resent successfully!");
+      toast.success(t("messages.resent"));
     },
     onError: (error) => {
       console.error(error);
-      toast.error(error.message || "Failed to resend code. Please try again.");
+      toast.error(error.message || t("messages.resendError"));
     },
   });
 
@@ -81,7 +83,7 @@ export const VerifyEmail = () => {
     if (emailFromQuery) {
       resendMutation.mutate(emailFromQuery);
     } else {
-      toast.error("Email address is required to resend code");
+      toast.error(t("messages.emailRequired"));
     }
   };
 
@@ -96,11 +98,11 @@ export const VerifyEmail = () => {
   return (
     <Card className="w-full max-w-[26rem]">
       <CardHeader>
-        <CardTitle className="text-center">Verify Email</CardTitle>
+        <CardTitle className="text-center">{t("title")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-center text-muted-foreground text-sm">
-          Enter the 6-digit verification code sent to your email address
+          {t("subtitle")}
         </p>
 
         <Form {...form}>
@@ -113,7 +115,7 @@ export const VerifyEmail = () => {
               name="pin"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>One-Time Password</FormLabel>
+                  <FormLabel>{t("otp")}</FormLabel>
                   <FormControl>
                     <InputOTP maxLength={6} {...field}>
                       {Array.from({ length: 6 }, (_, index) => (
@@ -123,9 +125,7 @@ export const VerifyEmail = () => {
                       ))}
                     </InputOTP>
                   </FormControl>
-                  <FormDescription>
-                    Please enter the one-time password sent to your email.
-                  </FormDescription>
+                  <FormDescription>{t("otpDescription")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -133,7 +133,7 @@ export const VerifyEmail = () => {
 
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Spinner />}
-              Verify Email
+              {t("verifyButton")}
             </Button>
           </form>
         </Form>
@@ -147,13 +147,13 @@ export const VerifyEmail = () => {
             className="w-full"
           >
             {resendMutation.isPending && <Spinner />}
-            Resend Code
+            {t("resendCode")}
           </Button>
 
           <p className="text-sm font-medium text-center text-muted-foreground">
-            Already verified?{" "}
+            {t("alreadyVerified")}{" "}
             <Link href="/sign-in" className="hover:underline text-primary">
-              Sign in
+              {t("signIn")}
             </Link>
           </p>
         </div>

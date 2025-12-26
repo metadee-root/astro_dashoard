@@ -13,8 +13,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Wallet2 } from "lucide-react";
 import { Transactions } from "./transactions";
 import { WithdrawDialog } from "./withdraw-dialog";
+import { useTranslations } from "next-intl";
 
 export const WalletAndEarnings = () => {
+  const t = useTranslations("wallet");
   const { data: wallet } = useSuspenseQuery({
     queryKey: ["wallet"],
     queryFn: api.auth.getWallet,
@@ -31,22 +33,20 @@ export const WalletAndEarnings = () => {
     <Card>
       <Tabs defaultValue="wallet">
         <CardHeader>
-          <CardTitle className="text-xl md:text-[22px]">
-            Wallet & Earnings
-          </CardTitle>
+          <CardTitle className="text-xl md:text-[22px]">{t("title")}</CardTitle>
           <CardAction>
             <TabsList className="gap-1 rounded-full">
               <TabsTrigger
                 value="wallet"
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full data-[state=active]:shadow-none"
               >
-                Wallet
+                {t("walletTab")}
               </TabsTrigger>
               <TabsTrigger
                 value="transactions"
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full data-[state=active]:shadow-none"
               >
-                Transactions
+                {t("transactionsTab")}
               </TabsTrigger>
             </TabsList>
           </CardAction>
@@ -59,15 +59,17 @@ export const WalletAndEarnings = () => {
               </div>
               <div className="flex-1 flex items-center space-y-1 gap-4 flex-col md:flex-row  md:justify-between">
                 <div className="font-medium">
-                  <p>Wallet Balance</p>
+                  <p>{t("walletBalance")}</p>
                   <p className="text-2xl md:text-3xl font-bold">
                     {wallet.currency || "₹"}
                     {wallet.balance.toLocaleString()}
                   </p>
                   <p>
-                    {wallet.currency || "₹"}
-                    {maxWithdrawable.toLocaleString()} available now. (You can
-                    withdraw 75% of the amount only)
+                    {t("availableNow", {
+                      amount: `${
+                        wallet.currency || "₹"
+                      }${maxWithdrawable.toLocaleString()}`,
+                    })}
                   </p>
                 </div>
                 <WithdrawDialog

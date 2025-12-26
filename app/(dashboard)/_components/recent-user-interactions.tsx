@@ -13,8 +13,10 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { ConsultationCard } from "../consultations/_components/consultation-card";
 import { NoConsultations } from "../consultations/_components/no-consultations";
+import { useTranslations } from "next-intl";
 
 export const RecentUserInteractions = () => {
+  const t = useTranslations("recentConsultations");
   const { data } = useSuspenseQuery({
     queryKey: ["recent-consultations"],
     queryFn: () => api.consultation.getConsultationRecords(1, 2),
@@ -25,12 +27,10 @@ export const RecentUserInteractions = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl md:text-[22px]">
-          Recent Consultations
-        </CardTitle>
+        <CardTitle className="text-xl md:text-[22px]">{t("title")}</CardTitle>
         <CardAction>
           <Button variant="outline" asChild>
-            <Link href="/consultations">View All</Link>
+            <Link href="/consultations">{t("viewAll")}</Link>
           </Button>
         </CardAction>
       </CardHeader>
@@ -46,8 +46,8 @@ export const RecentUserInteractions = () => {
           </div>
         ) : (
           <NoConsultations
-            onUpdateProfile={() => window.location.href = "/edit-profile"}
-            onViewAvailability={() => window.location.href = "/availability"}
+            onUpdateProfile={() => (window.location.href = "/edit-profile")}
+            onViewAvailability={() => (window.location.href = "/availability")}
           />
         )}
       </CardContent>

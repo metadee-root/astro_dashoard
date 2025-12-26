@@ -26,15 +26,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-
-const withdrawSchema = z.object({
-  amount: z.string().min(1, "Amount is required"),
-  accountHolderName: z.string().min(1, "Account holder name is required"),
-  accountNumber: z.string().min(1, "Account number is required"),
-  ifscCode: z.string().min(1, "IFSC code is required"),
-});
-
-type WithdrawFormValues = z.infer<typeof withdrawSchema>;
+import { useTranslations } from "next-intl";
 
 interface WithdrawDialogProps {
   maxWithdrawable: number;
@@ -50,6 +42,17 @@ export const WithdrawDialog = ({
 }: WithdrawDialogProps) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
+  const t = useTranslations("wallet");
+  const tc = useTranslations("common");
+
+  const withdrawSchema = z.object({
+    amount: z.string().min(1, t("validation.amountRequired")),
+    accountHolderName: z.string().min(1, t("validation.accountHolderRequired")),
+    accountNumber: z.string().min(1, t("validation.accountNumberRequired")),
+    ifscCode: z.string().min(1, t("validation.ifscRequired")),
+  });
+
+  type WithdrawFormValues = z.infer<typeof withdrawSchema>;
 
   const form = useForm<WithdrawFormValues>({
     resolver: zodResolver(withdrawSchema),
@@ -72,13 +75,13 @@ export const WithdrawDialog = ({
         },
       }),
     onSuccess: () => {
-      toast.success("Withdrawal request submitted successfully!");
+      toast.success(t("messages.withdrawSuccess"));
       queryClient.invalidateQueries({ queryKey: ["wallet"] });
       setOpen(false);
       form.reset();
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to submit withdrawal request");
+      toast.error(error.message || t("messages.withdrawError"));
     },
   });
 
@@ -86,12 +89,12 @@ export const WithdrawDialog = ({
     const amount = Number(values.amount);
     if (amount > maxWithdrawable) {
       toast.error(
-        `Maximum withdrawable amount is ₹${maxWithdrawable.toLocaleString()}`
+        t("messages.maxAmount", { amount: maxWithdrawable.toLocaleString() })
       );
       return;
     }
     if (amount <= 0) {
-      toast.error("Please enter a valid amount");
+      toast.error(t("messages.invalidAmount"));
       return;
     }
     withdrawMutation.mutate(values);
@@ -102,15 +105,16 @@ export const WithdrawDialog = ({
       <DialogTrigger asChild>
         <Button disabled={maxWithdrawable <= 0}>
           <BanknoteArrowDown />
-          Withdraw to Bank
+          {t("withdrawToBank")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Withdraw to Bank</DialogTitle>
+          <DialogTitle>{t("withdrawTitle")}</DialogTitle>
           <DialogDescription>
-            Enter your bank details and the amount you want to withdraw. Maximum
-            withdrawable: ₹{maxWithdrawable.toLocaleString()}
+            {t("withdrawDescription", {
+              amount: `₹${maxWithdrawable.toLocaleString()}`,
+            })}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -120,11 +124,11 @@ export const WithdrawDialog = ({
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Amount (₹)</FormLabel>
+                  <FormLabel>{t("amount")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="Enter amount"
+                      placeholder={t("amountPlaceholder")}
                       max={maxWithdrawable}
                       {...field}
                     />
@@ -138,9 +142,12 @@ export const WithdrawDialog = ({
               name="accountHolderName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Account Holder Name</FormLabel>
+                  <FormLabel>{t("accountHolderName")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter account holder name" {...field} />
+                    <Input
+                      placeholder={t("accountHolderPlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -151,11 +158,11 @@ export const WithdrawDialog = ({
               name="accountNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Account Number</FormLabel>
+                  <FormLabel>{t("accountNumber")}</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter account number"
+                      placeholder={t("accountNumberPlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -168,10 +175,10 @@ export const WithdrawDialog = ({
               name="ifscCode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>IFSC Code</FormLabel>
+                  <FormLabel>{t("ifscCode")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter IFSC code"
+                      placeholder={t("ifscPlaceholder")}
                       className="uppercase"
                       {...field}
                       onChange={(e) =>
@@ -189,17 +196,17 @@ export const WithdrawDialog = ({
                 variant="outline"
                 onClick={() => setOpen(false)}
               >
-                Cancel
+                {tc("cancel")}
               </Button>
               <Button type="submit" disabled={withdrawMutation.isPending}>
                 {withdrawMutation.isPending && (
                   <Loader2 className="size-4 animate-spin" />
                 )}
-                Submit Request
+                {t("submitRequest")}
               </Button>
             </div>
             <p className="text-sm text-muted-foreground italic">
-              Note: Withdrawals take 1-2 working days to process.
+              {t("withdrawNote")}
             </p>
           </form>
         </Form>

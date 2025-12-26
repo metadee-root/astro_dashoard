@@ -34,39 +34,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { api } from "@/lib/api";
-
-const otpSchema = z.object({
-  otp: z
-    .string()
-    .min(6, { message: "OTP must be six digit long." })
-    .max(6, { message: "OTP must be six digit long." }),
-});
-
-const passwordSchema = z
-  .string()
-  .min(8, { message: "Password should be at least 8 characters long" })
-  .max(16, { message: "Password should not exceed 16 characters" })
-  .refine(
-    (value) =>
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,16}$/.test(
-        value
-      ),
-    {
-      message:
-        "Password must contain at least 1 uppercase letter, 1 number, and 1 special character",
-    }
-  );
-
-const formSchema = z
-  .object({
-    email: z.string().email(),
-    password: passwordSchema,
-    confirmPassword: passwordSchema,
-  })
-  .refine((fields) => fields.password === fields.confirmPassword, {
-    message: "Password don't match",
-    path: ["confirmPassword"],
-  });
+import { useTranslations } from "next-intl";
 
 export const ResetPassword = () => {
   const router = useRouter();
@@ -74,6 +42,40 @@ export const ResetPassword = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
+  const t = useTranslations("auth.resetPassword");
+
+  const otpSchema = z.object({
+    otp: z
+      .string()
+      .min(6, { message: t("validation.otpLength") })
+      .max(6, { message: t("validation.otpLength") }),
+  });
+
+  const passwordSchema = z
+    .string()
+    .min(8, { message: t("validation.passwordMin") })
+    .max(16, { message: t("validation.passwordMax") })
+    .refine(
+      (value) =>
+        /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,16}$/.test(
+          value
+        ),
+      {
+        message: t("validation.passwordRequirements"),
+      }
+    );
+
+  const formSchema = z
+    .object({
+      email: z.string().email(),
+      password: passwordSchema,
+      confirmPassword: passwordSchema,
+    })
+    .refine((fields) => fields.password === fields.confirmPassword, {
+      message: t("validation.passwordMismatch"),
+      path: ["confirmPassword"],
+    });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: "" },
@@ -90,7 +92,7 @@ export const ResetPassword = () => {
       return data;
     },
     onSuccess() {
-      toast.success("Verification email Sent!");
+      toast.success(t("verificationSent"));
       setIsSent(true);
     },
     onError(error) {
@@ -114,7 +116,7 @@ export const ResetPassword = () => {
       return data;
     },
     onSuccess(data, email, context) {
-      toast.success("Password updated!");
+      toast.success(t("passwordUpdated"));
       router.push("/sign-in");
     },
 
@@ -139,10 +141,8 @@ export const ResetPassword = () => {
   return (
     <Card className="w-full max-w-[26rem] isolate">
       <CardHeader className="text-center">
-        <CardTitle>Reset Your Password</CardTitle>
-        <CardDescription>
-          Enter the email to get OTP to setting up new password.
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         {!isSent ? (
@@ -156,12 +156,12 @@ export const ResetPassword = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem className="relative">
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("email")}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         disabled={isPending}
-                        placeholder="example@gmail.com"
+                        placeholder={t("emailPlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -177,7 +177,7 @@ export const ResetPassword = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="relative">
-                    <FormLabel>New Password</FormLabel>
+                    <FormLabel>{t("newPassword")}</FormLabel>
                     <div className="relative">
                       <FormControl>
                         <Input
@@ -210,7 +210,7 @@ export const ResetPassword = () => {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem className="relative">
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>{t("confirmPassword")}</FormLabel>
                     <div className="relative">
                       <FormControl>
                         <Input
@@ -244,7 +244,7 @@ export const ResetPassword = () => {
                 type="submit"
                 disabled={isPending || isSent}
               >
-                {isPending ? <Spinner size={20} /> : "Send OTP"}
+                {isPending ? <Spinner size={20} /> : t("sendOtp")}
               </Button>
             </form>
           </Form>
@@ -259,7 +259,7 @@ export const ResetPassword = () => {
                 name="otp"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>One-Time Password</FormLabel>
+                    <FormLabel>{t("otp")}</FormLabel>
                     <FormControl>
                       <InputOTP maxLength={6} {...field}>
                         {Array.from({ length: 6 }).map((_, i) => (
@@ -269,9 +269,7 @@ export const ResetPassword = () => {
                         ))}
                       </InputOTP>
                     </FormControl>
-                    <FormDescription>
-                      Please enter the one-time password sent to your email.
-                    </FormDescription>
+                    <FormDescription>{t("otpDescription")}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -281,7 +279,7 @@ export const ResetPassword = () => {
                 {verifyLoading ? (
                   <Spinner size={20} className="animate-spin" />
                 ) : (
-                  "Reset Password"
+                  t("resetButton")
                 )}
               </Button>
             </form>
@@ -289,9 +287,9 @@ export const ResetPassword = () => {
         )}
 
         <div className="text-sm text-muted-foreground text-center">
-          Have an account already ?{" "}
+          {t("haveAccount")}{" "}
           <Link className="text-primary font-medium" href="/sign-in">
-            Sign In
+            {t("signIn")}
           </Link>
         </div>
       </CardContent>

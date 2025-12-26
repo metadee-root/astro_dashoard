@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -5,12 +7,9 @@ import {
   specializationSchema,
   SpecializationData,
 } from "../../_schemas/specialization.schema";
-import { StepProps } from "../../_types/step.types";
 import {
   REMEDIES_TYPES,
   PREDICTION_AREAS,
-  YES_NO_MAYBE_OPTIONS,
-  PUJA_CAPABILITY,
 } from "../../_constants/form-options";
 import { useOnboardingStore } from "../../_hooks/use-onboarding-store";
 import { Button } from "@/components/ui/button";
@@ -24,14 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import MultipleSelector, { type Option } from "@/components/ui/multiselect";
+import MultipleSelector from "@/components/ui/multiselect";
 import {
   Card,
   CardContent,
@@ -39,10 +31,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 export const SpecializationStep = () => {
   const { updateStepData, getStepData, nextStep, previousStep } =
     useOnboardingStore();
+  const t = useTranslations("onboarding.specialization");
+  const tCommon = useTranslations("common");
 
   const savedData = getStepData("specialization");
 
@@ -82,24 +77,22 @@ export const SpecializationStep = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Specialization & Services</CardTitle>
-        <CardDescription>
-          Define your specialized areas and additional services
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-6">
               <div>
-                <h3 className="font-semibold mb-4">Remedies & Solutions</h3>
+                <h3 className="font-semibold mb-4">{t("remediesTitle")}</h3>
                 <div className="space-y-4">
                   <FormField
                     control={form.control}
                     name="remediesTypes"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Remedy Types You Offer</FormLabel>
+                        <FormLabel>{t("remedyTypesYouOffer")}</FormLabel>
                         <FormControl>
                           <MultipleSelector
                             value={
@@ -115,13 +108,12 @@ export const SpecializationStep = () => {
                               field.onChange(options.map((opt) => opt.value))
                             }
                             options={[...REMEDIES_TYPES]}
-                            placeholder="Select types of remedies you provide"
+                            placeholder={t("remedyTypesPlaceholder")}
                           />
                         </FormControl>
                         <FormMessage />
                         <div className="text-sm text-muted-foreground">
-                          Select the types of astrological remedies you
-                          specialize in
+                          {t("remedyTypesHint")}
                         </div>
                       </FormItem>
                     )}
@@ -132,7 +124,7 @@ export const SpecializationStep = () => {
                     name="excludedPredictionAreas"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Prediction Areas You Avoid</FormLabel>
+                        <FormLabel>{t("predictionAreasYouAvoid")}</FormLabel>
                         <FormControl>
                           <MultipleSelector
                             value={
@@ -148,13 +140,12 @@ export const SpecializationStep = () => {
                               field.onChange(options.map((opt) => opt.value))
                             }
                             options={[...PREDICTION_AREAS]}
-                            placeholder="Select areas you prefer not to predict"
+                            placeholder={t("predictionAreasPlaceholder")}
                           />
                         </FormControl>
                         <FormMessage />
                         <div className="text-sm text-muted-foreground">
-                          Be honest about areas where you're not comfortable
-                          making predictions
+                          {t("predictionAreasHint")}
                         </div>
                       </FormItem>
                     )}
@@ -163,7 +154,9 @@ export const SpecializationStep = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold mb-4">Content Creation</h3>
+                <h3 className="font-semibold mb-4">
+                  {t("contentCreationTitle")}
+                </h3>
                 <div className="space-y-4">
                   <FormField
                     control={form.control}
@@ -178,10 +171,10 @@ export const SpecializationStep = () => {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel className="text-sm font-normal">
-                            Create horoscope content
+                            {t("createHoroscopeContent")}
                           </FormLabel>
                           <FormDescription>
-                            Creating horoscope content for the platform users
+                            {t("createHoroscopeContentHint")}
                           </FormDescription>
                           <FormMessage />
                         </div>
@@ -202,11 +195,10 @@ export const SpecializationStep = () => {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel className="text-sm font-normal">
-                            Create daily predictions
+                            {t("createDailyPredictions")}
                           </FormLabel>
                           <FormDescription>
-                            Writing daily astrological predictions for zodiac
-                            signs
+                            {t("createDailyPredictionsHint")}
                           </FormDescription>
                           <FormMessage />
                         </div>
@@ -217,7 +209,7 @@ export const SpecializationStep = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold mb-4">Puja Services</h3>
+                <h3 className="font-semibold mb-4">{t("pujaServicesTitle")}</h3>
                 <div>
                   <FormField
                     control={form.control}
@@ -232,11 +224,10 @@ export const SpecializationStep = () => {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel className="text-sm font-normal">
-                            Can perform puja services
+                            {t("canPerformPuja")}
                           </FormLabel>
                           <FormDescription>
-                            Your capability to perform religious/spiritual pujas
-                            for clients
+                            {t("canPerformPujaHint")}
                           </FormDescription>
                           <FormMessage />
                         </div>
@@ -249,27 +240,22 @@ export const SpecializationStep = () => {
 
             <div className="bg-muted/50 border rounded-lg p-4">
               <h4 className="font-medium text-foreground mb-2">
-                Specialization Benefits
+                {t("benefitsTitle")}
               </h4>
               <ul className="text-sm text-muted-foreground space-y-1 list-disc ml-4">
-                <li>
-                  Being specific about your specialization helps attract the
-                  right clients
-                </li>
-                <li>
-                  Content creation can increase your visibility and earnings
-                </li>
-                <li>Puja services are high-value offerings on the platform</li>
-                <li>Honesty about limitations builds trust with clients</li>
+                <li>{t("benefitSpecific")}</li>
+                <li>{t("benefitContent")}</li>
+                <li>{t("benefitPuja")}</li>
+                <li>{t("benefitHonesty")}</li>
               </ul>
             </div>
 
             <div className="flex justify-between pt-6">
               <Button type="button" variant="outline" onClick={handlePrevious}>
-                Previous
+                {tCommon("previous")}
               </Button>
               <Button type="button" onClick={handleNext}>
-                Next
+                {tCommon("next")}
               </Button>
             </div>
           </form>

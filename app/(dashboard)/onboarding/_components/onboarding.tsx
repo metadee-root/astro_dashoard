@@ -17,37 +17,7 @@ import {
   StepperTrigger,
 } from "@/components/ui/stepper";
 import { EXTERNAL_LINKS } from "@/lib/constants";
-
-const steps = [
-  {
-    step: 1,
-    title: "Personal Information",
-  },
-  {
-    step: 2,
-    title: "Professional Background",
-  },
-  {
-    step: 3,
-    title: "Services & Pricing",
-  },
-  {
-    step: 4,
-    title: "Specialization",
-  },
-  {
-    step: 5,
-    title: "Documentation",
-  },
-  {
-    step: 6,
-    title: "Financial Information",
-  },
-  {
-    step: 7,
-    title: "Review & Submit",
-  },
-];
+import { useTranslations } from "next-intl";
 
 const stepComponents = [
   PersonalInfoStep,
@@ -61,6 +31,18 @@ const stepComponents = [
 
 export const Onboarding = () => {
   const { currentStep, totalSteps } = useOnboardingStore();
+  const t = useTranslations("onboarding");
+  const tCommon = useTranslations("common");
+
+  const steps = [
+    { step: 1, title: t("steps.personalInfo") },
+    { step: 2, title: t("steps.professionalBackground") },
+    { step: 3, title: t("steps.servicesPricing") },
+    { step: 4, title: t("steps.specialization") },
+    { step: 5, title: t("steps.documentation") },
+    { step: 6, title: t("steps.financial") },
+    { step: 7, title: t("steps.review") },
+  ];
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -75,10 +57,8 @@ export const Onboarding = () => {
         {/* Progress Header */}
         <div className="mb-8">
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold mb-2">Astrologer Onboarding</h1>
-            <p className="text-muted-foreground">
-              Complete your profile to start receiving consultations
-            </p>
+            <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
+            <p className="text-muted-foreground">{t("subtitle")}</p>
           </div>
 
           {/* Stepper */}
@@ -113,7 +93,7 @@ export const Onboarding = () => {
         {/* Step Information Footer */}
         <div className="mt-8 text-center">
           <div className="text-sm text-muted-foreground">
-            <p>Need help? Contact our support team</p>
+            <p>{tCommon("needHelp")}</p>
             <div className="flex justify-center space-x-4 mt-2">
               <a
                 href={EXTERNAL_LINKS.PRIVACY_POLICY}
@@ -121,7 +101,7 @@ export const Onboarding = () => {
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                Privacy Policy
+                {tCommon("privacyPolicy")}
               </a>
               <span>•</span>
               <a
@@ -130,7 +110,7 @@ export const Onboarding = () => {
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                Terms of Service
+                {tCommon("termsOfService")}
               </a>
             </div>
           </div>

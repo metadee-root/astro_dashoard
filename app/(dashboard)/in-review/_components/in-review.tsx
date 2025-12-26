@@ -15,6 +15,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 const InReviewSkeleton = () => {
   return (
@@ -28,21 +29,19 @@ const InReviewSkeleton = () => {
 };
 
 const InReviewError = ({ onRetry }: { onRetry: () => void }) => {
+  const t = useTranslations("inReview");
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <AlertCircle className="size-6 text-destructive" />
         </EmptyMedia>
-        <EmptyTitle>Failed to Load Status</EmptyTitle>
-        <EmptyDescription>
-          We couldn&apos;t fetch your profile status. Please check your
-          connection and try again.
-        </EmptyDescription>
+        <EmptyTitle>{t("failedToLoad")}</EmptyTitle>
+        <EmptyDescription>{t("failedDescription")}</EmptyDescription>
       </EmptyHeader>
       <Button onClick={onRetry} variant="outline" className="gap-2">
         <RefreshCw className="size-4" />
-        Retry
+        {t("retry")}
       </Button>
     </Empty>
   );
@@ -51,6 +50,7 @@ const InReviewError = ({ onRetry }: { onRetry: () => void }) => {
 export const InReview = () => {
   const router = useRouter();
   const { data: session, update: updateSession } = useSession();
+  const t = useTranslations("inReview");
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["profile-status"],
@@ -100,17 +100,15 @@ export const InReview = () => {
         <EmptyMedia variant="icon">
           <Clock />
         </EmptyMedia>
-        <EmptyTitle className="font-semibold">Profile Under Review</EmptyTitle>
+        <EmptyTitle className="font-semibold">{t("title")}</EmptyTitle>
         <EmptyDescription className="mx-auto max-w-md">
-          Your profile is currently being reviewed by our team. This process
-          usually takes 24-48 hours. You will be notified once your profile is
-          verified.
+          {t("description")}
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
         {session?.user && (
           <div>
-            <p className="mb-1 text-sm font-medium">Status:</p>
+            <p className="mb-1 text-sm font-medium">{t("status")}</p>
             <p className="text-sm text-muted-foreground">
               {session.user.status}
             </p>
@@ -118,7 +116,7 @@ export const InReview = () => {
         )}
         {data?.adminNote && (
           <div className="w-full max-w-md rounded-lg bg-muted p-4 text-left">
-            <p className="mb-1 text-sm font-medium">Admin Note:</p>
+            <p className="mb-1 text-sm font-medium">{t("adminNote")}</p>
             <p className="text-sm text-muted-foreground">{data.adminNote}</p>
           </div>
         )}

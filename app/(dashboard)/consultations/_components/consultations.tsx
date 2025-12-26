@@ -6,8 +6,10 @@ import { ConsultationCard } from "./consultation-card";
 import { Button } from "@/components/ui/button";
 import { NoConsultations } from "./no-consultations";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslations } from "next-intl";
 
 export const Consultations = () => {
+  const t = useTranslations("consultations");
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery({
       queryKey: ["consultations"],
@@ -42,10 +44,10 @@ export const Consultations = () => {
           >
             {isFetchingNextPage ? (
               <>
-                <Spinner className="mr-2" /> Loading more...
+                <Spinner className="mr-2" /> {t("loadingMore")}
               </>
             ) : (
-              "Load More"
+              t("loadMore")
             )}
           </Button>
         </div>

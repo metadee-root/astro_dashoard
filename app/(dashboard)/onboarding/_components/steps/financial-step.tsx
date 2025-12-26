@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -5,7 +7,6 @@ import {
   financialSchema,
   FinancialData,
 } from "../../_schemas/financial.schema";
-import { StepProps } from "../../_types/step.types";
 import {
   ACCOUNT_TYPES,
   PAYMENT_METHODS,
@@ -29,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import MultipleSelector, { type Option } from "@/components/ui/multiselect";
+import MultipleSelector from "@/components/ui/multiselect";
 import {
   Card,
   CardContent,
@@ -39,10 +40,13 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AlertCircle, Shield, CreditCard } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export const FinancialStep = () => {
   const { updateStepData, getStepData, nextStep, previousStep } =
     useOnboardingStore();
+  const t = useTranslations("onboarding.financial");
+  const tCommon = useTranslations("common");
 
   const savedData = getStepData("financial");
 
@@ -95,10 +99,8 @@ export const FinancialStep = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Financial Information</CardTitle>
-        <CardDescription>
-          Set up your payment details for receiving consultation fees
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -106,7 +108,7 @@ export const FinancialStep = () => {
             <div>
               <h3 className="font-semibold mb-4 flex items-center gap-2">
                 <CreditCard className="size-4" />
-                Bank Account Details
+                {t("bankAccountName")}
               </h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -116,13 +118,13 @@ export const FinancialStep = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Bank Account Number{" "}
+                      {t("bankAccountNumber")}{" "}
                       <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter your bank account number"
+                        placeholder={t("bankAccountNumberPlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -137,24 +139,17 @@ export const FinancialStep = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Confirm Account Number{" "}
+                      {t("bankAccountNumber")}{" "}
                       <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Re-enter your account number"
+                        placeholder={t("bankAccountNumberPlaceholder")}
                         {...field}
                       />
                     </FormControl>
                     <FormMessage />
-                    {bankAccountNumber &&
-                      confirmBankAccountNumber &&
-                      bankAccountNumber !== confirmBankAccountNumber && (
-                        <div className="text-sm text-destructive">
-                          Account numbers do not match
-                        </div>
-                      )}
                   </FormItem>
                 )}
               />
@@ -167,12 +162,12 @@ export const FinancialStep = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Account Holder Name{" "}
+                      {t("bankAccountName")}{" "}
                       <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Name as per bank records"
+                        placeholder={t("bankAccountNamePlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -249,11 +244,11 @@ export const FinancialStep = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    IFSC Code <span className="text-destructive">*</span>
+                    {t("ifscCode")} <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter IFSC code (e.g., HDFC0001234)"
+                      placeholder={t("ifscCodePlaceholder")}
                       className="uppercase"
                       {...field}
                       onChange={(e) =>
@@ -275,9 +270,12 @@ export const FinancialStep = () => {
                     name="upiId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>UPI ID</FormLabel>
+                        <FormLabel>{t("upiId")}</FormLabel>
                         <FormControl>
-                          <Input placeholder="your-upi-id@paytm" {...field} />
+                          <Input
+                            placeholder={t("upiIdPlaceholder")}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -314,10 +312,10 @@ export const FinancialStep = () => {
                     name="panNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PAN Number</FormLabel>
+                        <FormLabel>{t("panNumber")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="ABCDE1234F"
+                            placeholder={t("panNumberPlaceholder")}
                             className="uppercase"
                             {...field}
                             onChange={(e) =>
@@ -475,40 +473,12 @@ export const FinancialStep = () => {
               </div>
             </div>
 
-            <div className="bg-muted/50 border rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="size-4 text-primary mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-foreground mb-2">
-                    Important Information
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1 list-disc ml-4">
-                    <li>
-                      Bank details will be used for processing your consultation
-                      earnings
-                    </li>
-                    <li>
-                      Your financial information is encrypted and stored
-                      securely
-                    </li>
-                    <li>
-                      Payouts are processed according to your selected frequency
-                    </li>
-                    <li>Platform commission will be deducted before payout</li>
-                    <li>
-                      You can update payment details later from your dashboard
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
             <div className="flex justify-between pt-6">
               <Button type="button" variant="outline" onClick={handlePrevious}>
-                Previous
+                {tCommon("previous")}
               </Button>
               <Button type="button" onClick={handleNext}>
-                Next
+                {tCommon("next")}
               </Button>
             </div>
           </form>

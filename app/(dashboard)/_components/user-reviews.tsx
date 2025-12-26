@@ -14,8 +14,11 @@ import { api } from "@/lib/api";
 import { UserReviewCard } from "../reviews/_components/user-review-card";
 import { Rating, RatingButton } from "@/components/ui/rating";
 import { ReviewsEmpty } from "../reviews/_components/reviews-empty";
+import { useTranslations } from "next-intl";
 
 export const UserReviews = () => {
+  const t = useTranslations("reviews");
+  const tc = useTranslations("common");
   const { data } = useSuspenseQuery({
     queryKey: ["reviews", 1, 2],
     queryFn: () => api.reviews.getReviews({ page: 1, limit: 2 }),
@@ -27,7 +30,7 @@ export const UserReviews = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl md:text-[22px]">User Reviews</CardTitle>
+        <CardTitle className="text-xl md:text-[22px]">{t("title")}</CardTitle>
         {hasReviews ? (
           <div className="flex items-center gap-4">
             <div>
@@ -50,21 +53,23 @@ export const UserReviews = () => {
               <p>{rating.reviewsCount.toLocaleString()}</p>
             </div>
             <div>
-              <p>Based on {rating.reviewsCount} reviews</p>
+              <p>{t("basedOn", { count: rating.reviewsCount })}</p>
               <p>
-                {Math.round(
-                  (reviews.filter((r) => r.rating >= 4).length /
-                    reviews.length) *
-                    100
-                )}
-                % of seekers rated you {rating.average.toFixed(1)} stars
+                {t("ratedYou", {
+                  percent: Math.round(
+                    (reviews.filter((r) => r.rating >= 4).length /
+                      reviews.length) *
+                      100
+                  ),
+                  rating: rating.average.toFixed(1),
+                })}
               </p>
             </div>
           </div>
         ) : null}
         <CardAction>
           <Button asChild variant="outline">
-            <Link href="/reviews">View All</Link>
+            <Link href="/reviews">{tc("viewAll")}</Link>
           </Button>
         </CardAction>
       </CardHeader>

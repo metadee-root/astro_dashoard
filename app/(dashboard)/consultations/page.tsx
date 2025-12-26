@@ -5,12 +5,18 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Consultations } from "./_components/consultations";
 import { ConsultationsError } from "./_components/consultations-error";
 import { ConsultationsSkeleton } from "./_components/consultations-skeleton";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Consultations",
+export const generateMetadata = async () => {
+  const t = await getTranslations("consultations");
+  return {
+    title: t("pageTitle"),
+  };
 };
 
-const Page = () => {
+const Page = async () => {
+  const t = await getTranslations("consultations");
+
   prefetchInfinite({
     queryKey: ["consultations"],
     queryFn: ({ pageParam }) =>
@@ -22,7 +28,7 @@ const Page = () => {
     <HydrateClient>
       <div className="space-y-6">
         <h1 className="text-xl md:text-2xl font-semibold tracking-tight">
-          Consultations
+          {t("pageTitle")}
         </h1>
         <ErrorBoundary fallback={<ConsultationsError />}>
           <Suspense fallback={<ConsultationsSkeleton />}>

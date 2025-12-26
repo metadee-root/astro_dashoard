@@ -66,6 +66,7 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 // Reuse language options from onboarding
 const LANGUAGE_OPTIONS = [
@@ -487,6 +488,7 @@ interface PersonalInfoTabProps {
 
 export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
   const queryClient = useQueryClient();
+  const t = useTranslations("profile.personalInfoTab");
 
   const form = useForm<PersonalInfoData>({
     resolver: zodResolver(personalInfoSchema),
@@ -514,11 +516,11 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
       return api.auth.updateProfile(apiData as any);
     },
     onSuccess: () => {
-      toast.success("Personal information updated successfully");
+      toast.success(t("successMessage"));
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to update personal information");
+      toast.error(error.message || t("errorMessage"));
     },
   });
 
@@ -539,10 +541,8 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Personal Information</CardTitle>
-        <CardDescription>
-          Update your basic profile information and photo
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -553,7 +553,7 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
               name="profileImage"
               render={({ field }) => (
                 <FormItem className="flex flex-col items-center">
-                  <FormLabel>Profile Photo</FormLabel>
+                  <FormLabel>{t("profilePhoto")}</FormLabel>
                   <FormControl>
                     <ProfileImageUploader
                       value={field.value}
@@ -572,10 +572,10 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
                 name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>{t("fullName")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter your full name as per official documents"
+                        placeholder={t("fullNamePlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -589,7 +589,7 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
                 name="dateOfBirth"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Date of Birth</FormLabel>
+                    <FormLabel>{t("dateOfBirth")}</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -603,7 +603,7 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
                             {field.value ? (
                               format(field.value, "MMMM do, yyyy")
                             ) : (
-                              <span>Pick a date</span>
+                              <span>{t("pickDate")}</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -635,7 +635,7 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
                 name="timeOfBirth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Time of Birth</FormLabel>
+                    <FormLabel>{t("timeOfBirth")}</FormLabel>
                     <FormControl>
                       <Input type="time" {...field} />
                     </FormControl>
@@ -649,9 +649,12 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
                 name="placeOfBirth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Place of Birth</FormLabel>
+                    <FormLabel>{t("placeOfBirth")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="City, State, Country" {...field} />
+                      <Input
+                        placeholder={t("placeOfBirthPlaceholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -663,11 +666,13 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
                 name="primaryLanguage"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Primary Language</FormLabel>
+                    <FormLabel>{t("primaryLanguage")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select your primary language" />
+                          <SelectValue
+                            placeholder={t("primaryLanguagePlaceholder")}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -689,7 +694,7 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
               name="languages"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Additional Languages</FormLabel>
+                  <FormLabel>{t("additionalLanguages")}</FormLabel>
                   <FormControl>
                     <MultipleSelector
                       value={
@@ -708,10 +713,10 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
                           form.watch("primaryLanguage")
                         ),
                       ]}
-                      placeholder="Additional languages"
+                      placeholder={t("additionalLanguagesPlaceholder")}
                       emptyIndicator={
                         <p className="text-center text-sm">
-                          No languages found
+                          {t("noLanguagesFound")}
                         </p>
                       }
                       hideClearAllButton
@@ -727,18 +732,16 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
               name="about"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>About Yourself</FormLabel>
+                  <FormLabel>{t("aboutYourself")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Tell us about your journey in astrology, your approach, what makes you unique, and how you help clients..."
+                      placeholder={t("aboutPlaceholder")}
                       className="min-h-[120px]"
                       {...field}
                     />
                   </FormControl>
                   <FormMessage />
-                  <FormDescription>
-                    Minimum 50 characters required
-                  </FormDescription>
+                  <FormDescription>{t("minCharacters")}</FormDescription>
                 </FormItem>
               )}
             />
@@ -748,10 +751,10 @@ export const PersonalInfoTab = ({ profile }: PersonalInfoTabProps) => {
                 {updateMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
+                    {t("saving")}
                   </>
                 ) : (
-                  "Save Changes"
+                  t("saveChanges")
                 )}
               </Button>
             </div>

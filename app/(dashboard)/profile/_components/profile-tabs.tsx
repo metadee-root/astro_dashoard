@@ -10,6 +10,7 @@ import { ProfessionalBackgroundTab } from "./tabs/professional-background-tab";
 import { ServicesAvailabilityTab } from "./tabs/services-availability-tab";
 import { BankingPaymentTab } from "./tabs/banking-payment-tab";
 import { ProfileActionsTab } from "./tabs/profile-actions-tab";
+import { useTranslations } from "next-intl";
 
 const TAB_VALUES = [
   "personal",
@@ -24,6 +25,7 @@ export const ProfileTabs = () => {
     "tab",
     parseAsStringLiteral(TAB_VALUES).withDefault("personal")
   );
+  const t = useTranslations("profile");
 
   const { data: profile } = useSuspenseQuery({
     queryKey: ["profile"],
@@ -33,31 +35,31 @@ export const ProfileTabs = () => {
   const tabs = [
     {
       value: "personal",
-      label: "Personal Information",
+      label: t("tabs.personal"),
       icon: User,
       component: <PersonalInfoTab profile={profile} />,
     },
     {
       value: "professional",
-      label: "Professional Background",
+      label: t("tabs.professional"),
       icon: Briefcase,
       component: <ProfessionalBackgroundTab profile={profile} />,
     },
     {
       value: "services",
-      label: "Services & Availability",
+      label: t("tabs.services"),
       icon: Calendar,
       component: <ServicesAvailabilityTab profile={profile} />,
     },
     {
       value: "banking",
-      label: "Banking & Payment",
+      label: t("tabs.banking"),
       icon: CreditCard,
       component: <BankingPaymentTab profile={profile} />,
     },
     {
       value: "actions",
-      label: "Profile Actions",
+      label: t("tabs.actions"),
       icon: Settings,
       component: <ProfileActionsTab profile={profile} />,
     },
@@ -66,10 +68,8 @@ export const ProfileTabs = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold mb-2">Profile Settings</h1>
-        <p className="text-muted-foreground">
-          Update your profile information, services, and payment details
-        </p>
+        <h1 className="text-2xl font-bold mb-2">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       <Tabs

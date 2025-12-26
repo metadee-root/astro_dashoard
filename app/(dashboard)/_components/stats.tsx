@@ -4,8 +4,10 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowUp, IndianRupee, Phone, Wallet } from "lucide-react";
 import React from "react";
 import { api } from "@/lib/api";
+import { useTranslations } from "next-intl";
 
 export const Stats = () => {
+  const t = useTranslations("stats");
   const { data } = useSuspenseQuery({
     queryKey: ["analytics"],
     queryFn: async () =>
@@ -27,7 +29,7 @@ export const Stats = () => {
           <IndianRupee strokeWidth={1.5} className="size-8" />
         </div>
         <div className="space-y-1">
-          <p>Total Earnings</p>
+          <p>{t("totalEarnings")}</p>
           <p className="text-2xl md:text-3xl font-bold">
             {formatINR(currentEarnings)}
           </p>
@@ -38,7 +40,7 @@ export const Stats = () => {
           <Phone strokeWidth={1.5} className="size-8" />
         </div>
         <div className="space-y-1">
-          <p>Total Sessions</p>
+          <p>{t("totalSessions")}</p>
           <p className="text-2xl md:text-3xl font-bold">{totalSessions}</p>
         </div>
       </div>
@@ -47,7 +49,7 @@ export const Stats = () => {
           <Wallet strokeWidth={1.5} className="size-8" />
         </div>
         <div className="space-y-1">
-          <p>Wallet Balance</p>
+          <p>{t("walletBalance")}</p>
           <p className="text-2xl md:text-3xl font-bold">
             {formatINR(walletBalance)}
           </p>

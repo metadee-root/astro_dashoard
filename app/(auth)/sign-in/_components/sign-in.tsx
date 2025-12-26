@@ -28,24 +28,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EXTERNAL_LINKS } from "@/lib/constants";
-
-const signInSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(100, "Password must not exceed 100 characters"),
-});
-
-type SignInValues = z.infer<typeof signInSchema>;
+import { useTranslations } from "next-intl";
 
 export const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations("auth.signIn");
+  const tc = useTranslations("common");
+
+  const signInSchema = z.object({
+    email: z
+      .string()
+      .min(1, t("validation.emailRequired"))
+      .email(t("validation.emailInvalid")),
+    password: z
+      .string()
+      .min(8, t("validation.passwordMin"))
+      .max(100, t("validation.passwordMax")),
+  });
+
+  type SignInValues = z.infer<typeof signInSchema>;
 
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -73,10 +76,8 @@ export const SignIn = () => {
   return (
     <Card className="w-full max-w-[26rem]">
       <CardHeader className="text-center">
-        <CardTitle>Welcome Back</CardTitle>
-        <CardDescription>
-          Sign in to continue your spiritual journey and connect with seekers
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Form {...form}>
@@ -89,10 +90,10 @@ export const SignIn = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("email")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter your email"
+                      placeholder={t("emailPlaceholder")}
                       type="text"
                       autoCapitalize="none"
                       autoComplete="email"
@@ -112,18 +113,18 @@ export const SignIn = () => {
               render={({ field }) => (
                 <FormItem>
                   <div className="inline-flex items-center justify-between">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("password")}</FormLabel>
                     <Link
                       href="/reset-password"
                       className="text-xs font-medium text-muted-foreground hover:underline"
                     >
-                      Forgot password?
+                      {t("forgotPassword")}
                     </Link>
                   </div>
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder="Enter password"
+                        placeholder={t("passwordPlaceholder")}
                         type={showPassword ? "text" : "password"}
                         autoCapitalize="none"
                         autoComplete="current-password"
@@ -154,15 +155,15 @@ export const SignIn = () => {
 
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Spinner />}
-              Sign in
+              {t("signInButton")}
             </Button>
           </form>
         </Form>
 
         <p className="text-sm font-medium text-center text-muted-foreground">
-          Don't have an account?{" "}
+          {t("noAccount")}{" "}
           <Link href="/sign-up" className="hover:underline text-primary">
-            Sign up
+            {t("signUp")}
           </Link>
         </p>
 
@@ -171,24 +172,24 @@ export const SignIn = () => {
             href="/missing-verification"
             className="text-muted-foreground hover:underline"
           >
-            Missing verification email?
+            {t("missingVerification")}
           </Link>
         </div>
 
         <p className="text-xs font-medium text-center text-muted-foreground">
-          By continuing, you agree to Sanatan Vision - Pandit Ji&apos;s{" "}
+          {t("termsAgree")}{" "}
           <Link
             href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
             className="hover:underline text-primary"
           >
-            Terms of Service
+            {t("termsOfService")}
           </Link>{" "}
-          and{" "}
+          {tc("and")}{" "}
           <Link
             href={EXTERNAL_LINKS.PRIVACY_POLICY}
             className="hover:underline text-primary"
           >
-            Privacy Policy
+            {t("privacyPolicy")}
           </Link>
           .
         </p>

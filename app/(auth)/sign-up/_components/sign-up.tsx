@@ -30,31 +30,36 @@ import {
 } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { EXTERNAL_LINKS } from "@/lib/constants";
-
-const signUpSchema = z
-  .object({
-    name: z.string().min(1, "Name is required"),
-    email: z
-      .string()
-      .min(1, "Email is required")
-      .email("Please enter a valid email address"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(100, "Password must not exceed 100 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type SignUpFormValues = z.infer<typeof signUpSchema>;
+import { useTranslations } from "next-intl";
 
 export const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
+  const t = useTranslations("auth.signUp");
+  const tc = useTranslations("common");
+
+  const signUpSchema = z
+    .object({
+      name: z.string().min(1, t("validation.nameRequired")),
+      email: z
+        .string()
+        .min(1, t("validation.emailRequired"))
+        .email(t("validation.emailInvalid")),
+      password: z
+        .string()
+        .min(8, t("validation.passwordMin"))
+        .max(100, t("validation.passwordMax")),
+      confirmPassword: z
+        .string()
+        .min(1, t("validation.confirmPasswordRequired")),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("validation.passwordMismatch"),
+      path: ["confirmPassword"],
+    });
+
+  type SignUpFormValues = z.infer<typeof signUpSchema>;
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -74,16 +79,12 @@ export const SignUpForm = () => {
         password: values.password,
       }),
     onSuccess: (_, variables) => {
-      toast.success(
-        "Account created successfully! Please check your email for verification."
-      );
+      toast.success(t("messages.success"));
       router.push(`/verify?email=${encodeURIComponent(variables.email)}`);
     },
     onError: (error) => {
       console.error(error);
-      toast.error(
-        error.message || "Failed to create account. Please try again."
-      );
+      toast.error(error.message || t("messages.error"));
     },
   });
 
@@ -96,11 +97,8 @@ export const SignUpForm = () => {
   return (
     <Card className="w-full max-w-[26rem]">
       <CardHeader className="text-center">
-        <CardTitle>Join Our Community</CardTitle>
-        <CardDescription>
-          Create your account and start sharing your divine wisdom with seekers
-          worldwide
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("subtitle")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Form {...form}>
@@ -113,10 +111,10 @@ export const SignUpForm = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t("name")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter your name"
+                      placeholder={t("namePlaceholder")}
                       type="text"
                       autoCapitalize="words"
                       autoComplete="name"
@@ -135,10 +133,10 @@ export const SignUpForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("email")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter your email"
+                      placeholder={t("emailPlaceholder")}
                       type="text"
                       autoCapitalize="none"
                       autoComplete="email"
@@ -157,11 +155,11 @@ export const SignUpForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t("password")}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder="Enter password"
+                        placeholder={t("passwordPlaceholder")}
                         type={showPassword ? "text" : "password"}
                         autoCapitalize="none"
                         autoComplete="new-password"
@@ -196,12 +194,12 @@ export const SignUpForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <div className="inline-flex items-center justify-between">
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>{t("confirmPassword")}</FormLabel>
                   </div>
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder="Confirm your password"
+                        placeholder={t("confirmPasswordPlaceholder")}
                         type={showConfirmPassword ? "text" : "password"}
                         autoCapitalize="none"
                         autoComplete="new-password"
@@ -232,32 +230,32 @@ export const SignUpForm = () => {
 
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Spinner />}
-              Sign up
+              {t("signUpButton")}
             </Button>
           </form>
         </Form>
 
         <p className="text-sm font-medium text-center text-muted-foreground">
-          Already have an account?{" "}
+          {t("hasAccount")}{" "}
           <Link href="/sign-in" className="hover:underline text-primary">
-            Sign in
+            {t("signIn")}
           </Link>
         </p>
 
         <p className="text-xs font-medium text-center text-muted-foreground">
-          By continuing, you agree to Sanatan Vision - Pandit Ji&apos;s{" "}
+          {useTranslations("auth.signIn")("termsAgree")}{" "}
           <Link
             href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
             className="hover:underline text-primary"
           >
-            Terms of Service
+            {useTranslations("auth.signIn")("termsOfService")}
           </Link>{" "}
-          and{" "}
+          {tc("and")}{" "}
           <Link
             href={EXTERNAL_LINKS.PRIVACY_POLICY}
             className="hover:underline text-primary"
           >
-            Privacy Policy
+            {useTranslations("auth.signIn")("privacyPolicy")}
           </Link>
           .
         </p>

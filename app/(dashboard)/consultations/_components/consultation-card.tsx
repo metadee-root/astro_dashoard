@@ -1,3 +1,4 @@
+"use client";
 import type React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ import {
   FileText,
 } from "lucide-react";
 import { ConsultationRecord } from "@/lib/api/consultation.api";
+import { useTranslations } from "next-intl";
 
 interface ConsultationCardProps {
   consultation: ConsultationRecord;
@@ -22,6 +24,8 @@ interface ConsultationCardProps {
 export const ConsultationCard: React.FC<ConsultationCardProps> = ({
   consultation,
 }) => {
+  const t = useTranslations("consultations.card");
+
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "completed":
@@ -83,27 +87,29 @@ export const ConsultationCard: React.FC<ConsultationCardProps> = ({
         <div className="space-y-3">
           <h4 className="text-sm font-medium flex items-center gap-2">
             <User className="w-4 h-4" />
-            Personal Information
+            {t("personalInformation")}
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-6">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <div>
-                <p className="text-xs text-muted-foreground">Date of Birth</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("dateOfBirth")}
+                </p>
                 <p className="text-sm font-medium">
                   {consultation.dateTimeOfBirth
                     ? format(
                         new Date(consultation.dateTimeOfBirth),
                         "MMM dd, yyyy"
                       )
-                    : "Not provided"}
+                    : t("notProvided")}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-muted-foreground" />
               <div>
-                <p className="text-xs text-muted-foreground">Gender</p>
+                <p className="text-xs text-muted-foreground">{t("gender")}</p>
                 <p className="text-sm font-medium capitalize">
                   {consultation.gender}
                 </p>
@@ -112,7 +118,9 @@ export const ConsultationCard: React.FC<ConsultationCardProps> = ({
             <div className="flex items-center gap-2 sm:col-span-2">
               <MapPin className="w-4 h-4 text-muted-foreground" />
               <div>
-                <p className="text-xs text-muted-foreground">Place of Birth</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("placeOfBirth")}
+                </p>
                 <p className="text-sm font-medium">
                   {consultation.placeOfBirth}
                 </p>
@@ -127,14 +135,14 @@ export const ConsultationCard: React.FC<ConsultationCardProps> = ({
         <div className="space-y-3">
           <h4 className="text-sm font-medium flex items-center gap-2">
             <FileText className="w-4 h-4" />
-            Consultation Details
+            {t("consultationDetails")}
           </h4>
           <div className="space-y-3 pl-6">
             <div className="flex items-center gap-2">
               {getModeIcon(consultation.mode)}
               <div>
                 <p className="text-xs text-muted-foreground">
-                  Consultation Mode
+                  {t("consultationMode")}
                 </p>
                 <Badge variant="outline" className="mt-1 capitalize">
                   {consultation.mode}
@@ -142,7 +150,9 @@ export const ConsultationCard: React.FC<ConsultationCardProps> = ({
               </div>
             </div>
             <div className="space-y-2">
-              <p className="text-xs text-muted-foreground">User Concern</p>
+              <p className="text-xs text-muted-foreground">
+                {t("userConcern")}
+              </p>
               <div className="bg-primary/10 rounded-lg p-3 border">
                 <p className="text-sm leading-relaxed">
                   {consultation.concern}

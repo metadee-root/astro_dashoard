@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,6 +67,7 @@ import {
   ZoomInIcon,
   ZoomOutIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // Define type for pixel crop area
 type Area = { x: number; y: number; width: number; height: number };
@@ -129,6 +132,9 @@ const ProfileImageUploader = ({
   value,
   onChange,
 }: ProfileImageUploaderProps) => {
+  const t = useTranslations("onboarding.personalInfo");
+  const tCommon = useTranslations("common");
+
   const [
     { files, isDragging },
     {
@@ -271,7 +277,7 @@ const ProfileImageUploader = ({
             >
               <CircleUserRoundIcon className="size-10 opacity-40" />
               <span className="text-xs text-muted-foreground">
-                Click to upload
+                {t("clickToUpload")}
               </span>
             </div>
           )}
@@ -296,9 +302,9 @@ const ProfileImageUploader = ({
         />
       </div>
       <p className="text-xs text-muted-foreground text-center">
-        Supports: JPEG, PNG up to 2MB
+        {t("supportedFormats")}
         <br />
-        <span className="text-primary">Click or drag to upload</span>
+        <span className="text-primary">{t("clickOrDrag")}</span>
       </p>
 
       {/* Cropper Dialog */}
@@ -320,7 +326,7 @@ const ProfileImageUploader = ({
                 >
                   <ArrowLeftIcon aria-hidden="true" />
                 </Button>
-                <span>Crop Profile Photo</span>
+                <span>{t("cropProfilePhoto")}</span>
               </div>
               <Button
                 autoFocus
@@ -329,7 +335,7 @@ const ProfileImageUploader = ({
                 onClick={handleApply}
                 type="button"
               >
-                Apply
+                {tCommon("apply")}
               </Button>
             </DialogTitle>
           </DialogHeader>
@@ -378,6 +384,8 @@ const ProfileImageUploader = ({
 export const PersonalInfoStep = () => {
   const { updateStepData, getStepData, nextStep, previousStep } =
     useOnboardingStore();
+  const t = useTranslations("onboarding.personalInfo");
+  const tCommon = useTranslations("common");
 
   const savedData = getStepData("personalInfo");
 
@@ -431,10 +439,8 @@ export const PersonalInfoStep = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Personal Information</CardTitle>
-        <CardDescription>
-          Tell us about yourself to create your astrologer profile
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -446,7 +452,8 @@ export const PersonalInfoStep = () => {
               render={({ field }) => (
                 <FormItem className="flex flex-col items-center">
                   <FormLabel>
-                    Profile Photo <span className="text-destructive">*</span>
+                    {t("profilePhoto")}{" "}
+                    <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <ProfileImageUploader
@@ -466,11 +473,12 @@ export const PersonalInfoStep = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Full Name <span className="text-destructive">*</span>
+                      {t("fullName")}{" "}
+                      <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter your full name as per official documents"
+                        placeholder={t("fullNamePlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -485,7 +493,8 @@ export const PersonalInfoStep = () => {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>
-                      Date of Birth <span className="text-destructive">*</span>
+                      {t("dateOfBirth")}{" "}
+                      <span className="text-destructive">*</span>
                     </FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -500,7 +509,7 @@ export const PersonalInfoStep = () => {
                             {field.value ? (
                               format(field.value, "PPP")
                             ) : (
-                              <span>Pick a date</span>
+                              <span>{tCommon("pickDate")}</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -532,7 +541,8 @@ export const PersonalInfoStep = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Time of Birth <span className="text-destructive">*</span>
+                      {t("timeOfBirth")}{" "}
+                      <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -570,10 +580,14 @@ export const PersonalInfoStep = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Place of Birth <span className="text-destructive">*</span>
+                      {t("placeOfBirth")}{" "}
+                      <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="City, State, Country" {...field} />
+                      <Input
+                        placeholder={t("placeOfBirthPlaceholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -586,13 +600,15 @@ export const PersonalInfoStep = () => {
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>
-                      Primary Language{" "}
+                      {t("primaryLanguage")}{" "}
                       <span className="text-destructive">*</span>
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select your primary language" />
+                          <SelectValue
+                            placeholder={t("primaryLanguagePlaceholder")}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -614,7 +630,7 @@ export const PersonalInfoStep = () => {
               name="languages"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Additional Languages</FormLabel>
+                  <FormLabel>{t("additionalLanguages")}</FormLabel>
                   <FormControl>
                     <MultipleSelector
                       value={
@@ -633,10 +649,10 @@ export const PersonalInfoStep = () => {
                           form.watch("primaryLanguage")
                         ),
                       ]}
-                      placeholder="Additional languages"
+                      placeholder={t("additionalLanguagesPlaceholder")}
                       emptyIndicator={
                         <p className="text-center text-sm">
-                          No languages found
+                          {t("noLanguagesFound")}
                         </p>
                       }
                       hideClearAllButton
@@ -653,18 +669,19 @@ export const PersonalInfoStep = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    About Yourself <span className="text-destructive">*</span>
+                    {t("aboutYourself")}{" "}
+                    <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Tell us about your journey in astrology, your approach, what makes you unique, and how you help clients..."
+                      placeholder={t("aboutPlaceholder")}
                       className="min-h-[120px]"
                       {...field}
                     />
                   </FormControl>
                   <FormMessage />
                   <div className="text-sm text-muted-foreground">
-                    Minimum 50 characters required
+                    {t("minCharacters")}
                   </div>
                 </FormItem>
               )}
@@ -677,10 +694,10 @@ export const PersonalInfoStep = () => {
                 onClick={handlePrevious}
                 disabled
               >
-                Previous
+                {tCommon("previous")}
               </Button>
               <Button type="button" onClick={handleNext}>
-                Next
+                {tCommon("next")}
               </Button>
             </div>
           </form>

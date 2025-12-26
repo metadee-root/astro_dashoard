@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,11 +34,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AlertCircle, FileText, Upload, X } from "lucide-react";
+import { AlertCircle, Upload, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export const DocumentationStep = () => {
   const { updateStepData, getStepData, nextStep, previousStep } =
     useOnboardingStore();
+  const t = useTranslations("onboarding.documentation");
+  const tCommon = useTranslations("common");
 
   const savedData = getStepData("documentation");
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
@@ -88,10 +93,8 @@ export const DocumentationStep = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Documentation</CardTitle>
-        <CardDescription>
-          Upload required documents for verification and profile setup
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -102,7 +105,7 @@ export const DocumentationStep = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Aadhar Card <span className="text-destructive">*</span>
+                    {t("idProof")} <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <FileUpload
@@ -123,10 +126,7 @@ export const DocumentationStep = () => {
                             <Upload className="size-6 text-muted-foreground" />
                           </div>
                           <p className="font-medium text-sm">
-                            Drag & drop files here
-                          </p>
-                          <p className="text-muted-foreground text-xs">
-                            Or click to browse (up to 10MB each)
+                            {t("idProofHint")}
                           </p>
                         </div>
                         <FileUploadTrigger asChild>
@@ -135,7 +135,7 @@ export const DocumentationStep = () => {
                             size="sm"
                             className="mt-2 w-fit"
                           >
-                            Browse files
+                            {tCommon("viewAll")}
                           </Button>
                         </FileUploadTrigger>
                       </FileUploadDropzone>
@@ -171,7 +171,8 @@ export const DocumentationStep = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Address Proof <span className="text-destructive">*</span>
+                    {t("addressProof")}{" "}
+                    <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <FileUpload
@@ -192,10 +193,7 @@ export const DocumentationStep = () => {
                             <Upload className="size-6 text-muted-foreground" />
                           </div>
                           <p className="font-medium text-sm">
-                            Drag & drop files here
-                          </p>
-                          <p className="text-muted-foreground text-xs">
-                            Or click to browse (up to 10MB each)
+                            {t("addressProofHint")}
                           </p>
                         </div>
                         <FileUploadTrigger asChild>
@@ -204,7 +202,7 @@ export const DocumentationStep = () => {
                             size="sm"
                             className="mt-2 w-fit"
                           >
-                            Browse files
+                            {tCommon("viewAll")}
                           </Button>
                         </FileUploadTrigger>
                       </FileUploadDropzone>
@@ -239,10 +237,7 @@ export const DocumentationStep = () => {
               name="educationCertificates"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    Education Certificates{" "}
-                    <span className="text-destructive">*</span>
-                  </FormLabel>
+                  <FormLabel>{t("certifications")}</FormLabel>
                   <FormControl>
                     <FileUpload
                       accept="image/*,application/pdf,.doc,.docx"
@@ -263,10 +258,7 @@ export const DocumentationStep = () => {
                             <Upload className="size-6 text-muted-foreground" />
                           </div>
                           <p className="font-medium text-sm">
-                            Drag & drop files here
-                          </p>
-                          <p className="text-muted-foreground text-xs">
-                            Or click to browse (max 10 files, up to 5MB each)
+                            {t("certificationsHint")}
                           </p>
                         </div>
                         <FileUploadTrigger asChild>
@@ -275,7 +267,7 @@ export const DocumentationStep = () => {
                             size="sm"
                             className="mt-2 w-fit"
                           >
-                            Browse files
+                            {tCommon("viewAll")}
                           </Button>
                         </FileUploadTrigger>
                       </FileUploadDropzone>
@@ -299,39 +291,16 @@ export const DocumentationStep = () => {
                     </FileUpload>
                   </FormControl>
                   <FormMessage />
-                  <div className="text-sm text-muted-foreground">
-                    At least one education certificate is required
-                  </div>
                 </FormItem>
               )}
             />
 
-            <div className="bg-muted/50 border rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-primary mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-foreground mb-2">
-                    Document Security & Privacy
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1 list-disc ml-4">
-                    <li>All documents are encrypted and stored securely</li>
-                    <li>Documents are used only for verification purposes</li>
-                    <li>
-                      Your personal information is protected as per privacy
-                      policy
-                    </li>
-                    <li>Documents will be reviewed within 2-3 business days</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
             <div className="flex justify-between pt-6">
               <Button type="button" variant="outline" onClick={handlePrevious}>
-                Previous
+                {tCommon("previous")}
               </Button>
               <Button type="button" onClick={handleNext}>
-                Next
+                {tCommon("next")}
               </Button>
             </div>
           </form>

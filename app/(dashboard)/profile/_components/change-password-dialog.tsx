@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslations } from "next-intl";
 
 interface ChangePasswordDialogProps {
   children?: React.ReactNode;
@@ -57,6 +58,7 @@ export const ChangePasswordDialog = ({
   children,
 }: ChangePasswordDialogProps) => {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("profile.changePassword");
 
   const form = useForm<ChangePasswordFormData>({
     resolver: zodResolver(changePasswordSchema),
@@ -71,12 +73,12 @@ export const ChangePasswordDialog = ({
     mutationFn: (data: { oldPassword: string; newPassword: string }) =>
       api.auth.changePassword(data),
     onSuccess: () => {
-      toast.success("Password changed successfully");
+      toast.success(t("successMessage"));
       setOpen(false);
       form.reset();
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to change password");
+      toast.error(error.message || t("errorMessage"));
     },
   });
 
@@ -98,7 +100,7 @@ export const ChangePasswordDialog = ({
         {children || (
           <Button variant="outline" className="gap-2">
             <Shield className="h-4 w-4" />
-            Change Password
+            {t("changeButton")}
           </Button>
         )}
       </DialogTrigger>
@@ -106,12 +108,9 @@ export const ChangePasswordDialog = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Change Password
+            {t("title")}
           </DialogTitle>
-          <DialogDescription>
-            Enter your current password and choose a new password to secure your
-            account.
-          </DialogDescription>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -121,11 +120,11 @@ export const ChangePasswordDialog = ({
               name="oldPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Current Password</FormLabel>
+                  <FormLabel>{t("currentPassword")}</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter your current password"
+                      placeholder={t("currentPasswordPlaceholder")}
                       disabled={changePasswordMutation.isPending}
                       {...field}
                     />
@@ -140,11 +139,11 @@ export const ChangePasswordDialog = ({
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel>{t("newPassword")}</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter your new password"
+                      placeholder={t("newPasswordPlaceholder")}
                       disabled={changePasswordMutation.isPending}
                       {...field}
                     />
@@ -159,11 +158,11 @@ export const ChangePasswordDialog = ({
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm New Password</FormLabel>
+                  <FormLabel>{t("confirmPassword")}</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Confirm your new password"
+                      placeholder={t("confirmPasswordPlaceholder")}
                       disabled={changePasswordMutation.isPending}
                       {...field}
                     />
@@ -174,11 +173,11 @@ export const ChangePasswordDialog = ({
             />
 
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p>Password requirements:</p>
+              <p>{t("requirements")}</p>
               <ul className="list-disc list-inside space-y-1">
-                <li>At least 8 characters long</li>
-                <li>Contains uppercase and lowercase letters</li>
-                <li>Contains at least one number</li>
+                <li>{t("requirementLength")}</li>
+                <li>{t("requirementCase")}</li>
+                <li>{t("requirementNumber")}</li>
               </ul>
             </div>
 
@@ -188,11 +187,11 @@ export const ChangePasswordDialog = ({
                 disabled={changePasswordMutation.isPending}
                 asChild
               >
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline">{t("cancel")}</Button>
               </DialogClose>
               <Button type="submit" disabled={changePasswordMutation.isPending}>
                 {changePasswordMutation.isPending && <Spinner />}
-                Change Password
+                {t("changeButton")}
               </Button>
             </DialogFooter>
           </form>

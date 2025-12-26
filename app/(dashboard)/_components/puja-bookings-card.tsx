@@ -13,8 +13,11 @@ import { api } from "@/lib/api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { NoPujaBookings } from "../puja-bookings/_components/no-puja-bookings";
 import { PujaBookingCard } from "../puja-bookings/_components/puja-booking-card";
+import { useTranslations } from "next-intl";
 
 export const PujaBookingsCard = () => {
+  const t = useTranslations("pujaBookings");
+  const tc = useTranslations("common");
   const { data: pujaBookings } = useSuspenseQuery({
     queryKey: ["puja-bookings"],
     queryFn: api.puja.getBookings,
@@ -23,10 +26,10 @@ export const PujaBookingsCard = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl md:text-[22px]">Puja Bookings</CardTitle>
+        <CardTitle className="text-xl md:text-[22px]">{t("title")}</CardTitle>
         <CardAction>
           <Button variant="outline" asChild>
-            <Link href="/puja-bookings">View All</Link>
+            <Link href="/puja-bookings">{tc("viewAll")}</Link>
           </Button>
         </CardAction>
       </CardHeader>

@@ -45,6 +45,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 // Constants from onboarding
 const EXPERTISE_OPTIONS = [
@@ -114,8 +115,12 @@ const EXPERIENCE_YEARS = [
 
 const professionalBackgroundSchema = z.object({
   yearsOfExperience: z.string().min(1, "Years of experience is required"),
-  expertise: z.array(z.string()).min(1, "Select at least one area of expertise"),
-  astrologySystems: z.array(z.string()).min(1, "Select at least one astrology system"),
+  expertise: z
+    .array(z.string())
+    .min(1, "Select at least one area of expertise"),
+  astrologySystems: z
+    .array(z.string())
+    .min(1, "Select at least one astrology system"),
   otherPractices: z.array(z.string()).optional(),
   teachers: z.string().optional(),
   lineage: z.string().optional(),
@@ -145,8 +150,11 @@ interface ProfessionalBackgroundTabProps {
   profile: any;
 }
 
-export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTabProps) => {
+export const ProfessionalBackgroundTab = ({
+  profile,
+}: ProfessionalBackgroundTabProps) => {
   const queryClient = useQueryClient();
+  const t = useTranslations("profile.professionalTab");
 
   const form = useForm<ProfessionalBackgroundData>({
     resolver: zodResolver(professionalBackgroundSchema),
@@ -172,13 +180,14 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: ProfessionalBackgroundData) => api.auth.updateProfile(data),
+    mutationFn: (data: ProfessionalBackgroundData) =>
+      api.auth.updateProfile(data),
     onSuccess: () => {
-      toast.success("Professional background updated successfully");
+      toast.success(t("successMessage"));
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to update professional background");
+      toast.error(error.message || t("errorMessage"));
     },
   });
 
@@ -189,10 +198,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Professional Background</CardTitle>
-        <CardDescription>
-          Share your experience, expertise, and professional journey
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -236,7 +243,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                     </FormControl>
                     <FormMessage />
                     <FormDescription>
-                      Any formal education or certifications in astrology or related fields
+                      Any formal education or certifications in astrology or
+                      related fields
                     </FormDescription>
                   </FormItem>
                 )}
@@ -255,8 +263,9 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                         field.value?.map((expertise) => ({
                           value: expertise,
                           label:
-                            EXPERTISE_OPTIONS.find((opt) => opt.value === expertise)
-                              ?.label || expertise,
+                            EXPERTISE_OPTIONS.find(
+                              (opt) => opt.value === expertise
+                            )?.label || expertise,
                         })) || []
                       }
                       onChange={(options) =>
@@ -286,8 +295,9 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                         field.value?.map((system) => ({
                           value: system,
                           label:
-                            ASTROLOGY_SYSTEMS.find((opt) => opt.value === system)
-                              ?.label || system,
+                            ASTROLOGY_SYSTEMS.find(
+                              (opt) => opt.value === system
+                            )?.label || system,
                         })) || []
                       }
                       onChange={(options) =>
@@ -392,7 +402,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
-                    Any formal education or certifications in astrology or related fields
+                    Any formal education or certifications in astrology or
+                    related fields
                   </FormDescription>
                 </FormItem>
               )}
@@ -454,13 +465,12 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
-                    Be honest about areas where you're not comfortable making predictions
+                    Be honest about areas where you're not comfortable making
+                    predictions
                   </FormDescription>
                 </FormItem>
               )}
             />
-
-
 
             <FormField
               control={form.control}
@@ -491,7 +501,8 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                             </FileUploadTrigger>
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            Supports: PDF, JPEG, PNG up to 5MB each (max 5 files)
+                            Supports: PDF, JPEG, PNG up to 5MB each (max 5
+                            files)
                           </p>
                         </div>
                       </FileUploadDropzone>
@@ -500,14 +511,17 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
-                    Upload your astrology certificates, diplomas, or course completions
+                    Upload your astrology certificates, diplomas, or course
+                    completions
                   </FormDescription>
                 </FormItem>
               )}
             />
 
             <div>
-              <h3 className="font-semibold mb-4">Content Creation Preferences</h3>
+              <h3 className="font-semibold mb-4">
+                Content Creation Preferences
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -678,17 +692,14 @@ export const ProfessionalBackgroundTab = ({ profile }: ProfessionalBackgroundTab
             </div>
 
             <div className="flex justify-end pt-6">
-              <Button
-                type="submit"
-                disabled={updateMutation.isPending}
-              >
+              <Button type="submit" disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
+                    {t("saving")}
                   </>
                 ) : (
-                  "Save Changes"
+                  t("saveChanges")
                 )}
               </Button>
             </div>

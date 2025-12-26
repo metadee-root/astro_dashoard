@@ -5,18 +5,24 @@ import { ErrorBoundary } from "react-error-boundary";
 import { PujaBookingsError } from "./_components/puja-bookings-errror";
 import { PujaBookingsSkeleton } from "./_components/puja-bookings-skeleton";
 import { api } from "@/lib/api";
+import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Puja Bookings",
+export const generateMetadata = async () => {
+  const t = await getTranslations("pujaBookings");
+  return {
+    title: t("pageTitle"),
+  };
 };
 
-const Page = () => {
+const Page = async () => {
+  const t = await getTranslations("pujaBookings");
+
   prefetch({ queryKey: ["puja-bookings"], queryFn: api.puja.getBookings });
   return (
     <HydrateClient>
       <div className="space-y-6">
         <h1 className="text-xl md:text-2xl font-semibold tracking-tight">
-          Puja Bookings
+          {t("pageTitle")}
         </h1>
         <ErrorBoundary fallback={<PujaBookingsError />}>
           <Suspense fallback={<PujaBookingsSkeleton />}>

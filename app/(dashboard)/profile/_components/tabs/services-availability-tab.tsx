@@ -33,6 +33,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 // Constants from onboarding
 const WORKING_DAYS = [
@@ -97,6 +98,7 @@ export const ServicesAvailabilityTab = ({
   profile,
 }: ServicesAvailabilityTabProps) => {
   const queryClient = useQueryClient();
+  const t = useTranslations("profile.servicesTab");
 
   const form = useForm<ServicesAvailabilityData>({
     resolver: zodResolver(servicesAvailabilitySchema),
@@ -117,13 +119,11 @@ export const ServicesAvailabilityTab = ({
     mutationFn: (data: ServicesAvailabilityData) =>
       api.auth.updateProfile(data),
     onSuccess: () => {
-      toast.success("Services and availability updated successfully");
+      toast.success(t("successMessage"));
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: (error: any) => {
-      toast.error(
-        error.message || "Failed to update services and availability"
-      );
+      toast.error(error.message || t("errorMessage"));
     },
   });
 
@@ -134,10 +134,8 @@ export const ServicesAvailabilityTab = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Services & Availability</CardTitle>
-        <CardDescription>
-          Set up your consultation services, pricing, and availability
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -394,10 +392,10 @@ export const ServicesAvailabilityTab = ({
                   {updateMutation.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
+                      {t("saving")}
                     </>
                   ) : (
-                    "Save Changes"
+                    t("saveChanges")
                   )}
                 </Button>
               </div>

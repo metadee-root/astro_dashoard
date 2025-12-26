@@ -33,6 +33,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 // Constants from onboarding
 const ACCOUNT_TYPES = [
@@ -91,6 +92,7 @@ interface BankingPaymentTabProps {
 
 export const BankingPaymentTab = ({ profile }: BankingPaymentTabProps) => {
   const queryClient = useQueryClient();
+  const t = useTranslations("profile.bankingTab");
 
   const form = useForm<BankingPaymentData>({
     resolver: zodResolver(bankingPaymentSchema),
@@ -127,13 +129,11 @@ export const BankingPaymentTab = ({ profile }: BankingPaymentTabProps) => {
       return api.auth.updateProfile(apiData);
     },
     onSuccess: () => {
-      toast.success("Banking and payment information updated successfully");
+      toast.success(t("successMessage"));
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: (error: any) => {
-      toast.error(
-        error.message || "Failed to update banking and payment information"
-      );
+      toast.error(error.message || t("errorMessage"));
     },
   });
 
@@ -147,10 +147,8 @@ export const BankingPaymentTab = ({ profile }: BankingPaymentTabProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Banking & Payment Information</CardTitle>
-        <CardDescription>
-          Set up your payment details for receiving consultation earnings
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -468,10 +466,10 @@ export const BankingPaymentTab = ({ profile }: BankingPaymentTabProps) => {
                 {updateMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
+                    {t("saving")}
                   </>
                 ) : (
-                  "Save Changes"
+                  t("saveChanges")
                 )}
               </Button>
             </div>

@@ -23,25 +23,27 @@ import { api } from "@/lib/api";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
-const signInSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(100, "Password must not exceed 100 characters"),
-  rememberMe: z.boolean().optional(),
-});
-
-type SignInFormValues = z.infer<typeof signInSchema>;
+import { useTranslations } from "next-intl";
 
 export const SignInForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations("auth.signIn");
+
+  const signInSchema = z.object({
+    email: z
+      .string()
+      .min(1, t("validation.emailRequired"))
+      .email(t("validation.emailInvalid")),
+    password: z
+      .string()
+      .min(8, t("validation.passwordMin"))
+      .max(100, t("validation.passwordMax")),
+    rememberMe: z.boolean().optional(),
+  });
+
+  type SignInFormValues = z.infer<typeof signInSchema>;
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -78,10 +80,10 @@ export const SignInForm = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("email")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter your email"
+                  placeholder={t("emailPlaceholder")}
                   type="text"
                   autoCapitalize="none"
                   autoComplete="email"
@@ -101,11 +103,11 @@ export const SignInForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t("password")}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
-                    placeholder="Enter password"
+                    placeholder={t("passwordPlaceholder")}
                     type={showPassword ? "text" : "password"}
                     autoCapitalize="none"
                     autoComplete="current-password"
@@ -148,7 +150,7 @@ export const SignInForm = () => {
                   />
                 </FormControl>
                 <FormLabel className="text-sm font-normal text-muted-foreground">
-                  Remember me
+                  {t("rememberMe")}
                 </FormLabel>
               </FormItem>
             )}
@@ -157,13 +159,13 @@ export const SignInForm = () => {
             href="/forgot-password"
             className="text-sm font-medium text-primary hover:underline"
           >
-            Forgot password?
+            {t("forgotPassword")}
           </Link>
         </div>
 
         <Button type="submit" disabled={isLoading} className="h-12">
           {isLoading && <Spinner />}
-          Sign in
+          {t("signInButton")}
         </Button>
       </form>
     </Form>

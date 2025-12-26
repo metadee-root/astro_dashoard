@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +12,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface NoPujaBookingsProps {
   onUpdateProfile?: () => void;
@@ -21,18 +24,16 @@ export const NoPujaBookings = ({
   onViewAvailability,
 }: NoPujaBookingsProps) => {
   const router = useRouter();
+  const t = useTranslations("pujaBookings.empty");
+
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Calendar className="size-6" />
         </EmptyMedia>
-        <EmptyTitle>No Puja Bookings Yet</EmptyTitle>
-        <EmptyDescription>
-          You haven&apos;t received any puja bookings from devotees yet. Update
-          your profile, set your availability, and make your puja services more
-          visible to attract bookings.
-        </EmptyDescription>
+        <EmptyTitle>{t("title")}</EmptyTitle>
+        <EmptyDescription>{t("description")}</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
@@ -42,7 +43,7 @@ export const NoPujaBookings = ({
               onUpdateProfile?.();
             }}
           >
-            Update Profile
+            {t("updateProfile")}
           </Button>
         </div>
       </EmptyContent>

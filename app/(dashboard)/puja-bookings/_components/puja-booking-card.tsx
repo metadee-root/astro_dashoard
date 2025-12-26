@@ -1,3 +1,4 @@
+"use client";
 import {
   CalendarIcon,
   CircleDollarSignIcon,
@@ -13,6 +14,7 @@ import { format, isBefore, addHours, startOfDay, isAfter } from "date-fns";
 import { PujaBooking } from "@/lib/api/puja.api";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface PujaBookingCardProps {
   booking: PujaBooking;
@@ -61,6 +63,7 @@ const getPaymentStatusConfig = (status: PujaBooking["payment"]["status"]) => {
 
 export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
   const router = useRouter();
+  const t = useTranslations("pujaBookings.card");
   const statusConfig = getStatusConfig(booking.status);
   const paymentConfig = getPaymentStatusConfig(booking.payment.status);
 
@@ -99,7 +102,7 @@ export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
                   {booking.poojaId.name.en}
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">
-                  Booking ID: #{booking._id.slice(-8)}
+                  {t("bookingId")}: #{booking._id.slice(-8)}
                 </p>
               </div>
 
@@ -121,7 +124,7 @@ export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
           {/* User Information */}
           <div className="border rounded-lg p-4 space-y-2">
             <h4 className="font-medium text-gray-900 text-sm mb-3">
-              Customer Details
+              {t("customerDetails")}
             </h4>
             <div className="grid gap-2">
               <div className="flex items-center gap-3 text-sm">
@@ -130,12 +133,6 @@ export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
                   {booking.user.name}
                 </span>
               </div>
-              {/* <div className="flex items-center gap-3 text-sm">
-                <MailIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                <span className="text-gray-600 truncate">
-                  {booking.user.email}
-                </span>
-              </div> */}
             </div>
           </div>
 
@@ -150,7 +147,7 @@ export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                    Date
+                    {t("date")}
                   </p>
                   <p className="text-sm font-medium text-gray-900">
                     {format(new Date(booking.bookingDateTime), "PPP")}
@@ -164,7 +161,7 @@ export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                    Time
+                    {t("time")}
                   </p>
                   <p className="text-sm font-medium text-gray-900">
                     {format(new Date(booking.bookingDateTime), "p")}
@@ -177,7 +174,7 @@ export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                    Amount
+                    {t("amount")}
                   </p>
                   <p className="text-lg font-semibold text-gray-900">
                     ₹{booking.payment.amount.toLocaleString()}
@@ -189,7 +186,7 @@ export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                  Payment:
+                  {t("payment")}:
                 </span>
                 <Badge
                   variant="outline"
@@ -205,7 +202,7 @@ export const PujaBookingCard = ({ booking }: PujaBookingCardProps) => {
                   onClick={() => router.push(`/puja-bookings/${booking._id}`)}
                   disabled={isVideoCallButtonDisabled}
                 >
-                  <Video /> Join Video Call
+                  <Video /> {t("joinVideoCall")}
                 </Button>
               )}
             </div>

@@ -2,7 +2,13 @@
 
 import React from "react";
 import { AstrologerDetails } from "@/lib/api/auth.api";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Download, Trash2, Shield, LogOut } from "lucide-react";
@@ -10,12 +16,15 @@ import { DeleteAccountDialog } from "../delete-account-dialog";
 import { ChangePasswordDialog } from "../change-password-dialog";
 import { signOut } from "next-auth/react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface ProfileActionsTabProps {
   profile: AstrologerDetails;
 }
 
 export const ProfileActionsTab = ({ profile }: ProfileActionsTabProps) => {
+  const t = useTranslations("profile.actionsTab");
+
   const handleDownloadData = () => {
     // Create a JSON object with user data
     const userData = {
@@ -51,16 +60,20 @@ export const ProfileActionsTab = ({ profile }: ProfileActionsTabProps) => {
 
     // Create and download the JSON file
     const dataStr = JSON.stringify(userData, null, 2);
-    const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+    const dataUri =
+      "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
 
-    const exportFileDefaultName = `${profile.fullName.replace(/\s+/g, "_")}_data.json`;
+    const exportFileDefaultName = `${profile.fullName.replace(
+      /\s+/g,
+      "_"
+    )}_data.json`;
 
     const linkElement = document.createElement("a");
     linkElement.setAttribute("href", dataUri);
     linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
 
-    toast.success("Your data has been downloaded successfully");
+    toast.success(t("downloadSuccess"));
   };
 
   const handleLogout = () => {
@@ -74,11 +87,9 @@ export const ProfileActionsTab = ({ profile }: ProfileActionsTabProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Download className="h-5 w-5" />
-            Data Management
+            {t("dataManagement")}
           </CardTitle>
-          <CardDescription>
-            Manage your personal data and account information
-          </CardDescription>
+          <CardDescription>{t("dataManagementDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-3">
@@ -88,12 +99,11 @@ export const ProfileActionsTab = ({ profile }: ProfileActionsTabProps) => {
               className="gap-2"
             >
               <Download className="h-4 w-4" />
-              Download My Data
+              {t("downloadMyData")}
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            Download a copy of your personal information, profile details, and
-            account data in JSON format.
+            {t("downloadDescription")}
           </p>
         </CardContent>
       </Card>
@@ -103,17 +113,15 @@ export const ProfileActionsTab = ({ profile }: ProfileActionsTabProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Privacy & Security
+            {t("privacySecurity")}
           </CardTitle>
-          <CardDescription>
-            Manage your account security and privacy settings
-          </CardDescription>
+          <CardDescription>{t("privacySecurityDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-3">
             <ChangePasswordDialog />
             <p className="text-sm text-muted-foreground">
-              Change your account password to keep your account secure.
+              {t("changePasswordDescription")}
             </p>
           </div>
         </CardContent>
@@ -124,24 +132,18 @@ export const ProfileActionsTab = ({ profile }: ProfileActionsTabProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <LogOut className="h-5 w-5" />
-            Account Actions
+            {t("accountActions")}
           </CardTitle>
-          <CardDescription>
-            Manage your account status and access
-          </CardDescription>
+          <CardDescription>{t("accountActionsDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-3">
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="gap-2"
-            >
+            <Button onClick={handleLogout} variant="outline" className="gap-2">
               <LogOut className="h-4 w-4" />
-              Sign Out
+              {t("signOut")}
             </Button>
             <p className="text-sm text-muted-foreground">
-              Sign out of your current session.
+              {t("signOutDescription")}
             </p>
           </div>
 
@@ -151,12 +153,11 @@ export const ProfileActionsTab = ({ profile }: ProfileActionsTabProps) => {
             <DeleteAccountDialog>
               <Button variant="destructive" className="gap-2">
                 <Trash2 className="h-4 w-4" />
-                Delete Account
+                {t("deleteAccountDescription").split(".")[0]}
               </Button>
             </DeleteAccountDialog>
             <p className="text-sm text-muted-foreground">
-              Permanently delete your account and all associated data. This action
-              cannot be undone.
+              {t("deleteAccountDescription")}
             </p>
           </div>
         </CardContent>

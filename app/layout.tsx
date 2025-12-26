@@ -4,6 +4,8 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 import { Provider } from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const montserrat = Geist({
   variable: "--font-geist",
@@ -29,23 +31,28 @@ export const metadata: Metadata = {
     "Sanatan Vision - Your trusted Hindu spiritual platform for connecting with divine wisdom, astrology, and spiritual guidance. Explore ancient Vedic knowledge and spiritual practices.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${montserrat.variable} ${geistMono.variable} ${cinzel.variable} antialiased`}
       suppressHydrationWarning
     >
       <body>
-        <NuqsAdapter>
-          <Provider>
-            <main>{children}</main>
-          </Provider>
-        </NuqsAdapter>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <NuqsAdapter>
+            <Provider>
+              <main>{children}</main>
+            </Provider>
+          </NuqsAdapter>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

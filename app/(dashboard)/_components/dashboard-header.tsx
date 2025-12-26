@@ -4,6 +4,7 @@ import React from "react";
 import { format } from "date-fns";
 import { AstrologerDetails } from "@/lib/api/auth.api";
 import { useSocket } from "@/components/socket-provider";
+import { useTranslations } from "next-intl";
 
 export const DashboardHeader = ({
   profile,
@@ -11,6 +12,7 @@ export const DashboardHeader = ({
   profile: AstrologerDetails;
 }) => {
   const { isConnected, connect, disconnect } = useSocket();
+  const t = useTranslations("dashboard");
 
   const handleConnectionChange = (checked: boolean) => {
     if (checked) {
@@ -33,7 +35,7 @@ export const DashboardHeader = ({
     <div className="flex flex-col gap-4 md:flex-row md:justify-between">
       <div className="space-y-1">
         <h2 className="text-xl md:text-[22px] font-semibold">
-          Namaste, {profile.name || profile.fullName}
+          {t("greeting", { name: profile.name || profile.fullName })}
         </h2>
         <p className="font-medium">
           {/* Today is Shukla Paksha, Dwitiya |{" "} */}
@@ -51,7 +53,7 @@ export const DashboardHeader = ({
           aria-controls={"switch"}
           onClick={() => disconnect()}
         >
-          Offline
+          {t("offline")}
         </span>
         <Switch
           id={"switch"}
@@ -65,7 +67,7 @@ export const DashboardHeader = ({
           aria-controls={"switch"}
           onClick={() => connect()}
         >
-          Online
+          {t("online")}
         </span>
       </div>
     </div>

@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { Users, ArrowUpRightIcon } from "lucide-react";
+import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -10,6 +12,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface NoConsultationsProps {
   onUpdateProfile?: () => void;
@@ -21,18 +24,16 @@ export const NoConsultations = ({
   onViewAvailability,
 }: NoConsultationsProps) => {
   const router = useRouter();
+  const t = useTranslations("consultations.empty");
+
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Users className="size-6" />
         </EmptyMedia>
-        <EmptyTitle>No Client Consultations Yet</EmptyTitle>
-        <EmptyDescription>
-          Clients haven&apos;t booked any consultations with you yet. Update
-          your profile, set your availability, and make your services more
-          visible to attract clients.
-        </EmptyDescription>
+        <EmptyTitle>{t("title")}</EmptyTitle>
+        <EmptyDescription>{t("description")}</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
@@ -42,7 +43,7 @@ export const NoConsultations = ({
               onUpdateProfile?.();
             }}
           >
-            Update Profile
+            {t("updateProfile")}
           </Button>
           <Button
             variant="outline"
@@ -51,7 +52,7 @@ export const NoConsultations = ({
               onViewAvailability?.();
             }}
           >
-            Set Availability
+            {t("setAvailability")}
           </Button>
         </div>
       </EmptyContent>

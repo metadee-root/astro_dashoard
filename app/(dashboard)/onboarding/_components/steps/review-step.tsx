@@ -1,9 +1,10 @@
+"use client";
+
 import React from "react";
 import { useOnboardingStore } from "../../_hooks/use-onboarding-store";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,11 +23,14 @@ import {
   Star,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 interface ReviewStepProps {}
 
 export const ReviewStep: React.FC<ReviewStepProps> = () => {
   const { getStepData, previousStep, formData } = useOnboardingStore();
+  const t = useTranslations("onboarding.review");
+  const tCommon = useTranslations("common");
 
   const personalInfo = getStepData("personalInfo");
   const professionalBackground = getStepData("professionalBackground");
@@ -34,13 +38,6 @@ export const ReviewStep: React.FC<ReviewStepProps> = () => {
   const specialization = getStepData("specialization");
   const documentation = getStepData("documentation");
   const financial = getStepData("financial");
-
-  const formatFileSize = (bytes?: number): string => {
-    if (!bytes) return "No file";
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i];
-  };
 
   const formatCurrency = (amount: string): string => {
     return `₹${parseInt(amount || "0").toLocaleString()}`;
@@ -74,10 +71,8 @@ export const ReviewStep: React.FC<ReviewStepProps> = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Review Your Application</CardTitle>
-        <CardDescription>
-          Please review all the information before submitting your application
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -346,7 +341,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = () => {
         <div className="bg-muted/50 border rounded-lg p-6">
           <div className="text-center">
             <h4 className="font-semibold text-foreground mb-2">
-              Ready to Submit?
+              {t("confirmSubmit")}
             </h4>
             <p className="text-muted-foreground text-sm mb-6">
               Your application will be reviewed within 2-3 business days. You'll
@@ -354,7 +349,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = () => {
             </p>
             <div className="flex justify-center gap-4">
               <Button type="button" variant="outline" onClick={previousStep}>
-                Previous
+                {tCommon("previous")}
               </Button>
               <SubmitOnboardingButton />
             </div>
@@ -414,7 +409,7 @@ const transformFormDataForAPI = (formData: any) => {
 const SubmitOnboardingButton = () => {
   const { getCompleteFormData, resetForm } = useOnboardingStore();
   const { update } = useSession();
-  const router = useRouter();
+  const t = useTranslations("onboarding.review");
 
   const { mutate: submitApplication, isPending } = useMutation({
     mutationFn: async () => {
@@ -439,8 +434,8 @@ const SubmitOnboardingButton = () => {
       console.log("Submitting transformed data:", apiData);
       return await api.auth.submitOnboarding(apiData);
     },
-    onSuccess: async (data) => {
-      toast.success("Application submitted successfully! 🎉");
+    onSuccess: async () => {
+      toast.success(t("successMessage"));
       resetForm();
       // Update session with new status
       await update({
@@ -451,9 +446,7 @@ const SubmitOnboardingButton = () => {
     },
     onError: (error: any) => {
       console.error("Submission error:", error);
-      toast.error(
-        error.message || "Failed to submit application. Please try again."
-      );
+      toast.error(error.message || t("errorMessage"));
     },
   });
 
@@ -468,7 +461,7 @@ const SubmitOnboardingButton = () => {
       disabled={isPending}
       className="px-8"
     >
-      {isPending ? "Submitting..." : "Submit Application"}
+      {isPending ? t("submitting") : t("submitButton")}
     </Button>
   );
 };

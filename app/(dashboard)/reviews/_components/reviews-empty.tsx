@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Star } from "lucide-react";
 import {
@@ -7,23 +9,23 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { useTranslations } from "next-intl";
 
 interface ReviewsEmptyProps {
   onShareProfile?: () => void;
 }
 
 export const ReviewsEmpty = ({ onShareProfile }: ReviewsEmptyProps) => {
+  const t = useTranslations("reviews.empty");
+
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Star className="size-6" />
         </EmptyMedia>
-        <EmptyTitle>No Reviews Yet</EmptyTitle>
-        <EmptyDescription>
-          You haven&apos;t received any reviews from clients yet. Complete successful
-          consultations to encourage clients to share their experience.
-        </EmptyDescription>
+        <EmptyTitle>{t("title")}</EmptyTitle>
+        <EmptyDescription>{t("description")}</EmptyDescription>
       </EmptyHeader>
     </Empty>
   );

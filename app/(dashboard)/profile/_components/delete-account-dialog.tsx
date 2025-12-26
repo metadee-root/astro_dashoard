@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslations } from "next-intl";
 
 interface DeleteAccountDialogProps {
   children?: React.ReactNode;
@@ -43,6 +44,7 @@ type DeleteAccountFormData = z.infer<typeof deleteAccountSchema>;
 
 export const DeleteAccountDialog = ({ children }: DeleteAccountDialogProps) => {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("profile.deleteAccount");
 
   const form = useForm<DeleteAccountFormData>({
     resolver: zodResolver(deleteAccountSchema),
@@ -55,13 +57,13 @@ export const DeleteAccountDialog = ({ children }: DeleteAccountDialogProps) => {
     mutationFn: (data: { reason: string }) =>
       api.auth.requestAccountDeletion(data),
     onSuccess: () => {
-      toast.success("Account deletion request submitted successfully");
+      toast.success(t("successMessage"));
       setOpen(false);
       form.reset();
       signOut();
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to submit account deletion request");
+      toast.error(error.message || t("errorMessage"));
     },
   });
 
@@ -80,22 +82,17 @@ export const DeleteAccountDialog = ({ children }: DeleteAccountDialogProps) => {
         {children || (
           <Button variant="destructive">
             <Trash2 />
-            Delete Account
+            {t("deleteButton")}
           </Button>
         )}
       </AlertDialogTrigger>
       <AlertDialogContent className="max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Account</AlertDialogTitle>
+          <AlertDialogTitle>{t("title")}</AlertDialogTitle>
           <AlertDialogDescription asChild className="space-y-2">
             <div className="space-y-2">
-              <div>
-                This action cannot be undone. This will permanently delete your
-                account and remove all your data from our servers.
-              </div>
-              <div className="font-medium">
-                Please tell us why you want to delete your account:
-              </div>
+              <div>{t("description")}</div>
+              <div className="font-medium">{t("reasonPrompt")}</div>
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -107,10 +104,10 @@ export const DeleteAccountDialog = ({ children }: DeleteAccountDialogProps) => {
               name="reason"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Reason for deletion</FormLabel>
+                  <FormLabel>{t("reasonLabel")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Please provide a reason for your account deletion request..."
+                      placeholder={t("reasonPlaceholder")}
                       className="min-h-[100px]"
                       disabled={deleteAccountMutation.isPending}
                       {...field}
@@ -127,7 +124,7 @@ export const DeleteAccountDialog = ({ children }: DeleteAccountDialogProps) => {
                 onClick={handleCancel}
                 disabled={deleteAccountMutation.isPending}
               >
-                Cancel
+                {t("cancel")}
               </AlertDialogCancel>
               <Button
                 type="submit"
@@ -135,7 +132,7 @@ export const DeleteAccountDialog = ({ children }: DeleteAccountDialogProps) => {
                 disabled={deleteAccountMutation.isPending}
               >
                 {deleteAccountMutation.isPending && <Spinner />}
-                Delete Account
+                {t("deleteButton")}
               </Button>
             </AlertDialogFooter>
           </form>

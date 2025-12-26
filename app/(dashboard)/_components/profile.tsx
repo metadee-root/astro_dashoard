@@ -12,12 +12,15 @@ import { Pencil } from "lucide-react";
 import Link from "next/link";
 import React, { FC } from "react";
 import { AstrologerDetails } from "@/lib/api/auth.api";
+import { useTranslations } from "next-intl";
 
 interface ProfileProps {
   profile: AstrologerDetails;
 }
 
 export const Profile: FC<ProfileProps> = ({ profile }) => {
+  const t = useTranslations("dashboardProfile");
+
   const getInitials = (name: string): string => {
     if (!name) return "";
 
@@ -34,26 +37,16 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl md:text-[22px]">Profile</CardTitle>
+        <CardTitle className="text-xl md:text-[22px]">{t("title")}</CardTitle>
         <CardAction>
           <Link href="/profile">
             <Button variant="outline">
-              <Pencil /> Edit Profile
+              <Pencil /> {t("editProfile")}
             </Button>
           </Link>
         </CardAction>
       </CardHeader>
       <CardContent>
-        {/* <div className="space-y-2 mb-6">
-          <div className="text-sm font-medium flex justify-between">
-            <p>Profile completion</p>
-            <p>65% Completed</p>
-          </div>
-          <Progress value={65} />
-          <p className="text-sm ">
-            Complete your profile to increase visibility to seekers
-          </p>
-        </div> */}
         <div className="flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8">
           <div className="relative">
             <div className="size-32 bg-accent relative rounded-full">
@@ -68,45 +61,30 @@ export const Profile: FC<ProfileProps> = ({ profile }) => {
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="space-y-1 flex-1">
-                <p className="text-sm text-muted-foreground">Full Name</p>
+                <p className="text-sm text-muted-foreground">{t("fullName")}</p>
                 <p className="font-medium">
                   {profile.name || profile.fullName}
                 </p>
               </div>
-              {/* <div className="space-y-1 flex-1">
-                <p className="text-sm text-muted-foreground">
-                  Title
-                </p>
-                <p className="font-medium">
-                  Vedic Astrology Expert
-                </p>
-              </div> */}
               <div className="space-y-1 flex-1">
-                <p className="text-sm text-muted-foreground">Languages</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("languages")}
+                </p>
                 <p className="font-medium capitalize">
                   {profile.languages.join(", ")}
                 </p>
               </div>
             </div>
 
-            {/* <div className="flex flex-col md:flex-row gap-6">
-              <div className="space-y-1 flex-1">
-                <p className="text-sm text-muted-foreground">
-                  Experience
-                </p>
-                <p className="font-medium">15+ Years</p>
-              </div>
-            </div> */}
-
             <div className="space-y-1 flex-1">
-              <p className="text-sm text-muted-foreground">Expertise</p>
+              <p className="text-sm text-muted-foreground">{t("expertise")}</p>
               <p className="font-medium capitalize">
                 {profile.expertise.join(", ")}
               </p>
             </div>
 
             <div className="space-y-1 flex-1">
-              <p className="text-sm text-muted-foreground">Bio</p>
+              <p className="text-sm text-muted-foreground">{t("bio")}</p>
               <p className="font-medium">{profile.about}</p>
             </div>
           </div>

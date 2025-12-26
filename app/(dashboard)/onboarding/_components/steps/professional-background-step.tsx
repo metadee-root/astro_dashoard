@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -5,7 +7,6 @@ import {
   professionalSchema,
   ProfessionalData,
 } from "../../_schemas/professional.schema";
-import { StepProps } from "../../_types/step.types";
 import {
   EXPERTISE_OPTIONS,
   ASTROLOGY_SYSTEMS,
@@ -22,14 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import MultipleSelector, { type Option } from "@/components/ui/multiselect";
+import MultipleSelector from "@/components/ui/multiselect";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
@@ -38,10 +32,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 export const ProfessionalBackgroundStep = () => {
   const { updateStepData, getStepData, nextStep, previousStep } =
     useOnboardingStore();
+  const t = useTranslations("onboarding.professionalBackground");
+  const tCommon = useTranslations("common");
 
   const savedData = getStepData("professionalBackground");
 
@@ -83,10 +80,8 @@ export const ProfessionalBackgroundStep = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Professional Background</CardTitle>
-        <CardDescription>
-          Share your experience and expertise in astrology
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -97,7 +92,7 @@ export const ProfessionalBackgroundStep = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Areas of Expertise{" "}
+                    {t("areasOfExpertise")}{" "}
                     <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
@@ -114,12 +109,12 @@ export const ProfessionalBackgroundStep = () => {
                         field.onChange(options.map((opt) => opt.value))
                       }
                       options={[...EXPERTISE_OPTIONS]}
-                      placeholder="Select your areas of expertise"
+                      placeholder={t("areasOfExpertisePlaceholder")}
                     />
                   </FormControl>
                   <FormMessage />
                   <div className="text-sm text-muted-foreground">
-                    Select at least one area where you have expertise
+                    {t("areasOfExpertiseHint")}
                   </div>
                 </FormItem>
               )}
@@ -131,13 +126,13 @@ export const ProfessionalBackgroundStep = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Years of Experience{" "}
+                    {t("yearsOfExperience")}{" "}
                     <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="Enter number of years"
+                      placeholder={t("yearsOfExperiencePlaceholder")}
                       min="0"
                       max="50"
                       {...field}
@@ -148,7 +143,7 @@ export const ProfessionalBackgroundStep = () => {
                   </FormControl>
                   <FormMessage />
                   <div className="text-sm text-muted-foreground">
-                    Total years practicing astrology
+                    {t("yearsOfExperienceHint")}
                   </div>
                 </FormItem>
               )}
@@ -160,7 +155,7 @@ export const ProfessionalBackgroundStep = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Astrology Systems{" "}
+                    {t("astrologySystems")}{" "}
                     <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
@@ -177,12 +172,12 @@ export const ProfessionalBackgroundStep = () => {
                         field.onChange(options.map((opt) => opt.value))
                       }
                       options={[...ASTROLOGY_SYSTEMS]}
-                      placeholder="Select astrology systems you use"
+                      placeholder={t("astrologySystemsPlaceholder")}
                     />
                   </FormControl>
                   <FormMessage />
                   <div className="text-sm text-muted-foreground">
-                    Select at least one astrology system
+                    {t("astrologySystemsHint")}
                   </div>
                 </FormItem>
               )}
@@ -193,7 +188,7 @@ export const ProfessionalBackgroundStep = () => {
               name="otherPractices"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Other Practices</FormLabel>
+                  <FormLabel>{t("otherPractices")}</FormLabel>
                   <FormControl>
                     <MultipleSelector
                       value={
@@ -208,12 +203,12 @@ export const ProfessionalBackgroundStep = () => {
                         field.onChange(options.map((opt) => opt.value))
                       }
                       options={[...OTHER_PRACTICES]}
-                      placeholder="Select other related practices"
+                      placeholder={t("otherPracticesPlaceholder")}
                     />
                   </FormControl>
                   <FormMessage />
                   <div className="text-sm text-muted-foreground">
-                    Any other healing or spiritual practices you offer
+                    {t("otherPracticesHint")}
                   </div>
                 </FormItem>
               )}
@@ -225,17 +220,16 @@ export const ProfessionalBackgroundStep = () => {
                 name="teachers"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Teachers/Gurus</FormLabel>
+                    <FormLabel>{t("teachersGurus")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Names of your teachers or gurus in astrology"
+                        placeholder={t("teachersGurusPlaceholder")}
                         {...field}
                       />
                     </FormControl>
                     <FormMessage />
                     <div className="text-sm text-muted-foreground">
-                      Your teachers or mentors who guided your astrological
-                      journey
+                      {t("teachersGurusHint")}
                     </div>
                   </FormItem>
                 )}
@@ -246,16 +240,16 @@ export const ProfessionalBackgroundStep = () => {
                 name="lineage"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Lineage/Tradition</FormLabel>
+                    <FormLabel>{t("lineageTradition")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Your astrological lineage or tradition"
+                        placeholder={t("lineageTraditionPlaceholder")}
                         {...field}
                       />
                     </FormControl>
                     <FormMessage />
                     <div className="text-sm text-muted-foreground">
-                      Any specific astrological tradition or lineage you follow
+                      {t("lineageTraditionHint")}
                     </div>
                   </FormItem>
                 )}
@@ -267,17 +261,17 @@ export const ProfessionalBackgroundStep = () => {
               name="formalEducation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Formal Education in Astrology</FormLabel>
+                  <FormLabel>{t("formalEducation")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Degrees, certifications, courses, or formal training in astrology..."
+                      placeholder={t("formalEducationPlaceholder")}
                       className="min-h-[100px]"
                       {...field}
                     />
                   </FormControl>
                   <FormMessage />
                   <div className="text-sm text-muted-foreground">
-                    Any formal degrees, certifications, or specialized courses
+                    {t("formalEducationHint")}
                   </div>
                 </FormItem>
               )}
@@ -285,21 +279,19 @@ export const ProfessionalBackgroundStep = () => {
 
             <div className="bg-muted/50 border rounded-lg p-4">
               <h4 className="font-medium text-foreground mb-2">
-                Professional Summary
+                {t("summaryTitle")}
               </h4>
               <p className="text-sm text-muted-foreground">
-                Your professional background helps clients understand your
-                expertise and approach to astrology. Be honest about your
-                experience and qualifications.
+                {t("summaryDescription")}
               </p>
             </div>
 
             <div className="flex justify-between pt-6">
               <Button type="button" variant="outline" onClick={handlePrevious}>
-                Previous
+                {tCommon("previous")}
               </Button>
               <Button type="button" onClick={handleNext}>
-                Next
+                {tCommon("next")}
               </Button>
             </div>
           </form>

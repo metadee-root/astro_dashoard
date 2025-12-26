@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -5,12 +7,10 @@ import {
   servicesPricingSchema,
   ServicesPricingData,
 } from "../../_schemas/services-pricing.schema";
-import { StepProps } from "../../_types/step.types";
 import {
   WORKING_DAYS,
   TIME_SLOTS,
   RESPONSE_TIME_OPTIONS,
-  CONSULTATION_LIMITS,
 } from "../../_constants/form-options";
 import { useOnboardingStore } from "../../_hooks/use-onboarding-store";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import MultipleSelector, { type Option } from "@/components/ui/multiselect";
+import MultipleSelector from "@/components/ui/multiselect";
 import {
   Card,
   CardContent,
@@ -38,10 +38,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 export const ServicesPricingStep = () => {
   const { updateStepData, getStepData, nextStep, previousStep } =
     useOnboardingStore();
+  const t = useTranslations("onboarding.servicesPricing");
+  const tCommon = useTranslations("common");
 
   const savedData = getStepData("servicesPricing");
 
@@ -83,16 +86,14 @@ export const ServicesPricingStep = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Services & Pricing</CardTitle>
-        <CardDescription>
-          Set up your consultation services, pricing, and availability
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-6">
-              <h3 className="font-semibold mb-4">Consultation Pricing (₹)</h3>
+              <h3 className="font-semibold mb-4">{t("pricingTitle")}</h3>
               <div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <FormField
@@ -101,7 +102,7 @@ export const ServicesPricingStep = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Chat Consultation{" "}
+                          {t("chatConsultation")}{" "}
                           <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
@@ -116,7 +117,7 @@ export const ServicesPricingStep = () => {
                         </FormControl>
                         <FormMessage />
                         <div className="text-sm text-muted-foreground">
-                          Min: ₹1, Max: ₹1,000
+                          {t("priceRange")}
                         </div>
                       </FormItem>
                     )}
@@ -128,7 +129,7 @@ export const ServicesPricingStep = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Call Consultation{" "}
+                          {t("callConsultation")}{" "}
                           <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
@@ -143,7 +144,7 @@ export const ServicesPricingStep = () => {
                         </FormControl>
                         <FormMessage />
                         <div className="text-sm text-muted-foreground">
-                          Min: ₹1, Max: ₹1,000
+                          {t("priceRange")}
                         </div>
                       </FormItem>
                     )}
@@ -155,7 +156,7 @@ export const ServicesPricingStep = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Video Consultation{" "}
+                          {t("videoConsultation")}{" "}
                           <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
@@ -170,7 +171,7 @@ export const ServicesPricingStep = () => {
                         </FormControl>
                         <FormMessage />
                         <div className="text-sm text-muted-foreground">
-                          Min: ₹1, Max: ₹1,000
+                          {t("priceRange")}
                         </div>
                       </FormItem>
                     )}
@@ -179,7 +180,7 @@ export const ServicesPricingStep = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold mb-4">Availability</h3>
+                <h3 className="font-semibold mb-4">{t("availabilityTitle")}</h3>
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
@@ -188,13 +189,13 @@ export const ServicesPricingStep = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Max Consultations Per Day{" "}
+                            {t("maxConsultationsPerDay")}{" "}
                             <span className="text-destructive">*</span>
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
-                              placeholder="Enter maximum consultations"
+                              placeholder={t("maxConsultationsPlaceholder")}
                               min="1"
                               max="50"
                               {...field}
@@ -215,7 +216,7 @@ export const ServicesPricingStep = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Expected Response Time{" "}
+                            {t("expectedResponseTime")}{" "}
                             <span className="text-destructive">*</span>
                           </FormLabel>
                           <Select
@@ -224,7 +225,11 @@ export const ServicesPricingStep = () => {
                           >
                             <FormControl>
                               <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select response time" />
+                                <SelectValue
+                                  placeholder={t(
+                                    "expectedResponseTimePlaceholder"
+                                  )}
+                                />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -248,7 +253,7 @@ export const ServicesPricingStep = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Working Days{" "}
+                            {t("workingDays")}{" "}
                             <span className="text-destructive">*</span>
                           </FormLabel>
                           <FormControl>
@@ -266,12 +271,12 @@ export const ServicesPricingStep = () => {
                                 field.onChange(options.map((opt) => opt.value))
                               }
                               options={[...WORKING_DAYS]}
-                              placeholder="Select your working days"
+                              placeholder={t("workingDaysPlaceholder")}
                             />
                           </FormControl>
                           <FormMessage />
                           <div className="text-sm text-muted-foreground">
-                            Select days when you are available for consultations
+                            {t("workingDaysHint")}
                           </div>
                         </FormItem>
                       )}
@@ -283,7 +288,7 @@ export const ServicesPricingStep = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Available Time Slots{" "}
+                            {t("availableTimeSlots")}{" "}
                             <span className="text-destructive">*</span>
                           </FormLabel>
                           <FormControl>
@@ -300,13 +305,12 @@ export const ServicesPricingStep = () => {
                                 field.onChange(options.map((opt) => opt.value))
                               }
                               options={[...TIME_SLOTS]}
-                              placeholder="Select your preferred time slots"
+                              placeholder={t("availableTimeSlotsPlaceholder")}
                             />
                           </FormControl>
                           <FormMessage />
                           <div className="text-sm text-muted-foreground">
-                            Select time slots when you prefer to conduct
-                            consultations
+                            {t("availableTimeSlotsHint")}
                           </div>
                         </FormItem>
                       )}
@@ -317,17 +321,13 @@ export const ServicesPricingStep = () => {
 
               <div className="bg-muted/50 border rounded-lg p-4">
                 <h4 className="font-medium text-foreground mb-2">
-                  Pricing Guidelines
+                  {t("guidelinesTitle")}
                 </h4>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc ml-4">
-                  <li>Consider your experience level when setting prices</li>
-                  <li>
-                    Video consultations typically cost more than chat/call
-                  </li>
-                  <li>You can adjust these prices later based on demand</li>
-                  <li>
-                    Platform commission will be deducted from these amounts
-                  </li>
+                  <li>{t("guidelineExperience")}</li>
+                  <li>{t("guidelineVideo")}</li>
+                  <li>{t("guidelineAdjust")}</li>
+                  <li>{t("guidelineCommission")}</li>
                 </ul>
               </div>
 
@@ -337,10 +337,10 @@ export const ServicesPricingStep = () => {
                   variant="outline"
                   onClick={handlePrevious}
                 >
-                  Previous
+                  {tCommon("previous")}
                 </Button>
                 <Button type="button" onClick={handleNext}>
-                  Next
+                  {tCommon("next")}
                 </Button>
               </div>
             </div>
