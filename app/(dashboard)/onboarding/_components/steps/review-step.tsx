@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useOnboardingStore } from "../../_hooks/use-onboarding-store";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   CheckCircle2,
   User,
@@ -21,9 +22,218 @@ import {
   FileText,
   CreditCard,
   Star,
+  Shield,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { EXTERNAL_LINKS } from "@/lib/constants";
+
+// Helper function to transform form data to API format
+const transformFormDataForAPI = (formData: any) => {
+  return {
+    fullName: formData.personalInfo?.fullName || "",
+    dateOfBirth:
+      formData.personalInfo?.dateOfBirth?.toISOString().split("T")[0] || "",
+    timeOfBirth:
+      formData.personalInfo?.timeOfBirth?.toTimeString().slice(0, 5) || "",
+    placeOfBirth: formData.personalInfo?.placeOfBirth || "",
+    primaryLanguage: formData.personalInfo?.primaryLanguage || "",
+    languages: formData.personalInfo?.languages || [],
+    expertise: formData.professionalBackground?.expertise || [],
+    yearsOfExperience:
+      formData.professionalBackground?.yearsOfExperience?.toString() || "0",
+    astrologySystems: formData.professionalBackground?.astrologySystems || [],
+    otherPractices: formData.professionalBackground?.otherPractices || [],
+    teachers: formData.professionalBackground?.teachers || "",
+    lineage: formData.professionalBackground?.lineage || "",
+    formalEducation: formData.professionalBackground?.formalEducation || "",
+    maxConsultationsPerDay:
+      formData.servicesPricing?.maxConsultationsPerDay?.toString() || "5",
+    workingDays: formData.servicesPricing?.workingDays || [],
+    timeSlots: formData.servicesPricing?.timeSlots || [],
+    expectedResponseTime:
+      formData.servicesPricing?.expectedResponseTime || "within_24_hours",
+    remediesTypes: formData.specialization?.remediesTypes || [],
+    excludedPredictionAreas:
+      formData.specialization?.excludedPredictionAreas || [],
+    createHoroscopeContent:
+      formData.specialization?.createHoroscopeContent || false,
+    createDailyPredictions:
+      formData.specialization?.createDailyPredictions || false,
+    bankDetails: JSON.stringify(formData.financial || {}),
+    about: formData.personalInfo?.about || "",
+    chatPrice: formData.servicesPricing?.chatPrice || "500",
+    callPrice: formData.servicesPricing?.callPrice || "1000",
+    videoPrice: formData.servicesPricing?.videoPrice || "1500",
+    canPerformPuja: formData.specialization?.canPerformPuja || false,
+    profileImage: formData.personalInfo?.profileImage,
+    aadharCard: formData.documentation?.aadharCard,
+    addressProof: formData.documentation?.addressProof,
+    educationCertificates: formData.documentation?.educationCertificates || [],
+  };
+};
+
+// Separate component for submission with mutation
+interface SubmitOnboardingButtonProps {
+  disabled?: boolean;
+}
+
+const SubmitOnboardingButton = ({ disabled }: SubmitOnboardingButtonProps) => {
+  const { getCompleteFormData, resetForm } = useOnboardingStore();
+  const { update } = useSession();
+  const t = useTranslations("onboarding.review");
+
+  const { mutate: submitApplication, isPending } = useMutation({
+    mutationFn: async () => {
+      const formData = getCompleteFormData();
+      const apiData = transformFormDataForAPI(formData);
+
+      // Validate required fields
+      if (!apiData.fullName || !apiData.dateOfBirth || !apiData.placeOfBirth) {
+        throw new Error("Please complete all required personal information");
+      }
+
+      if (!apiData.expertise.length || !apiData.astrologySystems.length) {
+        throw new Error(
+          "Please add at least one area of expertise and one astrology system"
+        );
+      }
+
+      if (!apiData.workingDays.length || !apiData.timeSlots.length) {
+        throw new Error("Please select your working days and time slots");
+      }
+
+      console.log("Submitting transformed data:", apiData);
+      return await api.auth.submitOnboarding(apiData);
+    },
+    onSuccess: async () => {
+      toast.success(t("successMessage"));
+      resetForm();
+      // Update session with new status
+      await update({
+        status: "in_review",
+      });
+      // Use hard redirect instead of router.push to ensure middleware gets updated token
+      window.location.href = "/in-review";
+    },
+    onError: (error: any) => {
+      console.error("Submission error:", error);
+      toast.error(error.message || t("errorMessage"));
+    },
+  });
+
+  const handleSubmit = () => {
+    submitApplication();
+  };
+
+  return (
+    <Button
+      type="button"
+      onClick={handleSubmit}
+      disabled={isPending || disabled}
+      className="px-8"
+    >
+      {isPending ? t("submitting") : t("submitButton")}
+    </Button>
+  );
+};
+
+// Legal agreement section with checkboxes
+interface LegalAgreementSectionProps {
+  previousStep: () => void;
+  t: ReturnType<typeof useTranslations>;
+  tCommon: ReturnType<typeof useTranslations>;
+}
+
+const LegalAgreementSection = ({
+  previousStep,
+  t,
+  tCommon,
+}: LegalAgreementSectionProps) => {
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+
+  const canSubmit = acceptedTerms && acceptedPrivacy;
+
+  return (
+    <div className="bg-muted/50 border rounded-lg p-6">
+      {/* Legal Agreements */}
+      <div className="mb-6">
+        <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Shield className="size-4" />
+          {t("legalAgreements")}
+        </h4>
+        <div className="space-y-4">
+          {/* Terms and Conditions */}
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="acceptTerms"
+              checked={acceptedTerms}
+              onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
+            />
+            <label
+              htmlFor="acceptTerms"
+              className="text-sm leading-relaxed cursor-pointer"
+            >
+              {t("acceptTermsPrefix")}{" "}
+              <a
+                href={EXTERNAL_LINKS.TERMS_OF_SERVICE}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium"
+              >
+                {tCommon("termsOfService")}
+              </a>{" "}
+              <span className="text-destructive">*</span>
+            </label>
+          </div>
+
+          {/* Privacy Policy */}
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="acceptPrivacy"
+              checked={acceptedPrivacy}
+              onCheckedChange={(checked) =>
+                setAcceptedPrivacy(checked === true)
+              }
+            />
+            <label
+              htmlFor="acceptPrivacy"
+              className="text-sm leading-relaxed cursor-pointer"
+            >
+              {t("acceptPrivacyPrefix")}{" "}
+              <a
+                href={EXTERNAL_LINKS.PRIVACY_POLICY}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium"
+              >
+                {tCommon("privacyPolicy")}
+              </a>{" "}
+              <span className="text-destructive">*</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {/* Submission Section */}
+      <div className="text-center border-t pt-6">
+        <h4 className="font-semibold text-foreground mb-2">
+          {t("confirmSubmit")}
+        </h4>
+        <p className="text-muted-foreground text-sm mb-6">
+          {t("reviewNotice")}
+        </p>
+        <div className="flex justify-center gap-4">
+          <Button type="button" variant="outline" onClick={previousStep}>
+            {tCommon("previous")}
+          </Button>
+          <SubmitOnboardingButton disabled={!canSubmit} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface ReviewStepProps {}
 
@@ -337,131 +547,13 @@ export const ReviewStep: React.FC<ReviewStepProps> = () => {
           )}
         </SectionCard>
 
-        {/* Submission Button */}
-        <div className="bg-muted/50 border rounded-lg p-6">
-          <div className="text-center">
-            <h4 className="font-semibold text-foreground mb-2">
-              {t("confirmSubmit")}
-            </h4>
-            <p className="text-muted-foreground text-sm mb-6">
-              Your application will be reviewed within 2-3 business days. You'll
-              receive a notification once the review is complete.
-            </p>
-            <div className="flex justify-center gap-4">
-              <Button type="button" variant="outline" onClick={previousStep}>
-                {tCommon("previous")}
-              </Button>
-              <SubmitOnboardingButton />
-            </div>
-          </div>
-        </div>
+        {/* Terms & Policy Acceptance */}
+        <LegalAgreementSection
+          previousStep={previousStep}
+          t={t}
+          tCommon={tCommon}
+        />
       </CardContent>
     </Card>
-  );
-};
-
-// Helper function to transform form data to API format
-const transformFormDataForAPI = (formData: any) => {
-  return {
-    fullName: formData.personalInfo?.fullName || "",
-    dateOfBirth:
-      formData.personalInfo?.dateOfBirth?.toISOString().split("T")[0] || "",
-    timeOfBirth:
-      formData.personalInfo?.timeOfBirth?.toTimeString().slice(0, 5) || "",
-    placeOfBirth: formData.personalInfo?.placeOfBirth || "",
-    primaryLanguage: formData.personalInfo?.primaryLanguage || "",
-    languages: formData.personalInfo?.languages || [],
-    expertise: formData.professionalBackground?.expertise || [],
-    yearsOfExperience:
-      formData.professionalBackground?.yearsOfExperience?.toString() || "0",
-    astrologySystems: formData.professionalBackground?.astrologySystems || [],
-    otherPractices: formData.professionalBackground?.otherPractices || [],
-    teachers: formData.professionalBackground?.teachers || "",
-    lineage: formData.professionalBackground?.lineage || "",
-    formalEducation: formData.professionalBackground?.formalEducation || "",
-    maxConsultationsPerDay:
-      formData.servicesPricing?.maxConsultationsPerDay?.toString() || "5",
-    workingDays: formData.servicesPricing?.workingDays || [],
-    timeSlots: formData.servicesPricing?.timeSlots || [],
-    expectedResponseTime:
-      formData.servicesPricing?.expectedResponseTime || "within_24_hours",
-    remediesTypes: formData.specialization?.remediesTypes || [],
-    excludedPredictionAreas:
-      formData.specialization?.excludedPredictionAreas || [],
-    createHoroscopeContent:
-      formData.specialization?.createHoroscopeContent || false,
-    createDailyPredictions:
-      formData.specialization?.createDailyPredictions || false,
-    bankDetails: JSON.stringify(formData.financial || {}),
-    about: formData.personalInfo?.about || "",
-    chatPrice: formData.servicesPricing?.chatPrice || "500",
-    callPrice: formData.servicesPricing?.callPrice || "1000",
-    videoPrice: formData.servicesPricing?.videoPrice || "1500",
-    canPerformPuja: formData.specialization?.canPerformPuja || false,
-    profileImage: formData.personalInfo?.profileImage,
-    aadharCard: formData.documentation?.aadharCard,
-    addressProof: formData.documentation?.addressProof,
-    educationCertificates: formData.documentation?.educationCertificates || [],
-  };
-};
-
-// Separate component for submission with mutation
-const SubmitOnboardingButton = () => {
-  const { getCompleteFormData, resetForm } = useOnboardingStore();
-  const { update } = useSession();
-  const t = useTranslations("onboarding.review");
-
-  const { mutate: submitApplication, isPending } = useMutation({
-    mutationFn: async () => {
-      const formData = getCompleteFormData();
-      const apiData = transformFormDataForAPI(formData);
-
-      // Validate required fields
-      if (!apiData.fullName || !apiData.dateOfBirth || !apiData.placeOfBirth) {
-        throw new Error("Please complete all required personal information");
-      }
-
-      if (!apiData.expertise.length || !apiData.astrologySystems.length) {
-        throw new Error(
-          "Please add at least one area of expertise and one astrology system"
-        );
-      }
-
-      if (!apiData.workingDays.length || !apiData.timeSlots.length) {
-        throw new Error("Please select your working days and time slots");
-      }
-
-      console.log("Submitting transformed data:", apiData);
-      return await api.auth.submitOnboarding(apiData);
-    },
-    onSuccess: async () => {
-      toast.success(t("successMessage"));
-      resetForm();
-      // Update session with new status
-      await update({
-        status: "in_review",
-      });
-      // Use hard redirect instead of router.push to ensure middleware gets updated token
-      window.location.href = "/in-review";
-    },
-    onError: (error: any) => {
-      console.error("Submission error:", error);
-      toast.error(error.message || t("errorMessage"));
-    },
-  });
-
-  const handleSubmit = () => {
-    submitApplication();
-  };
-
-  return (
-    <Button
-      type="button"
-      onClick={handleSubmit}
-      disabled={isPending}
-      className="px-8"
-    >
-      {isPending ? t("submitting") : t("submitButton")}
-    </Button>
   );
 };

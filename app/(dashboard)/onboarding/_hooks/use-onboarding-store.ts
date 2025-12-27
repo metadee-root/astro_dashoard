@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 import {
   PersonalInfoData,
   ProfessionalData,
@@ -8,9 +8,15 @@ import {
   DocumentationData,
   FinancialData,
   OnboardingFormData,
-} from '../_schemas';
+} from "../_schemas";
 
-export type StepKey = 'personalInfo' | 'professionalBackground' | 'servicesPricing' | 'specialization' | 'documentation' | 'financial';
+export type StepKey =
+  | "personalInfo"
+  | "professionalBackground"
+  | "servicesPricing"
+  | "specialization"
+  | "documentation"
+  | "financial";
 
 interface OnboardingStore {
   // Basic state
@@ -90,7 +96,7 @@ export const useOnboardingStore = create<OnboardingStore>()(
       },
     }),
     {
-      name: 'onboarding-store',
+      name: "onboarding-store",
     }
   )
 );

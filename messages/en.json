@@ -587,9 +587,13 @@
     "review": {
       "title": "Review & Submit",
       "description": "Review your information before submitting",
+      "legalAgreements": "Legal Agreements",
+      "acceptTermsPrefix": "I have read and agree to the",
+      "acceptPrivacyPrefix": "I have read and agree to the",
+      "reviewNotice": "Your application will be reviewed within 2-3 business days. You'll receive a notification once the review is complete.",
       "submitButton": "Submit Application",
       "submitting": "Submitting...",
-      "confirmSubmit": "Are you sure you want to submit your application?",
+      "confirmSubmit": "Ready to Submit?",
       "successMessage": "Your application has been submitted successfully!",
       "errorMessage": "Failed to submit application. Please try again."
     }
