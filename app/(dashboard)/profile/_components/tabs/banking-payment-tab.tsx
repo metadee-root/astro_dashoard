@@ -53,7 +53,6 @@ const PAYMENT_METHODS = [
 ];
 
 const PAYOUT_FREQUENCY = [
-  { value: "daily", label: "Daily" },
   { value: "weekly", label: "Weekly" },
   { value: "bi_weekly", label: "Bi-weekly" },
   { value: "monthly", label: "Monthly" },

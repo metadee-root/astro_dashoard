@@ -1,168 +1,108 @@
-# Sanatan Vision - Pandit Ji
+# Sanatan Vision - Pandit Ji (Astrologer Dashboard)
 
-A modern web application for connecting users with professional astrologers. Built with Next.js and featuring real-time communication, user reviews, and an intuitive dashboard.
+A comprehensive web application for astrologers to manage consultations, puja services, reviews, and connect with seekers in real-time. Built with Next.js 15, featuring real-time communication, video calls, and a rich dashboard experience.
 
-## 📋 Quick Start Guide
-
-### For New Developers
-
-1. **Setup your environment**
-
-   ```bash
-   # Install dependencies
-   pnpm install
-
-   # Copy environment template
-   cp .env.example .env.local
-
-   # Add your secrets to .env.local
-   ```
-
-2. **Run the application**
-
-   ```bash
-   # Start development server
-   pnpm dev
-
-   # Open http://localhost:3000
-   ```
-
-3. **Create an account**
-   - Sign up as a new user
-   - Complete the astrologer onboarding flow
-   - Set up your profile and services
-
-### Key Things to Know
-
-- **Package Manager**: Always use `pnpm` (not npm)
-- **Code Style**: Arrow functions only, interfaces over types
-- **File Names**: kebab-case (e.g., `user-profile.tsx`)
-- **Environment**: All secrets in `.env.local`
-
-### Common Tasks
+## � Quick Start
 
 ```bash
-# Add new dependency
-pnpm add package-name
+# Install dependencies
+pnpm install
 
-# Run linting
-pnpm lint
+# Set up environment
+cp .env.example .env.local
+# Add your secrets to .env.local
 
-# Build for production
-pnpm build
+# Start development server
+pnpm dev
 
-# Start production server
-pnpm start
+# Open http://localhost:3000
 ```
 
-## ✨ Features
+## 📋 Features
 
-- **User Authentication**: Secure login and registration system
-- **Astrologer Profiles**: Detailed profiles with ratings and specialties
-- **Real-time Chat**: Built with Socket.IO for instant messaging
-- **Video Consultations**: Powered by Agora for live video sessions
-- **Review System**: Users can leave and read reviews for astrologers
-- **Responsive Design**: Works on desktop and mobile devices
-- **Dark Mode**: Built-in theme support with next-themes
+| Feature                  | Description                                               |
+| ------------------------ | --------------------------------------------------------- |
+| **Authentication**       | NextAuth.js with JWT, email verification, password reset  |
+| **Onboarding**           | Multi-step wizard with Terms & Privacy Policy acceptance  |
+| **Consultations**        | Real-time chat (Socket.IO), voice/video calls (Agora RTC) |
+| **Puja Services**        | Manage puja bookings and ceremonies                       |
+| **Reviews**              | View and manage client reviews and ratings                |
+| **Wallet**               | Track earnings and handle withdrawals                     |
+| **Profile**              | Complete profile management with document uploads         |
+| **Internationalization** | English and Hindi support via next-intl                   |
 
-## 🚀 Tech Stack
+## � Tech Stack
 
-- **Framework**: Next.js 13+ (App Router)
-- **Styling**: Tailwind CSS
-- **State Management**: Zustand
-- **Forms**: React Hook Form with Zod validation
-- **UI Components**: Radix UI Primitives
-- **Data Fetching**: TanStack Query
-- **Real-time**: Socket.IO
-- **Video Calls**: Agora RTC
-- **Authentication**: NextAuth.js
-- **Notifications**: Sonner
+| Category         | Technology                                |
+| ---------------- | ----------------------------------------- |
+| Framework        | Next.js 15.3 (App Router, Turbopack)      |
+| Styling          | Tailwind CSS v4                           |
+| UI Components    | Radix UI Primitives, shadcn/ui            |
+| State Management | Zustand (client), TanStack Query (server) |
+| Forms            | React Hook Form + Zod validation          |
+| Real-time        | Socket.IO                                 |
+| Video Calls      | Agora RTC                                 |
+| Authentication   | NextAuth.js                               |
+| HTTP Client      | Axios                                     |
+| i18n             | next-intl                                 |
 
-## 🛠️ Getting Started
-
-### Prerequisites
-
-- Node.js 18.0.0 or later
-- pnpm (recommended) or npm
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/your-username/sanatan-vision-astrologers.git
-   cd sanatan-vision-astrologers
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   pnpm install
-   # or
-   npm install
-   ```
-
-3. Set up environment variables:
-   Create a `.env.local` file in the root directory and add the necessary environment variables:
-
-   ```env
-   NEXTAUTH_SECRET=your-secret-key
-   NEXTAUTH_URL=http://localhost:3000
-   # Add other required environment variables
-   ```
-
-4. Run the development server:
-
-   ```bash
-   pnpm dev
-   # or
-   npm run dev
-   ```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
-
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```
-/
-├── app/                    # App router directory
-│   ├── (dashboard)/       # Dashboard routes (protected)
-│   ├── api/               # API routes
-│   └── ...
-├── components/            # Reusable components
-├── lib/                   # Utility functions and configurations
-├── public/                # Static files
-└── styles/                # Global styles
+├── app/
+│   ├── (auth)/              # Auth routes (sign-in, sign-up, verify, reset)
+│   ├── (dashboard)/         # Protected astrologer dashboard
+│   │   ├── onboarding/      # Multi-step onboarding wizard
+│   │   ├── consultations/   # Consultation management
+│   │   ├── puja-bookings/   # Puja service bookings
+│   │   ├── reviews/         # Client reviews
+│   │   ├── profile/         # Profile settings
+│   │   └── session/         # Active consultation sessions
+│   ├── (legal)/             # Terms & Privacy Policy pages
+│   └── api/                 # API routes (NextAuth)
+├── components/
+│   ├── ui/                  # Base UI components (shadcn/ui)
+│   └── *.tsx                # Shared components
+├── lib/
+│   ├── api/                 # API client modules
+│   ├── auth.ts              # NextAuth configuration
+│   └── utils.ts             # Utility functions
+├── hooks/                   # Custom React hooks
+├── messages/                # i18n translation files (en.json, hi.json)
+└── types/                   # TypeScript type definitions
 ```
 
-## 📝 Scripts
+## � Development
 
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server
-- `pnpm lint` - Run ESLint
+### Commands
 
-## 🤝 Contributing
+```bash
+pnpm dev          # Start dev server (Turbopack)
+pnpm build        # Production build
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+### Code Conventions
+
+- **Arrow functions** only (no `function` keyword)
+- **Interfaces** over types
+- **kebab-case** for file names (`user-profile.tsx`)
+- **PascalCase** for components (`UserProfile`)
+- Always use `pnpm`
+
+### Environment Variables
+
+```env
+NEXTAUTH_SECRET=your-secret-key
+NEXTAUTH_URL=http://localhost:3000
+```
+
+## 📖 Documentation
+
+- [GEMINI.md](./GEMINI.md) - Detailed development guidelines
+- [DOCS.md](./DOCS.md) - Comprehensive documentation
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT License - see [LICENSE](LICENSE)
